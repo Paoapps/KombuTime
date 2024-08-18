@@ -11,44 +11,32 @@ import com.paoapps.kombutime.ui.theme.SECOND_FERMENTATION_COLOR
 import com.paoapps.kombutime.utils.LocalDateFormat
 import com.paoapps.kombutime.utils.formatDate
 import dev.icerock.moko.resources.desc.PluralFormatted
-import dev.icerock.moko.resources.desc.PluralStringDesc
-import dev.icerock.moko.resources.desc.ResourceStringDesc
 import dev.icerock.moko.resources.desc.StringDesc
 import dev.icerock.moko.resources.desc.desc
 import kombutime.composeapp.generated.resources.Res
-import kombutime.composeapp.generated.resources.batches_batch
-import kombutime.composeapp.generated.resources.batches_unflavored
 import kombutime.composeapp.generated.resources.bottle
 import kombutime.composeapp.generated.resources.jar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.Clock
-import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.imageResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.time.Duration.Companion.days
 
 
 class BatchesViewModel: ViewModel(), KoinComponent {
 
     private val model: Model by inject()
-
-    private val _title = model.batches.map { "${it.size} Batches" }
-    val title: Flow<String> = _title
 
     private val _output = model.batches.map { batches ->
         val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
@@ -133,6 +121,14 @@ class BatchesViewModel: ViewModel(), KoinComponent {
 
                 return true
             }
+
+            override fun hashCode(): Int {
+                var result = icon.hashCode()
+                result = 31 * result + title.hashCode()
+                result = 31 * result + progressBar.hashCode()
+                result = 31 * result + valueRows.hashCode()
+                return result
+            }
         }
 
         data class ProgressBar(
@@ -147,9 +143,5 @@ class BatchesViewModel: ViewModel(), KoinComponent {
             val label: StringDesc,
             val value: StringDesc
         )
-    }
-
-    fun addBatch(namePrefix: String) {
-        model.addBatch(namePrefix)
     }
 }

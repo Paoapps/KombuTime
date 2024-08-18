@@ -1,23 +1,20 @@
 package com.paoapps.kombutime.model
 
 import com.paoapps.kombutime.domain.Batch
+import com.paoapps.kombutime.domain.BatchSettings
 import com.paoapps.kombutime.domain.BatchState
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
-import kombutime.composeapp.generated.resources.Res
-import kombutime.composeapp.generated.resources.batches_batch
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.modules.SerializersModule
 import org.koin.core.component.KoinComponent
 
 class Model: KoinComponent {
@@ -41,8 +38,10 @@ class Model: KoinComponent {
             val suggestedName = "$namePrefix $index"
             if (_batches.value.none { it.settings.name == suggestedName }) {
                 _batches.value += Batch(
-                    name = suggestedName,
                     startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+                    settings = (_batches.value.lastOrNull()?.settings ?: BatchSettings(
+                        name = suggestedName
+                    )).copy(name = suggestedName)
                 )
                 save()
                 return
@@ -74,6 +73,107 @@ class Model: KoinComponent {
     fun complete(index: Int) {
         val batches = _batches.value.toMutableList()
         batches.removeAt(index)
+        _batches.value = batches
+        save()
+    }
+
+    fun incrementStartDate(batchIndex: Int) {
+        val batch = _batches.value[batchIndex]
+        _batches.value = _batches.value.toMutableList().apply {
+            set(batchIndex, batch.copy(
+                startDate = batch.startDate.plus(1, DateTimeUnit.DAY)
+            ))
+        }
+        save()
+    }
+
+    fun decrementStartDate(batchIndex: Int) {
+        val batch = _batches.value[batchIndex]
+        _batches.value = _batches.value.toMutableList().apply {
+            set(batchIndex, batch.copy(
+                startDate = batch.startDate.plus(-1, DateTimeUnit.DAY)
+            ))
+        }
+        save()
+    }
+
+    fun incrementFirstFermentationDays(batchIndex: Int) {
+        val batch = _batches.value[batchIndex]
+        val batchName = batch.settings.name
+        val settings = batch.settings.copy(
+            firstFermentationDays = batch.settings.firstFermentationDays + 1
+        )
+        _batches.value = _batches.value.map {
+            if (it.settings.name == batchName) {
+                it.copy(
+                    settings = settings
+                )
+            } else {
+                it
+            }
+        }
+
+        save()
+    }
+
+    fun decrementFirstFermentationDays(batchIndex: Int) {
+        val batch = _batches.value[batchIndex]
+        val batchName = batch.settings.name
+        val settings = batch.settings.copy(
+            firstFermentationDays = batch.settings.firstFermentationDays - 1
+        )
+        _batches.value = _batches.value.map {
+            if (it.settings.name == batchName) {
+                it.copy(
+                    settings = settings
+                )
+            } else {
+                it
+            }
+        }
+        save()
+    }
+
+    fun incrementSecondFermentationDays(batchIndex: Int) {
+        val batch = _batches.value[batchIndex]
+        val batchName = batch.settings.name
+        val settings = batch.settings.copy(
+            secondFermentationDays = batch.settings.secondFermentationDays + 1
+        )
+        _batches.value = _batches.value.map {
+            if (it.settings.name == batchName) {
+                it.copy(
+                    settings = settings
+                )
+            } else {
+                it
+            }
+        }
+        save()
+    }
+
+    fun decrementSecondFermentationDays(batchIndex: Int) {
+        val batch = _batches.value[batchIndex]
+        val batchName = batch.settings.name
+        val settings = batch.settings.copy(
+            secondFermentationDays = batch.settings.secondFermentationDays - 1
+        )
+        _batches.value = _batches.value.map {
+            if (it.settings.name == batchName) {
+                it.copy(
+                    settings = settings
+                )
+            } else {
+                it
+            }
+        }
+        save()
+    }
+
+    fun deleteBatch(batchIndex: Int) {
+        val batches = _batches.value.toMutableList().apply {
+            removeAt(batchIndex)
+        }
         _batches.value = batches
         save()
     }

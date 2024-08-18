@@ -16,6 +16,7 @@ actual fun formatDate(
 
     val patters = when (format) {
         LocalDateFormat.LONG -> "EEEE, MMMM d, yyyy"
+        LocalDateFormat.SHORT -> "MMM d, yyyy"
     }
 
     return SimpleDateFormat(patters, locale).format(millis)

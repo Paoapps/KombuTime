@@ -1,14 +1,10 @@
 package com.paoapps.kombutime.utils
 
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeFormatBuilder
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSDateFormatterFullStyle
-import platform.Foundation.NSDateFormatterLongStyle
-import platform.Foundation.NSTimeZone
-import platform.Foundation.timeZoneWithAbbreviation
+import platform.Foundation.NSDateFormatterShortStyle
 
 actual fun formatDate(
     date: LocalDate,
@@ -22,6 +18,7 @@ actual fun formatDate(
     val formatter = NSDateFormatter()
     formatter.dateStyle = when (format) {
         LocalDateFormat.LONG -> NSDateFormatterFullStyle
+        LocalDateFormat.SHORT -> NSDateFormatterShortStyle
     }
 
     return formatter.stringFromDate(nsDate)

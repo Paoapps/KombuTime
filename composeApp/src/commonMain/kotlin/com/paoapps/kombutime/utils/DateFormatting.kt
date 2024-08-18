@@ -6,6 +6,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 
 enum class LocalDateFormat {
+    SHORT,
     LONG,
 }
 
