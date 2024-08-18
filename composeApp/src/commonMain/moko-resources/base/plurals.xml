@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <plural name="remaining_days">
+        <item quantity="one">1 day left</item>
+        <item quantity="other">%d days left</item>
+    </plural>
+</resources>
