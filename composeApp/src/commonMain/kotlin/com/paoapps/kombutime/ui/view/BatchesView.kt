@@ -41,9 +41,9 @@ fun BatchesView(
 
     Column(
         Modifier
+            .verticalScroll(rememberScrollState())
             .padding(12.dp)
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
