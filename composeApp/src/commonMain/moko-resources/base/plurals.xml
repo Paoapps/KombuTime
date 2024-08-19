@@ -4,4 +4,8 @@
         <item quantity="one">1 day left</item>
         <item quantity="other">%d days left</item>
     </plural>
+    <plural name="overdue_days">
+        <item quantity="one">1 day overdue</item>
+        <item quantity="other">%d days overdue</item>
+    </plural>
 </resources>

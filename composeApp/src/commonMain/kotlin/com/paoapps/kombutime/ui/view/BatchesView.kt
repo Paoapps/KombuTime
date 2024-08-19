@@ -98,21 +98,6 @@ fun BatchesView(
                 }
             }
         }
-
-//            BatchesScreen()
-//            Button(onClick = { showContent = !showContent }) {
-//                Text("Click me!")
-//            }
-//            AnimatedVisibility(showContent) {
-//                val greeting = remember { Greeting().greet() }
-//                Column(
-//                    Modifier.fillMaxWidth(),
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
-//                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-//                    Text("Compose: $greeting")
-//                }
-//            }
     }
 }
 
@@ -139,11 +124,13 @@ fun ProgressBar(
                 ) {
                     Text(
                         text = "",
-                        style = MaterialTheme.typography.body2
+                        style = MaterialTheme.typography.body2,
+                        color = properties.textColor
                     )
                     Text(
                         text = "",
-                        style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold),
+                        color = properties.textColor
                     )
                 }
             }
@@ -155,11 +142,13 @@ fun ProgressBar(
         ) {
             Text(
                 text = properties.header.localized(),
-                style = MaterialTheme.typography.body2
+                style = MaterialTheme.typography.body2,
+                color = properties.textColor
             )
             Text(
                 text = properties.body.localized(),
-                style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold)
+                style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold),
+                color = properties.textColor
             )
         }
     }

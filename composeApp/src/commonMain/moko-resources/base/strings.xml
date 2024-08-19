@@ -15,4 +15,14 @@
     <string name="first_fermentation_days">1st Fermentation Days</string>
     <string name="second_fermentation_days">2nd Fermentation Days</string>
     <string name="delete_batch">Delete Batch</string>
+    <string name="notification_settings">Notification Settings</string>
+    <string name="notification_time">Notification Time</string>
+
+    <!-- Notification Titles -->
+    <string name="notification_first_fermentation_title">First Fermentation Complete!</string>
+    <string name="notification_second_fermentation_title">Second Fermentation Complete!</string>
+
+    <!-- Notification Messages -->
+    <string name="notification_first_fermentation_message">%s is ready for bottling. Start the second fermentation to continue the process.</string>
+    <string name="notification_second_fermentation_message">%s is fully fermented and ready to enjoy. Your kombucha is now ready!</string>
 </resources>

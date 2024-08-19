@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">KombuTime</string>
+
+    <!-- Toast Messages -->
+    <string name="toast_request_exact_alarm_permission">Please allow exact alarms for proper app functionality.</string>
+    <string name="toast_unable_to_schedule_alarm">Unable to schedule alarm: Permission denied.</string>
+
 </resources>

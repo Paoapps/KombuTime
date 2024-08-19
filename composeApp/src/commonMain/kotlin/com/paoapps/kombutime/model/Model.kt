@@ -1,17 +1,24 @@
 package com.paoapps.kombutime.model
 
+import com.paoapps.kombutime.MR
+import com.paoapps.kombutime.Notification
 import com.paoapps.kombutime.domain.Batch
 import com.paoapps.kombutime.domain.BatchSettings
 import com.paoapps.kombutime.domain.BatchState
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
+import dev.icerock.moko.resources.desc.desc
+import dev.icerock.moko.resources.format
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atTime
 import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
@@ -31,6 +38,13 @@ class Model: KoinComponent {
         }
     })
     val batches: Flow<List<Batch>> = _batches
+
+    private val _notificationTime = MutableStateFlow(storage["notificationTime", (9 * 60 * 60)].let {
+        LocalTime.fromSecondOfDay(it)
+    })
+    val notificationTime: Flow<LocalTime> = _notificationTime
+
+    var scheduleNotifications: (List<Notification>) -> Unit = {}
 
     fun addBatch(namePrefix: String) {
         var index = 1
@@ -53,6 +67,23 @@ class Model: KoinComponent {
     private fun save() {
         val batches = _batches.value
         storage["batches"] = jsonParser.encodeToString(ListSerializer(Batch.serializer()), batches)
+
+        storage["notificationTime"] = _notificationTime.value.toSecondOfDay()
+
+        scheduleNotifications(batches.map { batch ->
+            Notification(
+                id = batch.settings.name.hashCode() + batch.state.hashCode(),
+                title = when (batch.state) {
+                    BatchState.FirstFermentation -> MR.strings.notification_first_fermentation_title.desc()
+                    is BatchState.SecondFermentation -> MR.strings.notification_second_fermentation_title.desc()
+                },
+                message = when (batch.state) {
+                    is BatchState.FirstFermentation -> MR.strings.notification_first_fermentation_message.format(batch.settings.name)
+                    is BatchState.SecondFermentation -> MR.strings.notification_second_fermentation_message.format(batch.settings.name)
+                },
+                time = batch.endDate.atTime(_notificationTime.value).toInstant(TimeZone.currentSystemDefault()).toLocalDateTime(TimeZone.currentSystemDefault())
+            )
+        })
     }
 
     fun completeFirstFermentation(index: Int, flavor: String = "") {
@@ -175,6 +206,12 @@ class Model: KoinComponent {
             removeAt(batchIndex)
         }
         _batches.value = batches
+        save()
+    }
+
+    fun setNotificationTime(time: LocalTime) {
+        _notificationTime.value = time
+
         save()
     }
 }

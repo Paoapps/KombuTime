@@ -68,6 +68,17 @@ fun SettingsView(
                 Stepper(stepper)
             }
 
+            Divider()
+
+            Text(
+                text = MR.strings.notification_settings.desc().localized(),
+                style = MaterialTheme.typography.h6,
+            )
+
+            output.notificationTimeStepper?.let { stepper ->
+                Stepper(stepper)
+            }
+
         }
 
         Button(

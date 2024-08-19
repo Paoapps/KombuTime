@@ -1,6 +1,7 @@
 package com.paoapps.kombutime.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.paoapps.kombutime.Notification
 import com.paoapps.kombutime.model.Model
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -11,5 +12,9 @@ class AppViewModel: ViewModel(), KoinComponent {
 
     fun addBatch(namePrefix: String) {
         model.addBatch(namePrefix)
+    }
+
+    fun setScheduleNotifications(scheduleNotifications: (List<Notification>) -> Unit) {
+        model.scheduleNotifications = scheduleNotifications
     }
 }

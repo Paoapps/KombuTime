@@ -1,5 +1,6 @@
 package com.paoapps.kombutime.viewmodel
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.paoapps.kombutime.MR
@@ -43,13 +44,24 @@ class BatchesViewModel: ViewModel(), KoinComponent {
         Output(
             batches = batches.map { batch ->
                 val startDate = batch.startDate
-                val fermentationDays = when(val state = batch.state) {
+                val fermentationDays = when(batch.state) {
                     BatchState.FirstFermentation -> batch.settings.firstFermentationDays
                     is BatchState.SecondFermentation -> batch.settings.secondFermentationDays
                 }
                 val progress = (today - startDate).days.toDouble() / fermentationDays
                 val remainingDays = fermentationDays - (today - startDate).days
                 val endDate = startDate.plus(fermentationDays, DateTimeUnit.DAY)
+
+                val body = if (remainingDays < 0) {
+                    StringDesc.PluralFormatted(MR.plurals.overdue_days, -remainingDays, -remainingDays)
+                } else {
+                    StringDesc.PluralFormatted(MR.plurals.remaining_days, remainingDays, remainingDays)
+                }
+                val textColor = if (remainingDays < 0) {
+                    Color.Red
+                } else {
+                    Color.Black
+                }
 
                 val color = when(batch.state) {
                     BatchState.FirstFermentation -> FIRST_FERMENTATION_COLOR
@@ -70,9 +82,10 @@ class BatchesViewModel: ViewModel(), KoinComponent {
                             BatchState.FirstFermentation -> MR.strings.first_fermentation.desc()
                             is BatchState.SecondFermentation -> MR.strings.second_fermentation.desc()
                         },
-                        body = StringDesc.PluralFormatted(MR.plurals.remaining_days, remainingDays, remainingDays), // MR.plurals.remaining_days.desc(remainingDays),
+                        body = body,
                         backgroundColor = color.copy(alpha = 0.5f),
-                        progressColor = color
+                        progressColor = color,
+                        textColor = textColor
                     ),
                     valueRows = listOf(
                         Output.ValueRow(
@@ -85,13 +98,12 @@ class BatchesViewModel: ViewModel(), KoinComponent {
                         )
                     ),
                     completeAction = {
-                        when(val state = batch.state) {
+                        when(batch.state) {
                             BatchState.FirstFermentation -> model.completeFirstFermentation(batches.indexOf(batch), "Blue Berry")
                             is BatchState.SecondFermentation -> model.complete(batches.indexOf(batch))
                         }
 
                     }
-//                    startDate =  formatDate(batch.startDate, LocalDateFormat.LONG)
                 )
             }
         )
@@ -136,7 +148,8 @@ class BatchesViewModel: ViewModel(), KoinComponent {
             val header: StringDesc,
             val body: StringDesc,
             val backgroundColor: Color,
-            val progressColor: Color
+            val progressColor: Color,
+            val textColor: Color
         )
 
         data class ValueRow(
