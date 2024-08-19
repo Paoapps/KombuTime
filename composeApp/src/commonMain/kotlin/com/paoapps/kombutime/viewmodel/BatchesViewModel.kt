@@ -1,6 +1,5 @@
 package com.paoapps.kombutime.viewmodel
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.paoapps.kombutime.MR
@@ -20,13 +19,16 @@ import kombutime.composeapp.generated.resources.jar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
@@ -34,12 +36,23 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-
 class BatchesViewModel: ViewModel(), KoinComponent {
 
     private val model: Model by inject()
 
-    private val _output = model.batches.map { batches ->
+    private val nextDayTrigger = flow<Unit> {
+        emit(Unit)
+        while (true) {
+            val now = Clock.System.now()
+            val startOfNextDay =
+                now.toLocalDateTime(TimeZone.currentSystemDefault()).date.plus(1, DateTimeUnit.DAY)
+                    .atStartOfDayIn(TimeZone.currentSystemDefault())
+            val durationUntilNextDay = startOfNextDay - now
+            delay(durationUntilNextDay)
+        }
+    }
+
+    private val _output = combine(nextDayTrigger, model.batches) { _, batches ->
         val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
         Output(
             batches = batches.map { batch ->
