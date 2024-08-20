@@ -49,6 +49,7 @@ class BatchesViewModel: ViewModel(), KoinComponent {
                     .atStartOfDayIn(TimeZone.currentSystemDefault())
             val durationUntilNextDay = startOfNextDay - now
             delay(durationUntilNextDay)
+            emit(Unit)
         }
     }
 
