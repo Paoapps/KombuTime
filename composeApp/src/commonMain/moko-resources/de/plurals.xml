@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <plural name="remaining_days">
+        <item quantity="one">1 Tag übrig</item>
+        <item quantity="other">%d Tage übrig</item>
+    </plural>
+    <plural name="overdue_days">
+        <item quantity="one">1 Tag überfällig</item>
+        <item quantity="other">%d Tage überfällig</item>
+    </plural>
+</resources>
