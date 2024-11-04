@@ -3,7 +3,7 @@
     <string name="batches_title">Chargen</string>
     <string name="batches_add">Hinzufügen</string>
     <string name="batches_batch">Charge</string>
-    <string name="batches_unflavored">Ungeschmackt</string>
+    <string name="batches_unflavored">Geschmacksneutral</string>
     <string name="first_fermentation">Erste Fermentation</string>
     <string name="second_fermentation">Zweite Fermentation</string>
     <string name="start_date">Startdatum</string>
