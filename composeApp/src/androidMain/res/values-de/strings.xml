@@ -2,7 +2,7 @@
     <string name="app_name">KombuTime</string>
 
     <!-- Toast Messages -->
-    <string name="toast_request_exact_alarm_permission">Bitte erlauben Sie genaue Alarme für die ordnungsgemäße Funktion der App.</string>
-    <string name="toast_unable_to_schedule_alarm">Alarm kann nicht geplant werden: Berechtigung verweigert.</string>
+    <string name="toast_request_exact_alarm_permission">Bitte erlauben Sie sofortige Alarme für die ordnungsgemäße Funktion der App.</string>
+    <string name="toast_unable_to_schedule_alarm">Alarm kann nicht gesetzt werden: Berechtigung verweigert.</string>
 
 </resources>
