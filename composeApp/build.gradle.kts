@@ -76,8 +76,8 @@ android {
         applicationId = "com.paoapps.kombutime"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 3
-        versionName = "1.0.1"
+        versionCode = 4
+        versionName = "1.0.2"
     }
     packaging {
         resources {
