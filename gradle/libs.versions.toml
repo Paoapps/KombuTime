@@ -6,6 +6,7 @@ android-targetSdk = "36"
 androidx-activityCompose = "1.10.1"
 androidx-lifecycle = "2.9.3"
 compose-plugin = "1.8.2"
+compose-material-icons = "1.7.3"
 junit = "4.13.2"
 kotlin = "2.2.10"
 kotlinx-serialization = "1.9.0"
@@ -32,6 +33,7 @@ koin-core = { module = "io.insert-koin:koin-core" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 moko-resources = { module = "dev.icerock.moko:resources", version.ref = "moko-resources" }
 moko-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "moko-resources" }
+compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "compose-material-icons" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
