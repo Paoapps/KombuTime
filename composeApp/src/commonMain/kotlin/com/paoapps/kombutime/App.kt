@@ -1,8 +1,17 @@
 package com.paoapps.kombutime
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -15,6 +24,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -101,44 +112,67 @@ fun App(
         modules(module)
     }) {
         AppTheme {
-            Scaffold(topBar = {
-                AppBar(
-                    currentScreen = currentScreen,
-                    canNavigateBack = navController.previousBackStackEntry != null,
-                    navigateUp = { navController.navigateUp() },
-                    actions = {
-                        when(currentScreen) {
-                            Screen.Batches -> {
-                                Button(onClick = { viewModel.addBatch(namePrefix) }) {
-                                    Text(MR.strings.batches_add.desc().localized())
-                                }
-                            }
-                            Screen.Settings -> {}
-                        }
-                    }
-                )
-            }) { innerPadding ->
-                NavHost(
-                    navController = navController,
-                    startDestination = Screen.Batches.name,
+            // Blue background for entire screen (including status bar area)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xFF1B264F))
+            ) {
+                // Main content with status bar padding
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(innerPadding)
+                        .windowInsetsPadding(WindowInsets.statusBars)
                 ) {
-                    composable(route = Screen.Batches.name) {
-                        BatchesView(
-                            onOpenSettings = {
-                                navController.navigate("${Screen.Settings.name}/$it")
-                            }
-                        )
-                    }
+                    Scaffold(
+                        backgroundColor = Color.Transparent, // Keep scaffold transparent
+                        topBar = {
+                            AppBar(
+                                currentScreen = currentScreen,
+                                canNavigateBack = navController.previousBackStackEntry != null,
+                                navigateUp = { navController.navigateUp() },
+                                actions = {
+                                    when(currentScreen) {
+                                        Screen.Batches -> {
+                                            Button(onClick = { viewModel.addBatch(namePrefix) }) {
+                                                Text(MR.strings.batches_add.desc().localized())
+                                            }
+                                        }
+                                        Screen.Settings -> {}
+                                    }
+                                }
+                            )
+                        }
+                    ) { innerPadding ->
+                        // White background for content area
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding)
+                                .background(Color.White)
+                        ) {
+                            NavHost(
+                                navController = navController,
+                                startDestination = Screen.Batches.name,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                composable(route = Screen.Batches.name) {
+                                    BatchesView(
+                                        onOpenSettings = {
+                                            navController.navigate("${Screen.Settings.name}/$it")
+                                        }
+                                    )
+                                }
 
-                    composable(route = "${Screen.Settings.name}/{index}") {
-                        val index = it.arguments?.getString("index")!!.toInt()
-                        SettingsView(
-                            batchIndex = index,
-                            onNavigateUp = { navController.navigateUp() }
-                        )
+                                composable(route = "${Screen.Settings.name}/{index}") {
+                                    val index = it.arguments?.getString("index")!!.toInt()
+                                    SettingsView(
+                                        batchIndex = index,
+                                        onNavigateUp = { navController.navigateUp() }
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
