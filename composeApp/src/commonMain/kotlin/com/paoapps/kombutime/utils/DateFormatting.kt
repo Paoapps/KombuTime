@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.paoapps.kombutime.utils
 
 import kotlinx.datetime.LocalDate
@@ -5,6 +7,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
+import kotlin.time.ExperimentalTime
 
 enum class LocalDateFormat {
     SHORT,

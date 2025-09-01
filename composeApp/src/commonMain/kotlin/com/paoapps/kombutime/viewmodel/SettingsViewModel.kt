@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.paoapps.kombutime.viewmodel
 
 import androidx.lifecycle.ViewModel
@@ -27,6 +29,7 @@ import kotlinx.datetime.toLocalDateTime
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.ExperimentalTime
 
 class SettingsViewModel(
     private val batchIndex: Int

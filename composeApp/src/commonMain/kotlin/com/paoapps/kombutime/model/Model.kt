@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.paoapps.kombutime.model
 
 import com.paoapps.kombutime.MR
@@ -12,7 +14,7 @@ import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.resources.format
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
@@ -23,6 +25,7 @@ import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
+import kotlin.time.ExperimentalTime
 
 class Model: KoinComponent {
 
