@@ -2,6 +2,7 @@ package com.paoapps.kombutime
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -116,12 +117,13 @@ fun App(
                         }
                     }
                 )
-            }) {
+            }) { innerPadding ->
                 NavHost(
                     navController = navController,
                     startDestination = Screen.Batches.name,
                     modifier = Modifier
                         .fillMaxSize()
+                        .padding(innerPadding)
                 ) {
                     composable(route = Screen.Batches.name) {
                         BatchesView(

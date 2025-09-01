@@ -8,8 +8,8 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.WindowCompat
 import kotlinx.datetime.LocalDateTime
 import java.util.Calendar
 import android.provider.Settings
@@ -18,6 +18,10 @@ import android.widget.Toast
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Configure window for edge-to-edge display
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        enableEdgeToEdge()
 
         setContent {
             App(
@@ -73,21 +77,15 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun canScheduleExactAlarms(context: Context): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.canScheduleExactAlarms()
-        } else {
-            true // Exact alarms are allowed by default on Android 11 and below
-        }
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        return alarmManager.canScheduleExactAlarms()
     }
 
     private fun requestExactAlarmPermission(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (!canScheduleExactAlarms(context)) {
-                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                context.startActivity(intent)
-                Toast.makeText(context, context.getString(R.string.toast_request_exact_alarm_permission), Toast.LENGTH_LONG).show()
-            }
+        if (!canScheduleExactAlarms(context)) {
+            val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+            context.startActivity(intent)
+            Toast.makeText(context, context.getString(R.string.toast_request_exact_alarm_permission), Toast.LENGTH_LONG).show()
         }
     }
 }
