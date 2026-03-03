@@ -14,7 +14,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -22,11 +22,13 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            // Export resources to the framework
+            export(compose.components.resources)
         }
     }
-    
+
     sourceSets {
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -37,7 +39,7 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
-            implementation(compose.components.resources)
+            api(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
@@ -90,4 +92,10 @@ android {
     dependencies {
         debugImplementation(compose.uiTooling)
     }
+}
+
+// Workaround for syncComposeResourcesForIos task configuration issues when building from Xcode
+// Resources are already exported via the framework export configuration
+tasks.matching { it.name == "syncComposeResourcesForIos" }.configureEach {
+    enabled = false
 }
