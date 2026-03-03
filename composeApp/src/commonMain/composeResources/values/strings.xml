@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-    <string name="batches_title">Batches</string>
-    <string name="batches_add">Add</string>
-    <string name="batches_batch">Batch</string>
-    <string name="batches_unflavored">Unflavored</string>
+    <string name="brews_title">Brews</string>
+    <string name="brews_add">Add</string>
+    <string name="brews_batch">Brew</string>
+    <string name="brews_unflavored">Unflavored</string>
     <string name="first_fermentation">First Fermentation</string>
     <string name="second_fermentation">Second Fermentation</string>
     <string name="start_date">Start Date</string>

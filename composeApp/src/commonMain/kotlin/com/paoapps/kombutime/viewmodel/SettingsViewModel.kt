@@ -4,7 +4,7 @@ package com.paoapps.kombutime.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paoapps.kombutime.domain.BatchState
+import com.paoapps.kombutime.domain.BrewState
 import com.paoapps.kombutime.model.Model
 import com.paoapps.kombutime.utils.LocalDateFormat
 import com.paoapps.kombutime.utils.UiText
@@ -34,47 +34,47 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 
 class SettingsViewModel(
-    private val batchIndex: Int
+    private val brewIndex: Int
 ): ViewModel(), KoinComponent {
 
     private val model: Model by inject()
 
-    private val _output = combine(model.batches, model.notificationTime) { batches, notificationTime ->
-        val batch = if (batches.size > batchIndex) batches[batchIndex] else return@combine Output()
+    private val _output = combine(model.brews, model.notificationTime) { brews, notificationTime ->
+        val brew = if (brews.size > brewIndex) brews[brewIndex] else return@combine Output()
         Output(
-            title = batch.settings.name.toUiText() + " - ".toUiText() + when(batch.state) {
-                BatchState.FirstFermentation -> Res.string.first_fermentation.toUiText()
-                is BatchState.SecondFermentation -> Res.string.second_fermentation.toUiText()
+            title = brew.settings.name.toUiText() + " - ".toUiText() + when(brew.state) {
+                BrewState.FirstFermentation -> Res.string.first_fermentation.toUiText()
+                is BrewState.SecondFermentation -> Res.string.second_fermentation.toUiText()
             },
             dateStepper = Output.Stepper(
                 label = Res.string.start_date.toUiText(),
-                value = formatDate(batch.startDate, LocalDateFormat.SHORT),
+                value = formatDate(brew.startDate, LocalDateFormat.SHORT),
                 onIncrement = {
-                    model.incrementStartDate(batchIndex)
+                    model.incrementStartDate(brewIndex)
                 },
                 onDecrement = {
-                    model.decrementStartDate(batchIndex)
+                    model.decrementStartDate(brewIndex)
                 }
             ),
-            batchSettingsSteppers = listOf(
+            brewSettingsSteppers = listOf(
                 Output.Stepper(
                     label = Res.string.first_fermentation_days.toUiText(),
-                    value = batch.settings.firstFermentationDays.toString(),
+                    value = brew.settings.firstFermentationDays.toString(),
                     onIncrement = {
-                        model.incrementFirstFermentationDays(batchIndex)
+                        model.incrementFirstFermentationDays(brewIndex)
                     },
                     onDecrement = {
-                        model.decrementFirstFermentationDays(batchIndex)
+                        model.decrementFirstFermentationDays(brewIndex)
                     }
                 ),
                 Output.Stepper(
                     label = Res.string.second_fermentation_days.toUiText(),
-                    value = batch.settings.secondFermentationDays.toString(),
+                    value = brew.settings.secondFermentationDays.toString(),
                     onIncrement = {
-                        model.incrementSecondFermentationDays(batchIndex)
+                        model.incrementSecondFermentationDays(brewIndex)
                     },
                     onDecrement = {
-                        model.decrementSecondFermentationDays(batchIndex)
+                        model.decrementSecondFermentationDays(brewIndex)
                     }
                 ),
             ),
@@ -104,7 +104,7 @@ class SettingsViewModel(
     data class Output(
         val title: UiText = "".toUiText(),
         val dateStepper: Stepper? = null,
-        val batchSettingsSteppers: List<Stepper> = emptyList(),
+        val brewSettingsSteppers: List<Stepper> = emptyList(),
         val notificationTimeStepper: Stepper? = null,
     ) {
         data class Stepper(
@@ -132,7 +132,7 @@ class SettingsViewModel(
         }
     }
 
-    fun deleteBatch() {
-        model.deleteBatch(batchIndex)
+    fun deleteBrew() {
+        model.deleteBrew(brewIndex)
     }
 }

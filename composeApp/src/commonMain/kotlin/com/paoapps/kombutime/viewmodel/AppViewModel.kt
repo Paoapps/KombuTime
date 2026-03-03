@@ -10,8 +10,8 @@ class AppViewModel: ViewModel(), KoinComponent {
 
     private val model: Model by inject()
 
-    fun addBatch(namePrefix: String) {
-        model.addBatch(namePrefix)
+    fun addBrew(namePrefix: String) {
+        model.addBrew(namePrefix)
     }
 
     fun setScheduleNotifications(scheduleNotifications: (List<Notification>) -> Unit) {

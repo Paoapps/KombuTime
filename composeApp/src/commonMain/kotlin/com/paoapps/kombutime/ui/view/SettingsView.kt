@@ -33,8 +33,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SettingsView(
-    batchIndex: Int,
-    viewModel: SettingsViewModel = viewModel(key = batchIndex.toString()) { SettingsViewModel(batchIndex) },
+    brewIndex: Int,
+    viewModel: SettingsViewModel = viewModel(key = brewIndex.toString()) { SettingsViewModel(brewIndex) },
     onNavigateUp: () -> Unit = {}
 ) {
     val output by viewModel.output.collectAsState()
@@ -67,7 +67,7 @@ fun SettingsView(
                 style = MaterialTheme.typography.titleLarge,
             )
 
-            output.batchSettingsSteppers.forEach { stepper ->
+            output.brewSettingsSteppers.forEach { stepper ->
                 Stepper(stepper)
             }
 
@@ -86,7 +86,7 @@ fun SettingsView(
 
         Button(
             onClick = {
-                viewModel.deleteBatch()
+                viewModel.deleteBrew()
                 onNavigateUp()
             },
             colors = ButtonDefaults.buttonColors(

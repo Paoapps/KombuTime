@@ -3,9 +3,9 @@
 package com.paoapps.kombutime.model
 
 import com.paoapps.kombutime.Notification
-import com.paoapps.kombutime.domain.Batch
-import com.paoapps.kombutime.domain.BatchSettings
-import com.paoapps.kombutime.domain.BatchState
+import com.paoapps.kombutime.domain.Brew
+import com.paoapps.kombutime.domain.BrewSettings
+import com.paoapps.kombutime.domain.BrewState
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
@@ -40,14 +40,14 @@ class Model: KoinComponent {
 
     private val storage: Settings = Settings()
 
-    private val _batches = MutableStateFlow(storage["batches", "[]"].let {
+    private val _brews = MutableStateFlow(storage["brews", "[]"].let {
         try {
-            jsonParser.decodeFromString(ListSerializer(Batch.serializer()), it)
+            jsonParser.decodeFromString(ListSerializer(Brew.serializer()), it)
         } catch (e: Exception) {
             emptyList()
         }
     })
-    val batches: Flow<List<Batch>> = _batches
+    val brews: Flow<List<Brew>> = _brews
 
     private val _notificationTime = MutableStateFlow(storage["notificationTime", (9 * 60 * 60)].let {
         LocalTime.fromSecondOfDay(it)
@@ -56,14 +56,14 @@ class Model: KoinComponent {
 
     var scheduleNotifications: (List<Notification>) -> Unit = {}
 
-    fun addBatch(namePrefix: String) {
+    fun addBrew(namePrefix: String) {
         var index = 1
         while (true) {
             val suggestedName = "$namePrefix $index"
-            if (_batches.value.none { it.settings.name == suggestedName }) {
-                _batches.value += Batch(
+            if (_brews.value.none { it.settings.name == suggestedName }) {
+                _brews.value += Brew(
                     startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-                    settings = (_batches.value.lastOrNull()?.settings ?: BatchSettings(
+                    settings = (_brews.value.lastOrNull()?.settings ?: BrewSettings(
                         name = suggestedName
                     )).copy(name = suggestedName)
                 )
@@ -75,24 +75,24 @@ class Model: KoinComponent {
     }
 
     private fun save() {
-        val batches = _batches.value
-        storage["batches"] = jsonParser.encodeToString(ListSerializer(Batch.serializer()), batches)
+        val brews = _brews.value
+        storage["brews"] = jsonParser.encodeToString(ListSerializer(Brew.serializer()), brews)
 
         storage["notificationTime"] = _notificationTime.value.toSecondOfDay()
 
         scope.launch {
-            val notifications = batches.map { batch ->
+            val notifications = brews.map { brew ->
                 Notification(
-                    id = batch.settings.name.hashCode() + batch.state.hashCode(),
-                    title = when (batch.state) {
-                        BatchState.FirstFermentation -> getString(Res.string.notification_first_fermentation_title)
-                        is BatchState.SecondFermentation -> getString(Res.string.notification_second_fermentation_title)
+                    id = brew.settings.name.hashCode() + brew.state.hashCode(),
+                    title = when (brew.state) {
+                        BrewState.FirstFermentation -> getString(Res.string.notification_first_fermentation_title)
+                        is BrewState.SecondFermentation -> getString(Res.string.notification_second_fermentation_title)
                     },
-                    message = when (batch.state) {
-                        is BatchState.FirstFermentation -> getString(Res.string.notification_first_fermentation_message, batch.settings.name)
-                        is BatchState.SecondFermentation -> getString(Res.string.notification_second_fermentation_message, batch.settings.name)
+                    message = when (brew.state) {
+                        is BrewState.FirstFermentation -> getString(Res.string.notification_first_fermentation_message, brew.settings.name)
+                        is BrewState.SecondFermentation -> getString(Res.string.notification_second_fermentation_message, brew.settings.name)
                     },
-                    time = batch.endDate.atTime(_notificationTime.value).toInstant(TimeZone.currentSystemDefault()).toLocalDateTime(TimeZone.currentSystemDefault())
+                    time = brew.endDate.atTime(_notificationTime.value).toInstant(TimeZone.currentSystemDefault()).toLocalDateTime(TimeZone.currentSystemDefault())
                 )
             }
             scheduleNotifications(notifications)
@@ -100,55 +100,55 @@ class Model: KoinComponent {
     }
 
     fun completeFirstFermentation(index: Int, flavor: String = "") {
-        val batch = _batches.value[index]
-        _batches.value = _batches.value.toMutableList().apply {
-            set(index, batch.copy(
-                state = BatchState.SecondFermentation(flavor),
+        val brew = _brews.value[index]
+        _brews.value = _brews.value.toMutableList().apply {
+            set(index, brew.copy(
+                state = BrewState.SecondFermentation(flavor),
                 startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
             ))
         }
-        _batches.value += Batch(
-            name = batch.settings.name,
+        _brews.value += Brew(
+            name = brew.settings.name,
             startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
         )
         save()
     }
 
     fun complete(index: Int) {
-        val batches = _batches.value.toMutableList()
-        batches.removeAt(index)
-        _batches.value = batches
+        val brews = _brews.value.toMutableList()
+        brews.removeAt(index)
+        _brews.value = brews
         save()
     }
 
-    fun incrementStartDate(batchIndex: Int) {
-        val batch = _batches.value[batchIndex]
-        _batches.value = _batches.value.toMutableList().apply {
-            set(batchIndex, batch.copy(
-                startDate = batch.startDate.plus(1, DateTimeUnit.DAY)
+    fun incrementStartDate(brewIndex: Int) {
+        val brew = _brews.value[brewIndex]
+        _brews.value = _brews.value.toMutableList().apply {
+            set(brewIndex, brew.copy(
+                startDate = brew.startDate.plus(1, DateTimeUnit.DAY)
             ))
         }
         save()
     }
 
-    fun decrementStartDate(batchIndex: Int) {
-        val batch = _batches.value[batchIndex]
-        _batches.value = _batches.value.toMutableList().apply {
-            set(batchIndex, batch.copy(
-                startDate = batch.startDate.plus(-1, DateTimeUnit.DAY)
+    fun decrementStartDate(brewIndex: Int) {
+        val brew = _brews.value[brewIndex]
+        _brews.value = _brews.value.toMutableList().apply {
+            set(brewIndex, brew.copy(
+                startDate = brew.startDate.plus(-1, DateTimeUnit.DAY)
             ))
         }
         save()
     }
 
-    fun incrementFirstFermentationDays(batchIndex: Int) {
-        val batch = _batches.value[batchIndex]
-        val batchName = batch.settings.name
-        val settings = batch.settings.copy(
-            firstFermentationDays = batch.settings.firstFermentationDays + 1
+    fun incrementFirstFermentationDays(brewIndex: Int) {
+        val brew = _brews.value[brewIndex]
+        val brewName = brew.settings.name
+        val settings = brew.settings.copy(
+            firstFermentationDays = brew.settings.firstFermentationDays + 1
         )
-        _batches.value = _batches.value.map {
-            if (it.settings.name == batchName) {
+        _brews.value = _brews.value.map {
+            if (it.settings.name == brewName) {
                 it.copy(
                     settings = settings
                 )
@@ -160,14 +160,14 @@ class Model: KoinComponent {
         save()
     }
 
-    fun decrementFirstFermentationDays(batchIndex: Int) {
-        val batch = _batches.value[batchIndex]
-        val batchName = batch.settings.name
-        val settings = batch.settings.copy(
-            firstFermentationDays = batch.settings.firstFermentationDays - 1
+    fun decrementFirstFermentationDays(brewIndex: Int) {
+        val brew = _brews.value[brewIndex]
+        val brewName = brew.settings.name
+        val settings = brew.settings.copy(
+            firstFermentationDays = brew.settings.firstFermentationDays - 1
         )
-        _batches.value = _batches.value.map {
-            if (it.settings.name == batchName) {
+        _brews.value = _brews.value.map {
+            if (it.settings.name == brewName) {
                 it.copy(
                     settings = settings
                 )
@@ -178,14 +178,14 @@ class Model: KoinComponent {
         save()
     }
 
-    fun incrementSecondFermentationDays(batchIndex: Int) {
-        val batch = _batches.value[batchIndex]
-        val batchName = batch.settings.name
-        val settings = batch.settings.copy(
-            secondFermentationDays = batch.settings.secondFermentationDays + 1
+    fun incrementSecondFermentationDays(brewIndex: Int) {
+        val brew = _brews.value[brewIndex]
+        val brewName = brew.settings.name
+        val settings = brew.settings.copy(
+            secondFermentationDays = brew.settings.secondFermentationDays + 1
         )
-        _batches.value = _batches.value.map {
-            if (it.settings.name == batchName) {
+        _brews.value = _brews.value.map {
+            if (it.settings.name == brewName) {
                 it.copy(
                     settings = settings
                 )
@@ -196,14 +196,14 @@ class Model: KoinComponent {
         save()
     }
 
-    fun decrementSecondFermentationDays(batchIndex: Int) {
-        val batch = _batches.value[batchIndex]
-        val batchName = batch.settings.name
-        val settings = batch.settings.copy(
-            secondFermentationDays = batch.settings.secondFermentationDays - 1
+    fun decrementSecondFermentationDays(brewIndex: Int) {
+        val brew = _brews.value[brewIndex]
+        val brewName = brew.settings.name
+        val settings = brew.settings.copy(
+            secondFermentationDays = brew.settings.secondFermentationDays - 1
         )
-        _batches.value = _batches.value.map {
-            if (it.settings.name == batchName) {
+        _brews.value = _brews.value.map {
+            if (it.settings.name == brewName) {
                 it.copy(
                     settings = settings
                 )
@@ -214,11 +214,11 @@ class Model: KoinComponent {
         save()
     }
 
-    fun deleteBatch(batchIndex: Int) {
-        val batches = _batches.value.toMutableList().apply {
-            removeAt(batchIndex)
+    fun deleteBrew(brewIndex: Int) {
+        val batches = _brews.value.toMutableList().apply {
+            removeAt(brewIndex)
         }
-        _batches.value = batches
+        _brews.value = batches
         save()
     }
 

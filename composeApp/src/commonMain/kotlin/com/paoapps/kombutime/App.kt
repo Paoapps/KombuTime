@@ -30,15 +30,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.paoapps.kombutime.model.Model
 import com.paoapps.kombutime.ui.theme.AppTheme
-import com.paoapps.kombutime.ui.view.BatchesView
+import com.paoapps.kombutime.ui.view.BrewsView
 import com.paoapps.kombutime.ui.view.SettingsView
 import com.paoapps.kombutime.viewmodel.AppViewModel
 import androidx.savedstate.read
 import kombutime.composeapp.generated.resources.Res
 import kombutime.composeapp.generated.resources.back_button
-import kombutime.composeapp.generated.resources.batches_add
-import kombutime.composeapp.generated.resources.batches_batch
-import kombutime.composeapp.generated.resources.batches_title
+import kombutime.composeapp.generated.resources.brews_add
+import kombutime.composeapp.generated.resources.brews_batch
+import kombutime.composeapp.generated.resources.brews_title
 import kombutime.composeapp.generated.resources.settings
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.StringResource
@@ -52,7 +52,7 @@ val module = module {
 }
 
 enum class Screen(val titleRes: StringResource) {
-    Batches(titleRes = Res.string.batches_title),
+    Brews(titleRes = Res.string.brews_title),
     Settings(titleRes = Res.string.settings)
 }
 
@@ -99,10 +99,10 @@ fun App(
     // Get current back stack entry
     val backStackEntry by navController.currentBackStackEntryAsState()
     // Get the name of the current screen
-    val route = backStackEntry?.destination?.route ?: Screen.Batches.name
+    val route = backStackEntry?.destination?.route ?: Screen.Brews.name
     val currentScreen = Screen.entries.first { route.startsWith(it.name) }
 
-    val namePrefix = stringResource(Res.string.batches_batch)
+    val namePrefix = stringResource(Res.string.brews_batch)
 
     LaunchedEffect(Unit) {
         viewModel.setScheduleNotifications(scheduleNotifications)
@@ -133,9 +133,9 @@ fun App(
                                 navigateUp = { navController.navigateUp() },
                                 actions = {
                                     when(currentScreen) {
-                                        Screen.Batches -> {
-                                            Button(onClick = { viewModel.addBatch(namePrefix) }) {
-                                                Text(stringResource(Res.string.batches_add))
+                                        Screen.Brews -> {
+                                            Button(onClick = { viewModel.addBrew(namePrefix) }) {
+                                                Text(stringResource(Res.string.brews_add))
                                             }
                                         }
                                         Screen.Settings -> {}
@@ -153,11 +153,11 @@ fun App(
                         ) {
                             NavHost(
                                 navController = navController,
-                                startDestination = Screen.Batches.name,
+                                startDestination = Screen.Brews.name,
                                 modifier = Modifier.fillMaxSize()
                             ) {
-                                composable(route = Screen.Batches.name) {
-                                    BatchesView(
+                                composable(route = Screen.Brews.name) {
+                                    BrewsView(
                                         onOpenSettings = {
                                             navController.navigate("${Screen.Settings.name}/$it")
                                         }
@@ -167,7 +167,7 @@ fun App(
                                 composable(route = "${Screen.Settings.name}/{index}") {
                                 val index = it.arguments?.read { getString("index") }?.toInt() ?: 0
                                     SettingsView(
-                                        batchIndex = index,
+                                        brewIndex = index,
                                         onNavigateUp = { navController.navigateUp() }
                                     )
                                 }

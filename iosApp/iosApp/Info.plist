@@ -30,7 +30,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSUserNotificationUsageDescription</key>
-	<string>We use notifications to remind you when your kombucha batches are ready.</string>
+	<string>We use notifications to remind you when your kombucha brews are ready.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

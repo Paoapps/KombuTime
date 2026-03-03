@@ -4,9 +4,9 @@ Brew your kombucha with confidence and ease using Kombu Time, the app designed t
 
 Features:
 
-- Straightforward Batch Management: Easily manage your kombucha batches with clear tracking of both first and second fermentations. No complicated steps—just the essentials to keep your brew on track.
+- Straightforward Brew Management: Easily manage your kombucha brewes with clear tracking of both first and second fermentations. No complicated steps—just the essentials to keep your brew on track.
 - Timely Notifications: Receive notifications exactly when you need them—when it’s time to bottle after the first fermentation, and when your kombucha is ready to enjoy after the second. No more guessing or missed brewing opportunities.
-- At-a-Glance Batch Overview: See the status of all your batches in one clean, uncluttered view. Know exactly when to start a new batch or when to bottle, without any distractions.
+- At-a-Glance Brew Overview: See the status of all your brewes in one clean, uncluttered view. Know exactly when to start a new brew or when to bottle, without any distractions.
 
 Why Kombu Time?
 
@@ -18,9 +18,9 @@ Download Kombu Time today and simplify your kombucha brewing process. Focus on t
 
 # The Story
 
-After brewing kombucha for about two years with a few batches under my belt, I realized I needed a simple way to keep track of my brewing schedule. I’m not a fan of overcomplicating things, and initially, I just tried to remember when I started each batch. When I began brewing multiple batches, I used a repeating calendar event to stay organized. But as my brewing became more frequent, this system started to fall out of sync, especially when life got in the way, and I started a batch a day later than planned.
+After brewing kombucha for about two years with a few brewes under my belt, I realized I needed a simple way to keep track of my brewing schedule. I’m not a fan of overcomplicating things, and initially, I just tried to remember when I started each brew. When I began brewing multiple brewes, I used a repeating calendar event to stay organized. But as my brewing became more frequent, this system started to fall out of sync, especially when life got in the way, and I started a brew a day later than planned.
 
-So, I created a super simple app, Kombu Time, to keep track of my brewing process. It’s free, open-source, and designed to do just one thing: track when you start your batches and notify you when it’s time to start or end the second fermentation. No complicated features like ingredients, notes, ratings, or history—just what’s needed to make brewing easier. Once you set it up (like deciding how many days you want for fermentation), starting a new batch is as easy as tapping a button.
+So, I created a super simple app, Kombu Time, to keep track of my brewing process. It’s free, open-source, and designed to do just one thing: track when you start your brewes and notify you when it’s time to start or end the second fermentation. No complicated features like ingredients, notes, ratings, or history—just what’s needed to make brewing easier. Once you set it up (like deciding how many days you want for fermentation), starting a new brew is as easy as tapping a button.
 
 If you’re looking for a straightforward kombucha tracking app like I was, feel free to check it out:
 

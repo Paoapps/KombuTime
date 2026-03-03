@@ -27,7 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.paoapps.kombutime.utils.resolve
-import com.paoapps.kombutime.viewmodel.BatchesViewModel
+import com.paoapps.kombutime.viewmodel.BrewsViewModel
 import kombutime.composeapp.generated.resources.Res
 import kombutime.composeapp.generated.resources.complete
 import kombutime.composeapp.generated.resources.settings
@@ -35,8 +35,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun BatchesView(
-    viewModel: BatchesViewModel = viewModel { BatchesViewModel() },
+fun BrewsView(
+    viewModel: BrewsViewModel = viewModel { BrewsViewModel() },
     onOpenSettings: (Int) -> Unit = {}
 ) {
     val output by viewModel.output.collectAsState()
@@ -50,7 +50,7 @@ fun BatchesView(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
 
-        output.batches.forEachIndexed { index, batch ->
+        output.brews.forEachIndexed { index, brew ->
             if (index > 0) {
                 HorizontalDivider()
             }
@@ -58,16 +58,16 @@ fun BatchesView(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Image(painterResource(batch.icon), null)
-                Text(batch.title)
+                Image(painterResource(brew.icon), null)
+                Text(brew.title)
             }
 
             ProgressBar(
-                properties = batch.progressBar,
+                properties = brew.progressBar,
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            batch.valueRows.forEach { row ->
+            brew.valueRows.forEach { row ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -89,7 +89,7 @@ fun BatchesView(
             ) {
                 Button(
                     modifier = Modifier.fillMaxWidth().weight(1f),
-                    onClick = { batch.completeAction() }
+                    onClick = { brew.completeAction() }
                 ) {
                     Text(stringResource(Res.string.complete))
                 }
@@ -105,7 +105,7 @@ fun BatchesView(
 
 @Composable
 fun ProgressBar(
-    properties: BatchesViewModel.Output.ProgressBar,
+    properties: BrewsViewModel.Output.ProgressBar,
     modifier: Modifier = Modifier,
     clipShape: Shape = RoundedCornerShape(16.dp) // Adjusted based on the image
 ) {

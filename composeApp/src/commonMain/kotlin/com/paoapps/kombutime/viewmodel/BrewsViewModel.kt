@@ -5,8 +5,8 @@ package com.paoapps.kombutime.viewmodel
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.paoapps.kombutime.domain.Batch
-import com.paoapps.kombutime.domain.BatchState
+import com.paoapps.kombutime.domain.Brew
+import com.paoapps.kombutime.domain.BrewState
 import com.paoapps.kombutime.model.Model
 import com.paoapps.kombutime.ui.theme.FIRST_FERMENTATION_COLOR
 import com.paoapps.kombutime.ui.theme.SECOND_FERMENTATION_COLOR
@@ -43,7 +43,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.ExperimentalTime
 
-class BatchesViewModel: ViewModel(), KoinComponent {
+class BrewsViewModel: ViewModel(), KoinComponent {
 
     private val model: Model by inject()
 
@@ -60,14 +60,14 @@ class BatchesViewModel: ViewModel(), KoinComponent {
         }
     }
 
-    private val _output = combine(nextDayTrigger, model.batches) { _, batches ->
+    private val _output = combine(nextDayTrigger, model.brews) { _, brews ->
         val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
         Output(
-            batches = batches.map { batch ->
-                val startDate = batch.startDate
-                val fermentationDays = when(batch.state) {
-                    BatchState.FirstFermentation -> batch.settings.firstFermentationDays
-                    is BatchState.SecondFermentation -> batch.settings.secondFermentationDays
+            brews = brews.map { brew ->
+                val startDate = brew.startDate
+                val fermentationDays = when(brew.state) {
+                    BrewState.FirstFermentation -> brew.settings.firstFermentationDays
+                    is BrewState.SecondFermentation -> brew.settings.secondFermentationDays
                 }
                 val progress = (today - startDate).days.toDouble() / fermentationDays
                 val remainingDays = fermentationDays - (today - startDate).days
@@ -84,24 +84,24 @@ class BatchesViewModel: ViewModel(), KoinComponent {
                     Color.Black
                 }
 
-                val color = when(batch.state) {
-                    BatchState.FirstFermentation -> FIRST_FERMENTATION_COLOR
-                    is BatchState.SecondFermentation -> SECOND_FERMENTATION_COLOR
+                val color = when(brew.state) {
+                    BrewState.FirstFermentation -> FIRST_FERMENTATION_COLOR
+                    is BrewState.SecondFermentation -> SECOND_FERMENTATION_COLOR
                 }
-                Output.Batch(
-                    icon = when(batch.state) {
-                        BatchState.FirstFermentation -> Res.drawable.jar
-                        is BatchState.SecondFermentation -> Res.drawable.bottle
+                Output.Brew(
+                    icon = when(brew.state) {
+                        BrewState.FirstFermentation -> Res.drawable.jar
+                        is BrewState.SecondFermentation -> Res.drawable.bottle
                     },
-                    title = when(val state = batch.state) {
-                        BatchState.FirstFermentation -> batch.settings.name
-                        is BatchState.SecondFermentation -> batch.settings.name // TODO: flavor "${batch.settings.name} - ${state.flavor}"
+                    title = when(val state = brew.state) {
+                        BrewState.FirstFermentation -> brew.settings.name
+                        is BrewState.SecondFermentation -> brew.settings.name // TODO: flavor "${brew.settings.name} - ${state.flavor}"
                     },
                     progressBar = Output.ProgressBar(
                         progress = progress.toFloat(),
-                        header = when(batch.state) {
-                            BatchState.FirstFermentation -> Res.string.first_fermentation.toUiText()
-                            is BatchState.SecondFermentation -> Res.string.second_fermentation.toUiText()
+                        header = when(brew.state) {
+                            BrewState.FirstFermentation -> Res.string.first_fermentation.toUiText()
+                            is BrewState.SecondFermentation -> Res.string.second_fermentation.toUiText()
                         },
                         body = body,
                         backgroundColor = color.copy(alpha = 0.5f),
@@ -119,9 +119,9 @@ class BatchesViewModel: ViewModel(), KoinComponent {
                         )
                     ),
                     completeAction = {
-                        when(batch.state) {
-                            BatchState.FirstFermentation -> model.completeFirstFermentation(batches.indexOf(batch), "Blue Berry")
-                            is BatchState.SecondFermentation -> model.complete(batches.indexOf(batch))
+                        when(brew.state) {
+                            BrewState.FirstFermentation -> model.completeFirstFermentation(brews.indexOf(brew), "Blue Berry")
+                            is BrewState.SecondFermentation -> model.complete(brews.indexOf(brew))
                         }
 
                     }
@@ -130,12 +130,12 @@ class BatchesViewModel: ViewModel(), KoinComponent {
         )
     }
 
-    val output: StateFlow<Output> = _output.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Output(batches = emptyList()))
+    val output: StateFlow<Output> = _output.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Output(brews = emptyList()))
 
     data class Output(
-        val batches: List<Batch>
+        val brews: List<Brew>
     ) {
-        data class Batch(
+        data class Brew(
             val icon: DrawableResource,
             val title: String,
             val progressBar: ProgressBar,
@@ -145,7 +145,7 @@ class BatchesViewModel: ViewModel(), KoinComponent {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
 
-                other as Batch
+                other as Brew
 
                 if (icon != other.icon) return false
                 if (title != other.title) return false
