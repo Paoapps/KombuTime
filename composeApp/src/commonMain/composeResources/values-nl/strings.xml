@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="brews_title">Brouwsels</string>
+    <string name="brews_add">Toevoegen</string>
+    <string name="brews_batch">Brouwsel</string>
+    <string name="brews_unflavored">Ongearomatiseerd</string>
+    <string name="first_fermentation">Eerste Fermentatie</string>
+    <string name="second_fermentation">Tweede Fermentatie</string>
+    <string name="start_date">Startdatum</string>
+    <string name="end_date">Einddatum</string>
+    <string name="settings">Instellingen</string>
+    <string name="back_button">Terug</string>
+    <string name="complete">Voltooid</string>
+    <string name="batch_settings">Batch Instellingen</string>
+    <string name="first_fermentation_days">Dagen 1e Fermentatie</string>
+    <string name="second_fermentation_days">Dagen 2e Fermentatie</string>
+    <string name="delete_batch">Batch Verwijderen</string>
+    <string name="notification_settings">Meldinginstellingen</string>
+    <string name="notification_time">Meldingstijd</string>
+    <string name="notification_first_fermentation_title">Eerste Fermentatie Voltooid!</string>
+    <string name="notification_second_fermentation_title">Tweede Fermentatie Voltooid!</string>
+    <string name="notification_first_fermentation_message">%1$s is klaar om te bottelen. Start de tweede fermentatie om het proces voort te zetten.</string>
+    <string name="notification_second_fermentation_message">%1$s is volledig gefermenteerd en klaar om van te genieten. Je kombucha is nu klaar!</string>
+
+    <plurals name="remaining_days">
+        <item quantity="one">1 dag over</item>
+        <item quantity="other">%1$d dagen over</item>
+    </plurals>
+    <plurals name="overdue_days">
+        <item quantity="one">1 dag te laat</item>
+        <item quantity="other">%1$d dagen te laat</item>
+    </plurals>
+</resources>

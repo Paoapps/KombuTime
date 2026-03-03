@@ -27,6 +27,12 @@
             "state" : "translated",
             "value" : "We use notifications to remind you when your kombucha brews are ready."
           }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We gebruiken meldingen om je te herinneren wanneer je kombucha klaar is."
+          }
         }
       }
     }

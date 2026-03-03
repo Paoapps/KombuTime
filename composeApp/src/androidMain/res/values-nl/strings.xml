@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">KombuTime</string>
+
+    <!-- Toast Messages -->
+    <string name="toast_request_exact_alarm_permission">Geef alstublieft exacte alarmtoestemmingen voor een goede werking van de app.</string>
+    <string name="toast_unable_to_schedule_alarm">Kan alarm niet instellen: Toestemming geweigerd.</string>
+
+</resources>
