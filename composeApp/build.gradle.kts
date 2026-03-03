@@ -93,9 +93,3 @@ android {
         debugImplementation(compose.uiTooling)
     }
 }
-
-// Workaround for syncComposeResourcesForIos task configuration issues when building from Xcode
-// Resources are already exported via the framework export configuration
-tasks.matching { it.name == "syncComposeResourcesForIos" }.configureEach {
-    enabled = false
-}
