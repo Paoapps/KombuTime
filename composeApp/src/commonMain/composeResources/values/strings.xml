@@ -17,12 +17,17 @@
     <string name="delete_batch">Delete Batch</string>
     <string name="notification_settings">Notification Settings</string>
     <string name="notification_time">Notification Time</string>
-
-    <!-- Notification Titles -->
     <string name="notification_first_fermentation_title">First Fermentation Complete!</string>
     <string name="notification_second_fermentation_title">Second Fermentation Complete!</string>
+    <string name="notification_first_fermentation_message">%1$s is ready for bottling. Start the second fermentation to continue the process.</string>
+    <string name="notification_second_fermentation_message">%1$s is fully fermented and ready to enjoy. Your kombucha is now ready!</string>
 
-    <!-- Notification Messages -->
-    <string name="notification_first_fermentation_message">%s is ready for bottling. Start the second fermentation to continue the process.</string>
-    <string name="notification_second_fermentation_message">%s is fully fermented and ready to enjoy. Your kombucha is now ready!</string>
+    <plurals name="remaining_days">
+        <item quantity="one">1 day left</item>
+        <item quantity="other">%1$d days left</item>
+    </plurals>
+    <plurals name="overdue_days">
+        <item quantity="one">1 day overdue</item>
+        <item quantity="other">%1$d days overdue</item>
+    </plurals>
 </resources>

@@ -17,12 +17,17 @@
     <string name="delete_batch">Charge löschen</string>
     <string name="notification_settings">Benachrichtigungseinstellungen</string>
     <string name="notification_time">Benachrichtigungszeit</string>
-
-    <!-- Notification Titles -->
     <string name="notification_first_fermentation_title">Erste Fermentation abgeschlossen!</string>
     <string name="notification_second_fermentation_title">Zweite Fermentation abgeschlossen!</string>
+    <string name="notification_first_fermentation_message">%1$s ist bereit zum Abfüllen. Starten Sie die zweite Fermentation, um den Prozess fortzusetzen.</string>
+    <string name="notification_second_fermentation_message">%1$s ist vollständig fermentiert und bereit zum Genießen. Ihr Kombucha ist jetzt fertig!</string>
 
-    <!-- Notification Messages -->
-    <string name="notification_first_fermentation_message">%s ist bereit zum Abfüllen. Starten Sie die zweite Fermentation, um den Prozess fortzusetzen.</string>
-    <string name="notification_second_fermentation_message">%s ist vollständig fermentiert und bereit zum Genießen. Ihr Kombucha ist jetzt fertig!</string>
+    <plurals name="remaining_days">
+        <item quantity="one">1 Tag übrig</item>
+        <item quantity="other">%1$d Tage übrig</item>
+    </plurals>
+    <plurals name="overdue_days">
+        <item quantity="one">1 Tag überfällig</item>
+        <item quantity="other">%1$d Tage überfällig</item>
+    </plurals>
 </resources>

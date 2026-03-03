@@ -17,8 +17,8 @@ enum class LocalDateFormat {
 expect fun formatDate(date: LocalDate, format: LocalDateFormat): String
 expect fun formatTime(time: LocalTime): String
 
-val LocalDate.epochMilliseconds get() = LocalDateTime(year, monthNumber, dayOfMonth, 0, 0, 0, 0).toInstant(
+val LocalDate.epochMilliseconds get() = LocalDateTime(year, month, day, 0, 0, 0, 0).toInstant(
     TimeZone.currentSystemDefault()).toEpochMilliseconds()
 
-val LocalDate.epochSeconds get() = LocalDateTime(year, monthNumber, dayOfMonth, 0, 0, 0, 0).toInstant(
+val LocalDate.epochSeconds get() = LocalDateTime(year, month, day, 0, 0, 0, 0).toInstant(
     TimeZone.currentSystemDefault()).epochSeconds

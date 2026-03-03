@@ -3,22 +3,24 @@
 package com.paoapps.kombutime.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.paoapps.kombutime.MR
+import androidx.lifecycle.viewModelScope
 import com.paoapps.kombutime.domain.BatchState
 import com.paoapps.kombutime.model.Model
 import com.paoapps.kombutime.utils.LocalDateFormat
+import com.paoapps.kombutime.utils.UiText
 import com.paoapps.kombutime.utils.formatDate
 import com.paoapps.kombutime.utils.formatTime
-import dev.icerock.moko.resources.desc.StringDesc
-import dev.icerock.moko.resources.desc.desc
-import dev.icerock.moko.resources.desc.plus
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import com.paoapps.kombutime.utils.toUiText
+import kombutime.composeapp.generated.resources.Res
+import kombutime.composeapp.generated.resources.first_fermentation
+import kombutime.composeapp.generated.resources.first_fermentation_days
+import kombutime.composeapp.generated.resources.notification_time
+import kombutime.composeapp.generated.resources.second_fermentation
+import kombutime.composeapp.generated.resources.second_fermentation_days
+import kombutime.composeapp.generated.resources.start_date
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -40,12 +42,12 @@ class SettingsViewModel(
     private val _output = combine(model.batches, model.notificationTime) { batches, notificationTime ->
         val batch = if (batches.size > batchIndex) batches[batchIndex] else return@combine Output()
         Output(
-            title = batch.settings.name.desc() + " - ".desc() + when(batch.state) {
-                BatchState.FirstFermentation -> MR.strings.first_fermentation.desc()
-                is BatchState.SecondFermentation -> MR.strings.second_fermentation.desc()
+            title = batch.settings.name.toUiText() + " - ".toUiText() + when(batch.state) {
+                BatchState.FirstFermentation -> Res.string.first_fermentation.toUiText()
+                is BatchState.SecondFermentation -> Res.string.second_fermentation.toUiText()
             },
             dateStepper = Output.Stepper(
-                label = MR.strings.start_date.desc(),
+                label = Res.string.start_date.toUiText(),
                 value = formatDate(batch.startDate, LocalDateFormat.SHORT),
                 onIncrement = {
                     model.incrementStartDate(batchIndex)
@@ -56,7 +58,7 @@ class SettingsViewModel(
             ),
             batchSettingsSteppers = listOf(
                 Output.Stepper(
-                    label = MR.strings.first_fermentation_days.desc(),
+                    label = Res.string.first_fermentation_days.toUiText(),
                     value = batch.settings.firstFermentationDays.toString(),
                     onIncrement = {
                         model.incrementFirstFermentationDays(batchIndex)
@@ -66,7 +68,7 @@ class SettingsViewModel(
                     }
                 ),
                 Output.Stepper(
-                    label = MR.strings.second_fermentation_days.desc(),
+                    label = Res.string.second_fermentation_days.toUiText(),
                     value = batch.settings.secondFermentationDays.toString(),
                     onIncrement = {
                         model.incrementSecondFermentationDays(batchIndex)
@@ -77,7 +79,7 @@ class SettingsViewModel(
                 ),
             ),
             notificationTimeStepper = Output.Stepper(
-                label = MR.strings.notification_time.desc(),
+                label = Res.string.notification_time.toUiText(),
                 value = formatTime(notificationTime),
                 onIncrement = {
                     val date = LocalDate(2024, 1, 1)
@@ -97,16 +99,16 @@ class SettingsViewModel(
         )
     }
 
-    val output: StateFlow<Output> = _output.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.WhileSubscribed(), Output())
+    val output: StateFlow<Output> = _output.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Output())
 
     data class Output(
-        val title: StringDesc = "".desc(),
+        val title: UiText = "".toUiText(),
         val dateStepper: Stepper? = null,
         val batchSettingsSteppers: List<Stepper> = emptyList(),
         val notificationTimeStepper: Stepper? = null,
     ) {
         data class Stepper(
-            val label: StringDesc,
+            val label: UiText,
             val value: String,
             val onIncrement: () -> Unit,
             val onDecrement: () -> Unit,

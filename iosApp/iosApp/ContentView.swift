@@ -20,8 +20,8 @@ struct ComposeView: UIViewControllerRepresentable {
                     // Schedule notifications for each Batch
                     for notification in notifications {
                         let content = UNMutableNotificationContent()
-                        content.title = notification.title.localized()
-                        content.body = notification.message.localized()
+                        content.title = notification.title
+                        content.body = notification.message
                         content.sound = UNNotificationSound.default
 
                         if let triggerDate = localDateToDate(localDateTime: notification.time) {

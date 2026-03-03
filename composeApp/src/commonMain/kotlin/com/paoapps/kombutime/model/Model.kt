@@ -2,7 +2,6 @@
 
 package com.paoapps.kombutime.model
 
-import com.paoapps.kombutime.MR
 import com.paoapps.kombutime.Notification
 import com.paoapps.kombutime.domain.Batch
 import com.paoapps.kombutime.domain.BatchSettings
@@ -10,10 +9,16 @@ import com.paoapps.kombutime.domain.BatchState
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
-import dev.icerock.moko.resources.desc.desc
-import dev.icerock.moko.resources.format
+import kombutime.composeapp.generated.resources.Res
+import kombutime.composeapp.generated.resources.notification_first_fermentation_message
+import kombutime.composeapp.generated.resources.notification_first_fermentation_title
+import kombutime.composeapp.generated.resources.notification_second_fermentation_message
+import kombutime.composeapp.generated.resources.notification_second_fermentation_title
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlin.time.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalTime
@@ -24,12 +29,14 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.getString
 import org.koin.core.component.KoinComponent
 import kotlin.time.ExperimentalTime
 
 class Model: KoinComponent {
 
     private val jsonParser = Json
+    private val scope = CoroutineScope(Dispatchers.Main)
 
     private val storage: Settings = Settings()
 
@@ -73,20 +80,23 @@ class Model: KoinComponent {
 
         storage["notificationTime"] = _notificationTime.value.toSecondOfDay()
 
-        scheduleNotifications(batches.map { batch ->
-            Notification(
-                id = batch.settings.name.hashCode() + batch.state.hashCode(),
-                title = when (batch.state) {
-                    BatchState.FirstFermentation -> MR.strings.notification_first_fermentation_title.desc()
-                    is BatchState.SecondFermentation -> MR.strings.notification_second_fermentation_title.desc()
-                },
-                message = when (batch.state) {
-                    is BatchState.FirstFermentation -> MR.strings.notification_first_fermentation_message.format(batch.settings.name)
-                    is BatchState.SecondFermentation -> MR.strings.notification_second_fermentation_message.format(batch.settings.name)
-                },
-                time = batch.endDate.atTime(_notificationTime.value).toInstant(TimeZone.currentSystemDefault()).toLocalDateTime(TimeZone.currentSystemDefault())
-            )
-        })
+        scope.launch {
+            val notifications = batches.map { batch ->
+                Notification(
+                    id = batch.settings.name.hashCode() + batch.state.hashCode(),
+                    title = when (batch.state) {
+                        BatchState.FirstFermentation -> getString(Res.string.notification_first_fermentation_title)
+                        is BatchState.SecondFermentation -> getString(Res.string.notification_second_fermentation_title)
+                    },
+                    message = when (batch.state) {
+                        is BatchState.FirstFermentation -> getString(Res.string.notification_first_fermentation_message, batch.settings.name)
+                        is BatchState.SecondFermentation -> getString(Res.string.notification_second_fermentation_message, batch.settings.name)
+                    },
+                    time = batch.endDate.atTime(_notificationTime.value).toInstant(TimeZone.currentSystemDefault()).toLocalDateTime(TimeZone.currentSystemDefault())
+                )
+            }
+            scheduleNotifications(notifications)
+        }
     }
 
     fun completeFirstFermentation(index: Int, flavor: String = "") {

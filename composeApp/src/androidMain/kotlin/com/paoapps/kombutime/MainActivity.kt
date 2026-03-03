@@ -48,8 +48,8 @@ class MainActivity : ComponentActivity() {
             val triggerTime = localDateTimeToCalendar(notification.time).timeInMillis
 
             val intent = Intent(context, NotificationReceiver::class.java).apply {
-                putExtra("notificationTitle", notification.title.toString(context))
-                putExtra("notificationMessage", notification.message.toString(context))
+                putExtra("notificationTitle", notification.title)
+                putExtra("notificationMessage", notification.message)
             }
 
             val pendingIntent = PendingIntent.getBroadcast(
@@ -72,8 +72,8 @@ class MainActivity : ComponentActivity() {
     private fun localDateTimeToCalendar(localDateTime: LocalDateTime): Calendar {
         return Calendar.getInstance().apply {
             set(Calendar.YEAR, localDateTime.year)
-            set(Calendar.MONTH, localDateTime.monthNumber - 1)
-            set(Calendar.DAY_OF_MONTH, localDateTime.dayOfMonth)
+            set(Calendar.MONTH, localDateTime.month.ordinal)
+            set(Calendar.DAY_OF_MONTH, localDateTime.day)
             set(Calendar.HOUR_OF_DAY, localDateTime.hour)
             set(Calendar.MINUTE, localDateTime.minute)
             set(Calendar.SECOND, 0)
