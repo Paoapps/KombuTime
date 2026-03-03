@@ -11,11 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,11 +26,13 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.paoapps.kombutime.MR
+import com.paoapps.kombutime.utils.resolve
 import com.paoapps.kombutime.viewmodel.BatchesViewModel
-import dev.icerock.moko.resources.compose.localized
-import dev.icerock.moko.resources.desc.desc
+import kombutime.composeapp.generated.resources.Res
+import kombutime.composeapp.generated.resources.complete
+import kombutime.composeapp.generated.resources.settings
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun BatchesView(
@@ -50,7 +52,7 @@ fun BatchesView(
 
         output.batches.forEachIndexed { index, batch ->
             if (index > 0) {
-                Divider()
+                HorizontalDivider()
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -72,12 +74,12 @@ fun BatchesView(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = row.label.localized(),
-                        style = MaterialTheme.typography.body2
+                        text = row.label.resolve(),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
-                        text = row.value.localized(),
-                        style = MaterialTheme.typography.body2.copy(fontWeight = FontWeight.Bold)
+                        text = row.value.resolve(),
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                     )
                 }
             }
@@ -89,12 +91,12 @@ fun BatchesView(
                     modifier = Modifier.fillMaxWidth().weight(1f),
                     onClick = { batch.completeAction() }
                 ) {
-                    Text(MR.strings.complete.desc().localized())
+                    Text(stringResource(Res.string.complete))
                 }
                 OutlinedButton(onClick = {
                     onOpenSettings(index)
                 }) {
-                    Text(MR.strings.settings.desc().localized())
+                    Text(stringResource(Res.string.settings))
                 }
             }
         }
@@ -124,12 +126,12 @@ fun ProgressBar(
                 ) {
                     Text(
                         text = "",
-                        style = MaterialTheme.typography.body2,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = properties.textColor
                     )
                     Text(
                         text = "",
-                        style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                         color = properties.textColor
                     )
                 }
@@ -141,13 +143,13 @@ fun ProgressBar(
                 .padding(horizontal = 8.dp, vertical = 4.dp)
         ) {
             Text(
-                text = properties.header.localized(),
-                style = MaterialTheme.typography.body2,
+                text = properties.header.resolve(),
+                style = MaterialTheme.typography.bodyMedium,
                 color = properties.textColor
             )
             Text(
-                text = properties.body.localized(),
-                style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold),
+                text = properties.body.resolve(),
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                 color = properties.textColor
             )
         }

@@ -4,23 +4,25 @@ package com.paoapps.kombutime.viewmodel
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import com.paoapps.kombutime.MR
+import androidx.lifecycle.viewModelScope
 import com.paoapps.kombutime.domain.Batch
 import com.paoapps.kombutime.domain.BatchState
 import com.paoapps.kombutime.model.Model
 import com.paoapps.kombutime.ui.theme.FIRST_FERMENTATION_COLOR
 import com.paoapps.kombutime.ui.theme.SECOND_FERMENTATION_COLOR
 import com.paoapps.kombutime.utils.LocalDateFormat
+import com.paoapps.kombutime.utils.UiText
 import com.paoapps.kombutime.utils.formatDate
-import dev.icerock.moko.resources.desc.PluralFormatted
-import dev.icerock.moko.resources.desc.StringDesc
-import dev.icerock.moko.resources.desc.desc
+import com.paoapps.kombutime.utils.toUiText
 import kombutime.composeapp.generated.resources.Res
 import kombutime.composeapp.generated.resources.bottle
+import kombutime.composeapp.generated.resources.end_date
+import kombutime.composeapp.generated.resources.first_fermentation
 import kombutime.composeapp.generated.resources.jar
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
+import kombutime.composeapp.generated.resources.overdue_days
+import kombutime.composeapp.generated.resources.remaining_days
+import kombutime.composeapp.generated.resources.second_fermentation
+import kombutime.composeapp.generated.resources.start_date
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +37,8 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.PluralStringResource
+import org.jetbrains.compose.resources.StringResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.ExperimentalTime
@@ -70,9 +74,9 @@ class BatchesViewModel: ViewModel(), KoinComponent {
                 val endDate = startDate.plus(fermentationDays, DateTimeUnit.DAY)
 
                 val body = if (remainingDays < 0) {
-                    StringDesc.PluralFormatted(MR.plurals.overdue_days, -remainingDays, -remainingDays)
+                    Res.plurals.overdue_days.toUiText(-remainingDays, -remainingDays)
                 } else {
-                    StringDesc.PluralFormatted(MR.plurals.remaining_days, remainingDays, remainingDays)
+                    Res.plurals.remaining_days.toUiText(remainingDays, remainingDays)
                 }
                 val textColor = if (remainingDays < 0) {
                     Color.Red
@@ -96,8 +100,8 @@ class BatchesViewModel: ViewModel(), KoinComponent {
                     progressBar = Output.ProgressBar(
                         progress = progress.toFloat(),
                         header = when(batch.state) {
-                            BatchState.FirstFermentation -> MR.strings.first_fermentation.desc()
-                            is BatchState.SecondFermentation -> MR.strings.second_fermentation.desc()
+                            BatchState.FirstFermentation -> Res.string.first_fermentation.toUiText()
+                            is BatchState.SecondFermentation -> Res.string.second_fermentation.toUiText()
                         },
                         body = body,
                         backgroundColor = color.copy(alpha = 0.5f),
@@ -106,12 +110,12 @@ class BatchesViewModel: ViewModel(), KoinComponent {
                     ),
                     valueRows = listOf(
                         Output.ValueRow(
-                            label = MR.strings.start_date.desc(),
-                            value = formatDate(startDate, LocalDateFormat.LONG).desc()
+                            label = Res.string.start_date.toUiText(),
+                            value = formatDate(startDate, LocalDateFormat.LONG).toUiText()
                         ),
                         Output.ValueRow(
-                            label = MR.strings.end_date.desc(),
-                            value = formatDate(endDate, LocalDateFormat.LONG).desc()
+                            label = Res.string.end_date.toUiText(),
+                            value = formatDate(endDate, LocalDateFormat.LONG).toUiText()
                         )
                     ),
                     completeAction = {
@@ -126,7 +130,7 @@ class BatchesViewModel: ViewModel(), KoinComponent {
         )
     }
 
-    val output: StateFlow<Output> = _output.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.WhileSubscribed(), Output(batches = emptyList()))
+    val output: StateFlow<Output> = _output.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Output(batches = emptyList()))
 
     data class Output(
         val batches: List<Batch>
@@ -162,16 +166,16 @@ class BatchesViewModel: ViewModel(), KoinComponent {
 
         data class ProgressBar(
             val progress: Float,
-            val header: StringDesc,
-            val body: StringDesc,
+            val header: UiText,
+            val body: UiText,
             val backgroundColor: Color,
             val progressColor: Color,
             val textColor: Color
         )
 
         data class ValueRow(
-            val label: StringDesc,
-            val value: StringDesc
+            val label: UiText,
+            val value: UiText
         )
     }
 }

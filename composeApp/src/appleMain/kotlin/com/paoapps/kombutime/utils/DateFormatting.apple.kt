@@ -3,13 +3,13 @@ package com.paoapps.kombutime.utils
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 import platform.Foundation.NSCalendar
+import platform.Foundation.NSCalendarUnitDay
+import platform.Foundation.NSCalendarUnitMonth
+import platform.Foundation.NSCalendarUnitYear
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSDateFormatterFullStyle
 import platform.Foundation.NSDateFormatterShortStyle
-import platform.Foundation.NSDayCalendarUnit
-import platform.Foundation.NSMonthCalendarUnit
-import platform.Foundation.NSYearCalendarUnit
 
 actual fun formatDate(
     date: LocalDate,
@@ -32,7 +32,7 @@ actual fun formatDate(
 actual fun formatTime(time: LocalTime): String {
     val calendar = NSCalendar.currentCalendar
     val components = calendar.components(
-        NSYearCalendarUnit or NSMonthCalendarUnit or NSDayCalendarUnit,
+        NSCalendarUnitYear or NSCalendarUnitMonth or NSCalendarUnitDay,
         NSDate()
     )
     components.setHour(time.hour.toLong())

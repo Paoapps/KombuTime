@@ -8,14 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,11 +33,16 @@ import com.paoapps.kombutime.ui.theme.AppTheme
 import com.paoapps.kombutime.ui.view.BatchesView
 import com.paoapps.kombutime.ui.view.SettingsView
 import com.paoapps.kombutime.viewmodel.AppViewModel
-import dev.icerock.moko.resources.compose.localized
-import dev.icerock.moko.resources.desc.ResourceStringDesc
-import dev.icerock.moko.resources.desc.StringDesc
-import dev.icerock.moko.resources.desc.desc
+import androidx.savedstate.read
+import kombutime.composeapp.generated.resources.Res
+import kombutime.composeapp.generated.resources.back_button
+import kombutime.composeapp.generated.resources.batches_add
+import kombutime.composeapp.generated.resources.batches_batch
+import kombutime.composeapp.generated.resources.batches_title
+import kombutime.composeapp.generated.resources.settings
 import kotlinx.datetime.LocalDateTime
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 import org.koin.dsl.module
@@ -45,11 +51,12 @@ val module = module {
     single { Model() }
 }
 
-enum class Screen(val title: ResourceStringDesc) {
-    Batches(title = MR.strings.batches_title.desc()),
-    Settings(title = MR.strings.settings.desc())
+enum class Screen(val titleRes: StringResource) {
+    Batches(titleRes = Res.string.batches_title),
+    Settings(titleRes = Res.string.settings)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
     currentScreen: Screen,
@@ -59,7 +66,7 @@ fun AppBar(
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(currentScreen.title.localized()) },
+        title = { Text(stringResource(currentScreen.titleRes)) },
         actions = actions,
         modifier = modifier,
         navigationIcon = {
@@ -67,7 +74,7 @@ fun AppBar(
                 IconButton(onClick = navigateUp) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = MR.strings.back_button.desc().localized()
+                        contentDescription = stringResource(Res.string.back_button)
                     )
                 }
             }
@@ -78,8 +85,8 @@ fun AppBar(
 data class Notification(
     val id: Int,
     val time: LocalDateTime,
-    val title: StringDesc,
-    val message: StringDesc
+    val title: String,
+    val message: String
 )
 
 @Composable
@@ -95,7 +102,7 @@ fun App(
     val route = backStackEntry?.destination?.route ?: Screen.Batches.name
     val currentScreen = Screen.entries.first { route.startsWith(it.name) }
 
-    val namePrefix = MR.strings.batches_batch.desc().localized()
+    val namePrefix = stringResource(Res.string.batches_batch)
 
     LaunchedEffect(Unit) {
         viewModel.setScheduleNotifications(scheduleNotifications)
@@ -118,7 +125,7 @@ fun App(
                         .windowInsetsPadding(WindowInsets.statusBars)
                 ) {
                     Scaffold(
-                        backgroundColor = Color.Transparent, // Keep scaffold transparent
+                        containerColor = Color.Transparent,
                         topBar = {
                             AppBar(
                                 currentScreen = currentScreen,
@@ -128,7 +135,7 @@ fun App(
                                     when(currentScreen) {
                                         Screen.Batches -> {
                                             Button(onClick = { viewModel.addBatch(namePrefix) }) {
-                                                Text(MR.strings.batches_add.desc().localized())
+                                                Text(stringResource(Res.string.batches_add))
                                             }
                                         }
                                         Screen.Settings -> {}
@@ -158,7 +165,7 @@ fun App(
                                 }
 
                                 composable(route = "${Screen.Settings.name}/{index}") {
-                                    val index = it.arguments?.getString("index")!!.toInt()
+                                val index = it.arguments?.read { getString("index") }?.toInt() ?: 0
                                     SettingsView(
                                         batchIndex = index,
                                         onNavigateUp = { navController.navigateUp() }

@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,11 +22,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.paoapps.kombutime.MR
 import com.paoapps.kombutime.ui.theme.DANGER_COLOR
+import com.paoapps.kombutime.utils.resolve
 import com.paoapps.kombutime.viewmodel.SettingsViewModel
-import dev.icerock.moko.resources.compose.localized
-import dev.icerock.moko.resources.desc.desc
+import kombutime.composeapp.generated.resources.Res
+import kombutime.composeapp.generated.resources.batch_settings
+import kombutime.composeapp.generated.resources.delete_batch
+import kombutime.composeapp.generated.resources.notification_settings
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SettingsView(
@@ -49,30 +52,30 @@ fun SettingsView(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = output.title.localized(),
-                style = MaterialTheme.typography.h5,
+                text = output.title.resolve(),
+                style = MaterialTheme.typography.headlineSmall,
             )
 
             output.dateStepper?.let { stepper ->
                 Stepper(stepper)
             }
 
-            Divider()
+            HorizontalDivider()
 
             Text(
-                text = MR.strings.batch_settings.desc().localized(),
-                style = MaterialTheme.typography.h6,
+                text = stringResource(Res.string.batch_settings),
+                style = MaterialTheme.typography.titleLarge,
             )
 
             output.batchSettingsSteppers.forEach { stepper ->
                 Stepper(stepper)
             }
 
-            Divider()
+            HorizontalDivider()
 
             Text(
-                text = MR.strings.notification_settings.desc().localized(),
-                style = MaterialTheme.typography.h6,
+                text = stringResource(Res.string.notification_settings),
+                style = MaterialTheme.typography.titleLarge,
             )
 
             output.notificationTimeStepper?.let { stepper ->
@@ -87,12 +90,12 @@ fun SettingsView(
                 onNavigateUp()
             },
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = DANGER_COLOR,
+                containerColor = DANGER_COLOR,
                 contentColor = Color.White
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = MR.strings.delete_batch.desc().localized())
+            Text(text = stringResource(Res.string.delete_batch))
         }
     }
 }
@@ -107,8 +110,8 @@ fun Stepper(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = properties.label.localized(),
-            style = MaterialTheme.typography.body1,
+            text = properties.label.resolve(),
+            style = MaterialTheme.typography.bodyLarge,
         )
 
         Row(
@@ -121,7 +124,7 @@ fun Stepper(
 
             Text(
                 text = properties.value,
-                style = MaterialTheme.typography.body1.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             )
 
             Button(onClick = { properties.onIncrement() }) {
