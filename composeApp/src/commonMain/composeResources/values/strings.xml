@@ -21,6 +21,24 @@
     <string name="notification_second_fermentation_title">Second Fermentation Complete!</string>
     <string name="notification_first_fermentation_message">%1$s is ready for bottling. Start the second fermentation to continue the process.</string>
     <string name="notification_second_fermentation_message">%1$s is fully fermented and ready to enjoy. Your kombucha is now ready!</string>
+    <string name="flavor_dialog_title">Add Flavor</string>
+    <string name="flavor_dialog_message">What flavor are you adding for the second fermentation?</string>
+    <string name="flavor_dialog_placeholder">e.g., Blueberry, Ginger Lemon</string>
+    <string name="flavor_dialog_cancel">Cancel</string>
+    <string name="flavor_dialog_confirm">Bottle</string>
+    <string name="flavor_dialog_custom">Custom</string>
+    <string name="flavor_dialog_no_flavor">No flavor</string>
+    <string name="app_settings">App Settings</string>
+    <string name="app_settings_title">App Settings</string>
+    <string name="flavor_prompt_setting">Ask for Flavor</string>
+    <string name="flavor_prompt_description">Show flavor dialog when bottling</string>
+    <string name="saved_flavors">Saved Flavors</string>
+    <string name="add_flavor">Add Flavor</string>
+    <string name="edit_flavor">Edit Flavor</string>
+    <string name="delete_flavor">Delete</string>
+    <string name="flavor_name">Flavor Name</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 
     <plurals name="remaining_days">
         <item quantity="one">1 day left</item>

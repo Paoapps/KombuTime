@@ -241,8 +241,8 @@ fun brewCard(brew: BrewViewModel.Output.Brew) { } // Wrong naming
 class BrewsViewModel : ViewModel() {
     private val _output = combine(sources...) { ... }
     val output: StateFlow<Output> = _output.stateIn(
-        viewModelScope, 
-        SharingStarted.WhileSubscribed(5000), 
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
         Output()
     )
 }

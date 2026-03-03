@@ -1,5 +1,6 @@
 package com.paoapps.kombutime.ui.view
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -7,18 +8,35 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,16 +48,29 @@ import com.paoapps.kombutime.utils.resolve
 import com.paoapps.kombutime.viewmodel.BrewsViewModel
 import kombutime.composeapp.generated.resources.Res
 import kombutime.composeapp.generated.resources.complete
+import kombutime.composeapp.generated.resources.flavor_dialog_cancel
+import kombutime.composeapp.generated.resources.flavor_dialog_confirm
+import kombutime.composeapp.generated.resources.flavor_dialog_custom
+import kombutime.composeapp.generated.resources.flavor_dialog_message
+import kombutime.composeapp.generated.resources.flavor_dialog_no_flavor
+import kombutime.composeapp.generated.resources.flavor_dialog_placeholder
+import kombutime.composeapp.generated.resources.flavor_dialog_title
 import kombutime.composeapp.generated.resources.settings
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrewsView(
     viewModel: BrewsViewModel = viewModel { BrewsViewModel() },
     onOpenSettings: (Int) -> Unit = {}
 ) {
     val output by viewModel.output.collectAsState()
+    val flavorDialogState by viewModel.flavorDialogState.collectAsState()
+    val savedFlavors by viewModel.savedFlavors.collectAsState()
 
     Column(
         Modifier
@@ -100,6 +131,117 @@ fun BrewsView(
                 }
             }
         }
+    }
+
+    // Flavor input dialog
+    flavorDialogState?.let { dialogState ->
+        val noFlavorOption = stringResource(Res.string.flavor_dialog_no_flavor)
+        val customOption = stringResource(Res.string.flavor_dialog_custom)
+        val placeholder = stringResource(Res.string.flavor_dialog_placeholder)
+        
+        var selectedFlavor by remember { mutableStateOf<String?>(noFlavorOption) }
+        var customFlavor by remember { mutableStateOf("") }
+        var expanded by remember { mutableStateOf(false) }
+        
+        val isCustom = selectedFlavor == customOption
+        val finalFlavor = when (selectedFlavor) {
+            noFlavorOption -> ""
+            customOption -> customFlavor
+            else -> selectedFlavor ?: ""
+        }
+
+        AlertDialog(
+            onDismissRequest = { viewModel.dismissFlavorDialog() },
+            title = { Text(stringResource(Res.string.flavor_dialog_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(stringResource(Res.string.flavor_dialog_message))
+                    
+                    // Exposed dropdown menu for saved flavors
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { expanded = it }
+                    ) {
+                        OutlinedTextField(
+                            value = selectedFlavor ?: noFlavorOption,
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+                            modifier = Modifier
+                                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                                .fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            // No flavor option
+                            DropdownMenuItem(
+                                text = { Text(noFlavorOption) },
+                                onClick = {
+                                    selectedFlavor = noFlavorOption
+                                    expanded = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                            )
+                            
+                            HorizontalDivider()
+                            
+                            // Custom option
+                            DropdownMenuItem(
+                                text = { Text(customOption) },
+                                onClick = {
+                                    selectedFlavor = customOption
+                                    expanded = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                            )
+                            
+                            HorizontalDivider()
+                            
+                            // Saved flavors
+                            savedFlavors.forEach { flavor ->
+                                DropdownMenuItem(
+                                    text = { Text(flavor) },
+                                    onClick = {
+                                        selectedFlavor = flavor
+                                        expanded = false
+                                    },
+                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                )
+                            }
+                        }
+                    }
+                    
+                    // Custom flavor input (shown only when "Custom" is selected)
+                    if (isCustom) {
+                        TextField(
+                            value = customFlavor,
+                            onValueChange = { customFlavor = it },
+                            placeholder = { Text(stringResource(Res.string.flavor_dialog_placeholder)) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.completeFirstFermentation(dialogState.brewIndex, finalFlavor)
+                    },
+                    enabled = !isCustom || customFlavor.isNotBlank()
+                ) {
+                    Text(stringResource(Res.string.flavor_dialog_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.dismissFlavorDialog() }) {
+                    Text(stringResource(Res.string.flavor_dialog_cancel))
+                }
+            }
+        )
     }
 }
 

@@ -24,6 +24,7 @@ import kombutime.composeapp.generated.resources.remaining_days
 import kombutime.composeapp.generated.resources.second_fermentation
 import kombutime.composeapp.generated.resources.start_date
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -46,6 +47,21 @@ import kotlin.time.ExperimentalTime
 class BrewsViewModel: ViewModel(), KoinComponent {
 
     private val model: Model by inject()
+
+    private val _flavorDialogState = MutableStateFlow<FlavorDialogState?>(null)
+    val flavorDialogState: StateFlow<FlavorDialogState?> = _flavorDialogState
+
+    val savedFlavors: StateFlow<List<String>> = model.savedFlavors.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
+
+    private val promptForFlavor: StateFlow<Boolean> = model.promptForFlavor.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        true
+    )
 
     private val nextDayTrigger = flow<Unit> {
         emit(Unit)
@@ -95,7 +111,13 @@ class BrewsViewModel: ViewModel(), KoinComponent {
                     },
                     title = when(val state = brew.state) {
                         BrewState.FirstFermentation -> brew.settings.name
-                        is BrewState.SecondFermentation -> brew.settings.name // TODO: flavor "${brew.settings.name} - ${state.flavor}"
+                        is BrewState.SecondFermentation -> {
+                            if (state.flavor.isNotBlank()) {
+                                "${brew.settings.name} - ${state.flavor}"
+                            } else {
+                                brew.settings.name
+                            }
+                        }
                     },
                     progressBar = Output.ProgressBar(
                         progress = progress.toFloat(),
@@ -120,7 +142,16 @@ class BrewsViewModel: ViewModel(), KoinComponent {
                     ),
                     completeAction = {
                         when(brew.state) {
-                            BrewState.FirstFermentation -> model.completeFirstFermentation(brews.indexOf(brew), "Blue Berry")
+                            BrewState.FirstFermentation -> {
+                                val brewIndex = brews.indexOf(brew)
+                                // Check if we should show flavor dialog
+                                if (promptForFlavor.value) {
+                                    _flavorDialogState.value = FlavorDialogState(brewIndex = brewIndex)
+                                } else {
+                                    // Complete without asking for flavor
+                                    model.completeFirstFermentation(brewIndex, "")
+                                }
+                            }
                             is BrewState.SecondFermentation -> model.complete(brews.indexOf(brew))
                         }
 
@@ -131,6 +162,23 @@ class BrewsViewModel: ViewModel(), KoinComponent {
     }
 
     val output: StateFlow<Output> = _output.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Output(brews = emptyList()))
+
+    fun completeFirstFermentation(brewIndex: Int, flavor: String) {
+        model.completeFirstFermentation(brewIndex, flavor)
+        // Add to saved flavors if not empty
+        if (flavor.isNotBlank()) {
+            model.addSavedFlavor(flavor)
+        }
+        _flavorDialogState.value = null
+    }
+
+    fun dismissFlavorDialog() {
+        _flavorDialogState.value = null
+    }
+
+    data class FlavorDialogState(
+        val brewIndex: Int
+    )
 
     data class Output(
         val brews: List<Brew>

@@ -19,8 +19,26 @@
     <string name="notification_time">Meldingstijd</string>
     <string name="notification_first_fermentation_title">Eerste Fermentatie Voltooid!</string>
     <string name="notification_second_fermentation_title">Tweede Fermentatie Voltooid!</string>
-    <string name="notification_first_fermentation_message">%1$s is klaar om te bottelen. Start de tweede fermentatie om het proces voort te zetten.</string>
+    <string name="notification_first_fermentation_message">%1$s is klaar voor botteling. Begin de tweede fermentatie om het proces voort te zetten.</string>
     <string name="notification_second_fermentation_message">%1$s is volledig gefermenteerd en klaar om van te genieten. Je kombucha is nu klaar!</string>
+    <string name="flavor_dialog_title">Smaak Toevoegen</string>
+    <string name="flavor_dialog_message">Welke smaak voeg je toe voor de tweede fermentatie?</string>
+    <string name="flavor_dialog_placeholder">bijv. Bosbes, Gember Citroen</string>
+    <string name="flavor_dialog_cancel">Annuleren</string>
+    <string name="flavor_dialog_confirm">Bottelen</string>
+    <string name="flavor_dialog_custom">Aangepast</string>
+    <string name="flavor_dialog_no_flavor">Geen smaak</string>
+    <string name="app_settings">App Instellingen</string>
+    <string name="app_settings_title">App Instellingen</string>
+    <string name="flavor_prompt_setting">Vraag om Smaak</string>
+    <string name="flavor_prompt_description">Toon smaakdialoog bij bottelen</string>
+    <string name="saved_flavors">Opgeslagen Smaken</string>
+    <string name="add_flavor">Smaak Toevoegen</string>
+    <string name="edit_flavor">Smaak Bewerken</string>
+    <string name="delete_flavor">Verwijderen</string>
+    <string name="flavor_name">Smaaknaam</string>
+    <string name="cancel">Annuleren</string>
+    <string name="save">Opslaan</string>
 
     <plurals name="remaining_days">
         <item quantity="one">1 dag over</item>

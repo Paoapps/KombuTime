@@ -28,10 +28,23 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
 import org.koin.core.component.KoinComponent
 import kotlin.time.ExperimentalTime
+
+// Default flavors to pre-populate
+val DEFAULT_FLAVORS = listOf(
+    "Blueberry",
+    "Ginger",
+    "Lemon",
+    "Strawberry",
+    "Mango",
+    "Raspberry",
+    "Peach",
+    "Pineapple"
+)
 
 class Model: KoinComponent {
 
@@ -53,6 +66,19 @@ class Model: KoinComponent {
         LocalTime.fromSecondOfDay(it)
     })
     val notificationTime: Flow<LocalTime> = _notificationTime
+
+    private val _savedFlavors = MutableStateFlow(storage["savedFlavors", "[]"].let {
+        try {
+            val loaded = jsonParser.decodeFromString(ListSerializer(String.serializer()), it)
+            if (loaded.isEmpty()) DEFAULT_FLAVORS.sorted() else loaded
+        } catch (e: Exception) {
+            DEFAULT_FLAVORS.sorted()
+        }
+    })
+    val savedFlavors: Flow<List<String>> = _savedFlavors
+
+    private val _promptForFlavor = MutableStateFlow(storage["promptForFlavor", true])
+    val promptForFlavor: Flow<Boolean> = _promptForFlavor
 
     var scheduleNotifications: (List<Notification>) -> Unit = {}
 
@@ -227,4 +253,35 @@ class Model: KoinComponent {
 
         save()
     }
+
+    fun addSavedFlavor(flavor: String) {
+        if (flavor.isNotBlank() && !_savedFlavors.value.contains(flavor)) {
+            _savedFlavors.value = (_savedFlavors.value + flavor).sorted()
+            saveFlavors()
+        }
+    }
+
+    fun updateSavedFlavor(oldFlavor: String, newFlavor: String) {
+        if (newFlavor.isNotBlank()) {
+            _savedFlavors.value = _savedFlavors.value.map {
+                if (it == oldFlavor) newFlavor else it
+            }.sorted()
+            saveFlavors()
+        }
+    }
+
+    fun deleteSavedFlavor(flavor: String) {
+        _savedFlavors.value = _savedFlavors.value.filter { it != flavor }
+        saveFlavors()
+    }
+
+    fun setPromptForFlavor(enabled: Boolean) {
+        _promptForFlavor.value = enabled
+        storage["promptForFlavor"] = enabled
+    }
+
+    private fun saveFlavors() {
+        storage["savedFlavors"] = jsonParser.encodeToString(ListSerializer(String.serializer()), _savedFlavors.value)
+    }
 }
+

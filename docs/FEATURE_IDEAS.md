@@ -16,8 +16,8 @@ This document contains curated feature suggestions that align with KombuTime's m
 ## ⭐ High Priority Features
 
 ### 1. Flavor Input for Second Fermentation
-**Status**: Partially implemented (data model exists, UI missing)  
-**Effort**: Low  
+**Status**: Partially implemented (data model exists, UI missing)
+**Effort**: Low
 **Impact**: Medium
 
 **Description:**
@@ -41,8 +41,8 @@ is BrewState.SecondFermentation -> "${brew.settings.name} - ${state.flavor}"
 ---
 
 ### 2. Swipe Gestures
-**Status**: Not implemented  
-**Effort**: Medium  
+**Status**: Not implemented
+**Effort**: Medium
 **Impact**: High (UX improvement)
 
 **Description:**
@@ -65,8 +65,8 @@ is BrewState.SecondFermentation -> "${brew.settings.name} - ${state.flavor}"
 ---
 
 ### 3. Home Screen Widget
-**Status**: Not implemented  
-**Effort**: High  
+**Status**: Not implemented
+**Effort**: High
 **Impact**: High
 
 **Description:**
@@ -90,8 +90,8 @@ is BrewState.SecondFermentation -> "${brew.settings.name} - ${state.flavor}"
 ## 🎨 Polish & UX Improvements
 
 ### 4. Visual State Indicators
-**Status**: Not implemented  
-**Effort**: Low  
+**Status**: Not implemented
+**Effort**: Low
 **Impact**: Medium
 
 **Description:**
@@ -108,8 +108,8 @@ is BrewState.SecondFermentation -> "${brew.settings.name} - ${state.flavor}"
 ---
 
 ### 5. Empty State Design
-**Status**: Not implemented  
-**Effort**: Low  
+**Status**: Not implemented
+**Effort**: Low
 **Impact**: Low
 
 **Description:**
@@ -132,8 +132,8 @@ Tap "Add" to start your first kombucha!
 ---
 
 ### 6. Long Press for Settings
-**Status**: Not implemented  
-**Effort**: Low  
+**Status**: Not implemented
+**Effort**: Low
 **Impact**: Medium
 
 **Description:**
@@ -150,8 +150,8 @@ Tap "Add" to start your first kombucha!
 ## 🔔 Notification Enhancements
 
 ### 7. Notification Quick Actions
-**Status**: Not implemented  
-**Effort**: Medium  
+**Status**: Not implemented
+**Effort**: Medium
 **Impact**: High
 
 **Description:**
@@ -174,8 +174,8 @@ Tap "Add" to start your first kombucha!
 ---
 
 ### 8. Pre-Notification Reminders
-**Status**: Not implemented  
-**Effort**: Low  
+**Status**: Not implemented
+**Effort**: Low
 **Impact**: Low-Medium
 
 **Description:**
@@ -192,8 +192,8 @@ Tap "Add" to start your first kombucha!
 ---
 
 ### 9. Smart Notification Time
-**Status**: Not implemented  
-**Effort**: Low  
+**Status**: Not implemented
+**Effort**: Low
 **Impact**: Low
 
 **Description:**
@@ -211,8 +211,8 @@ Tap "Add" to start your first kombucha!
 ## 📊 Minimal Data Features
 
 ### 10. Simple Completion Counter
-**Status**: Not implemented  
-**Effort**: Low  
+**Status**: Not implemented
+**Effort**: Low
 **Impact**: Low
 
 **Description:**
@@ -230,8 +230,8 @@ Tap "Add" to start your first kombucha!
 ---
 
 ### 11. Last Brew Date
-**Status**: Not implemented  
-**Effort**: Low  
+**Status**: Not implemented
+**Effort**: Low
 **Impact**: Low
 
 **Description:**
@@ -248,8 +248,8 @@ Tap "Add" to start your first kombucha!
 ---
 
 ### 12. Active Brew Summary
-**Status**: Not implemented  
-**Effort**: Low  
+**Status**: Not implemented
+**Effort**: Low
 **Impact**: Low
 
 **Description:**
@@ -266,8 +266,8 @@ Tap "Add" to start your first kombucha!
 ## 🔧 Technical Improvements
 
 ### 13. Backup & Restore
-**Status**: Not implemented  
-**Effort**: Medium  
+**Status**: Not implemented
+**Effort**: Medium
 **Impact**: Medium
 
 **Description:**
@@ -289,8 +289,8 @@ Tap "Add" to start your first kombucha!
 ---
 
 ### 14. iCloud/Google Drive Backup
-**Status**: Not implemented  
-**Effort**: High  
+**Status**: Not implemented
+**Effort**: High
 **Impact**: Low
 
 **Description:**
@@ -311,8 +311,8 @@ Tap "Add" to start your first kombucha!
 ---
 
 ### 15. Dark Mode Refinement
-**Status**: Partial (colors defined, needs testing)  
-**Effort**: Low  
+**Status**: Partial (colors defined, needs testing)
+**Effort**: Low
 **Impact**: Medium
 
 **Description:**
@@ -330,8 +330,8 @@ Tap "Add" to start your first kombucha!
 ## 💡 Optional Enhancements (Toggleable)
 
 ### 16. Brew Templates
-**Status**: Not implemented  
-**Effort**: Medium  
+**Status**: Not implemented
+**Effort**: Medium
 **Impact**: Low-Medium
 
 **Description:**
@@ -348,8 +348,8 @@ Tap "Add" to start your first kombucha!
 ---
 
 ### 17. Custom Emoji/Icons per Brew
-**Status**: Not implemented  
-**Effort**: Low  
+**Status**: Not implemented
+**Effort**: Low
 **Impact**: Low
 
 **Description:**
@@ -366,8 +366,8 @@ Tap "Add" to start your first kombucha!
 ---
 
 ### 18. Quiet Hours
-**Status**: Not implemented  
-**Effort**: Low  
+**Status**: Not implemented
+**Effort**: Low
 **Impact**: Low
 
 **Description:**

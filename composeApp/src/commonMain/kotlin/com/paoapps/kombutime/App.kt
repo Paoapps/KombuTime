@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,11 +31,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.paoapps.kombutime.model.Model
 import com.paoapps.kombutime.ui.theme.AppTheme
+import com.paoapps.kombutime.ui.view.AppSettingsView
 import com.paoapps.kombutime.ui.view.BrewsView
 import com.paoapps.kombutime.ui.view.SettingsView
 import com.paoapps.kombutime.viewmodel.AppViewModel
 import androidx.savedstate.read
 import kombutime.composeapp.generated.resources.Res
+import kombutime.composeapp.generated.resources.app_settings
+import kombutime.composeapp.generated.resources.app_settings_title
 import kombutime.composeapp.generated.resources.back_button
 import kombutime.composeapp.generated.resources.brews_add
 import kombutime.composeapp.generated.resources.brews_batch
@@ -53,7 +57,8 @@ val module = module {
 
 enum class Screen(val titleRes: StringResource) {
     Brews(titleRes = Res.string.brews_title),
-    Settings(titleRes = Res.string.settings)
+    Settings(titleRes = Res.string.settings),
+    AppSettings(titleRes = Res.string.app_settings_title)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -134,11 +139,18 @@ fun App(
                                 actions = {
                                     when(currentScreen) {
                                         Screen.Brews -> {
+                                            IconButton(onClick = { navController.navigate(Screen.AppSettings.name) }) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Settings,
+                                                    contentDescription = stringResource(Res.string.app_settings)
+                                                )
+                                            }
                                             Button(onClick = { viewModel.addBrew(namePrefix) }) {
                                                 Text(stringResource(Res.string.brews_add))
                                             }
                                         }
                                         Screen.Settings -> {}
+                                        Screen.AppSettings -> {}
                                     }
                                 }
                             )
@@ -168,6 +180,12 @@ fun App(
                                 val index = it.arguments?.read { getString("index") }?.toInt() ?: 0
                                     SettingsView(
                                         brewIndex = index,
+                                        onNavigateUp = { navController.navigateUp() }
+                                    )
+                                }
+
+                                composable(route = Screen.AppSettings.name) {
+                                    AppSettingsView(
                                         onNavigateUp = { navController.navigateUp() }
                                     )
                                 }
