@@ -3,6 +3,8 @@
 package com.paoapps.kombutime.model
 
 import com.paoapps.kombutime.Notification
+import com.paoapps.kombutime.SettingsFactory
+import com.paoapps.kombutime.WidgetUpdater
 import com.paoapps.kombutime.domain.Brew
 import com.paoapps.kombutime.domain.BrewSettings
 import com.paoapps.kombutime.domain.BrewState
@@ -51,7 +53,7 @@ class Model: KoinComponent {
     private val jsonParser = Json
     private val scope = CoroutineScope(Dispatchers.Main)
 
-    private val storage: Settings = Settings()
+    private val storage: Settings = SettingsFactory.createSettings()
 
     private val _brews = MutableStateFlow(storage["brews", "[]"].let {
         try {
@@ -122,6 +124,9 @@ class Model: KoinComponent {
                 )
             }
             scheduleNotifications(notifications)
+
+            // Update widgets when brews change
+            WidgetUpdater.updateWidgets()
         }
     }
 

@@ -138,11 +138,11 @@ fun BrewsView(
         val noFlavorOption = stringResource(Res.string.flavor_dialog_no_flavor)
         val customOption = stringResource(Res.string.flavor_dialog_custom)
         val placeholder = stringResource(Res.string.flavor_dialog_placeholder)
-        
+
         var selectedFlavor by remember { mutableStateOf<String?>(noFlavorOption) }
         var customFlavor by remember { mutableStateOf("") }
         var expanded by remember { mutableStateOf(false) }
-        
+
         val isCustom = selectedFlavor == customOption
         val finalFlavor = when (selectedFlavor) {
             noFlavorOption -> ""
@@ -156,7 +156,7 @@ fun BrewsView(
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(stringResource(Res.string.flavor_dialog_message))
-                    
+
                     // Exposed dropdown menu for saved flavors
                     ExposedDropdownMenuBox(
                         expanded = expanded,
@@ -185,9 +185,9 @@ fun BrewsView(
                                 },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                             )
-                            
+
                             HorizontalDivider()
-                            
+
                             // Custom option
                             DropdownMenuItem(
                                 text = { Text(customOption) },
@@ -197,9 +197,9 @@ fun BrewsView(
                                 },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                             )
-                            
+
                             HorizontalDivider()
-                            
+
                             // Saved flavors
                             savedFlavors.forEach { flavor ->
                                 DropdownMenuItem(
@@ -213,7 +213,7 @@ fun BrewsView(
                             }
                         }
                     }
-                    
+
                     // Custom flavor input (shown only when "Custom" is selected)
                     if (isCustom) {
                         TextField(

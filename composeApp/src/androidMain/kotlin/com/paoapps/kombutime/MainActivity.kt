@@ -20,6 +20,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Initialize widget updater with app context
+        WidgetUpdater.init(applicationContext)
+
         // Configure window for edge-to-edge display
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()

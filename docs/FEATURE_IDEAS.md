@@ -42,7 +42,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 ---
 
 ### 2. Home Screen Widget
-**Status**: Not implemented
+**Status**: ✅ **IMPLEMENTED** (March 2026)
 **Effort**: High
 **Impact**: High
 
@@ -55,7 +55,17 @@ This document contains curated feature suggestions that align with KombuTime's m
 **Variants:**
 - Small: Shows most urgent brew
 - Medium: Shows 2-3 brews
-- Large: Shows all brews
+- Large: Shows all brews (up to 4)
+
+**Implementation:**
+See `docs/WIDGET_SETUP.md` for full documentation.
+
+**Platform Details:**
+- **Android**: Jetpack Glance widgets with responsive sizing
+- **iOS**: WidgetKit with App Groups for data sharing
+- Updates automatically when brews change
+- Daily refresh at midnight
+- Empty state when no brews active
 
 **Why it fits:**
 - Perfect for "quick check" use case mentioned in README

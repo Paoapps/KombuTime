@@ -122,9 +122,76 @@ All flavor-related strings:
 
 ---
 
+### 5. Home Screen Widgets
+**Status**: ✅ Implemented (March 2026)
+
+**Description:**
+View active brews at a glance from your home screen without opening the app. Widgets display brew progress, days remaining, and fermentation status.
+
+**Capabilities:**
+
+**Widget Sizes:**
+- **Small**: Shows most urgent brew with basic info
+- **Medium**: Shows 2-3 brews with full details
+- **Large**: Shows up to 4 brews with all information
+
+**Display Information:**
+- Brew name and optional flavor
+- Fermentation stage (F1/F2) with visual icons
+- Progress bars (orange for F1, green for F2)
+- Days remaining/overdue with color coding:
+  - Red: Overdue
+  - Green: Ready today
+  - Black: In progress
+- Empty state when no brews active
+
+**Updates:**
+- Automatic update when brews change in app
+- Daily refresh at midnight
+- Platform-appropriate update intervals
+- Tap widget to open app
+
+**Platform-Specific:**
+
+**Android (Jetpack Glance):**
+- Responsive sizing (adapts to widget dimensions)
+- Material 3 design matching app
+- Updates via GlanceAppWidget
+- No configuration needed
+
+**iOS (WidgetKit):**
+- Small, Medium, Large variants
+- Matches iOS design guidelines
+- Timeline-based updates
+- App Groups for data sharing
+- Requires Xcode widget extension setup
+
+**Implementation:**
+- **Common**: `WidgetUpdater.kt` - Platform-agnostic update trigger
+- **Common**: `SettingsFactory.kt` - Shared storage configuration
+- **Android**: `widget/BrewWidget.kt` - Glance widget UI
+- **Android**: `widget/BrewWidgetDataProvider.kt` - Data access layer
+- **Android**: `widget/BrewWidgetUpdater.kt` - Update coordinator
+- **iOS**: `BrewWidget/BrewWidget.swift` - WidgetKit implementation
+- **iOS**: `BrewWidget/BrewDataProvider.swift` - iOS data provider
+- **iOS**: App Groups for data sharing between app and widget
+
+**Setup:**
+- Android: Add widget from home screen long-press menu
+- iOS: Requires Xcode configuration (see `docs/WIDGET_SETUP.md`)
+
+**Design Philosophy:**
+- No new data, only displays existing brew information
+- Maintains app's minimalist aesthetic
+- Perfect for "at-a-glance" use case
+- No configuration or settings needed
+- Tap to open app for full interaction
+
+---
+
 ## UI/UX Features
 
-### 5. Material Design 3
+### 6. Material Design 3
 **Description:**
 Modern, polished UI using Material Design 3 guidelines.
 
@@ -184,7 +251,7 @@ Multi-language support with complete translations.
 
 ## Data & Persistence
 
-### 8. Local Storage
+### 9. Local Storage
 **Description:**
 All data stored locally on device, no cloud dependency.
 
@@ -194,16 +261,18 @@ All data stored locally on device, no cloud dependency.
 - Saved flavors list persistence
 - No internet connection required
 - No user accounts needed
+- **Widget data sharing** (iOS App Groups, Android SharedPreferences)
 
 **Implementation:**
 - Android: `SharedPreferences`
-- iOS: `UserDefaults`
+- iOS: `UserDefaults` with App Groups
 - Abstraction: `multiplatform-settings` library
 - JSON serialization for complex objects
+- `SettingsFactory.kt`: Platform-specific storage configuration
 
 ---
 
-### 9. State Management
+### 10. State Management
 **Description:**
 Reactive state management using Kotlin Flow.
 

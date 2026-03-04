@@ -3,9 +3,13 @@ import SwiftUI
 import ComposeApp
 
 struct ComposeView: UIViewControllerRepresentable {
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
 
     func makeUIViewController(context: Context) -> UIViewController {
-        return MainViewControllerKt.MainViewController(scheduleNotifications: { notifications in
+        let viewController = MainViewControllerKt.MainViewController(scheduleNotifications: { notifications in
             // Request notification permission
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
                 if let error = error {
@@ -39,9 +43,16 @@ struct ComposeView: UIViewControllerRepresentable {
                 }
             }
         })
+        
+        context.coordinator.viewController = viewController
+        return viewController
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+    
+    class Coordinator {
+        var viewController: UIViewController?
+    }
 
     func localDateToDate(localDateTime: Kotlinx_datetimeLocalDateTime) -> Date? {
         var dateComponents = DateComponents()
@@ -58,7 +69,11 @@ struct ComposeView: UIViewControllerRepresentable {
 struct ContentView: View {
     var body: some View {
         ComposeView()
-                .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
+            .ignoresSafeArea(.keyboard) // Compose has own keyboard handler
+            .onAppear {
+                // Ensure proper setup when view appears
+                UIApplication.shared.isIdleTimerDisabled = false
+            }
     }
 }
 
