@@ -48,6 +48,9 @@ import com.paoapps.kombutime.utils.resolve
 import com.paoapps.kombutime.viewmodel.BrewsViewModel
 import kombutime.composeapp.generated.resources.Res
 import kombutime.composeapp.generated.resources.complete
+import kombutime.composeapp.generated.resources.empty_state_emoji
+import kombutime.composeapp.generated.resources.empty_state_message
+import kombutime.composeapp.generated.resources.empty_state_title
 import kombutime.composeapp.generated.resources.flavor_dialog_cancel
 import kombutime.composeapp.generated.resources.flavor_dialog_confirm
 import kombutime.composeapp.generated.resources.flavor_dialog_custom
@@ -90,6 +93,31 @@ fun BrewsView(
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        if (output.brews.isEmpty()) {
+            // Empty state
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 48.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    text = stringResource(Res.string.empty_state_emoji),
+                    style = MaterialTheme.typography.displayLarge
+                )
+                Text(
+                    text = stringResource(Res.string.empty_state_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    text = stringResource(Res.string.empty_state_message),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
 
         output.brews.forEachIndexed { index, brew ->
             if (index > 0) {

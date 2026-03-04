@@ -58,6 +58,14 @@
     <string name="delete_tea_type">Delete</string>
     <string name="tea_type_name">Tea Type Name</string>
 
+    <!-- Empty state -->
+    <string name="empty_state_emoji">🫙</string>
+    <string name="empty_state_title">No active brews</string>
+    <string name="empty_state_message">Tap "Add" to start your first kombucha!</string>
+
+    <!-- Visual state indicators -->
+    <string name="brew_ready">✓ Ready!</string>
+
     <plurals name="remaining_days">
         <item quantity="one">1 day left</item>
         <item quantity="other">%1$d days left</item>

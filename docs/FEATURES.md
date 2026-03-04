@@ -191,7 +191,67 @@ View active brews at a glance from your home screen without opening the app. Wid
 
 ## UI/UX Features
 
-### 6. Material Design 3
+### 6. Visual State Indicators
+**Status**: ✅ Implemented (March 2026)
+
+**Description:**
+Clear visual feedback showing the current state of each brew with color-coded indicators.
+
+**Capabilities:**
+- **Ready State** (0 days remaining):
+  - Displays "✓ Ready!" message
+  - Green text color (#2E7D32)
+  - Indicates brew is ready for next step
+- **Overdue State** (< 0 days):
+  - Shows "X days overdue" message
+  - Red text color
+  - Alerts user to delayed fermentation
+- **In Progress State** (> 0 days):
+  - Shows "X days left" message
+  - Black text color
+  - Normal brewing progress
+
+**Implementation:**
+- `viewmodel/BrewsViewModel.kt`: Logic for determining state and colors
+- `composeResources/values/strings.xml`: "brew_ready" string resource
+- Consistent across main app and widgets
+
+**Why it fits:**
+- Improves visual communication without complexity
+- Makes it obvious when action is needed
+- Delightful user experience
+
+---
+
+### 7. Empty State Design
+**Status**: ✅ Implemented (March 2026)
+
+**Description:**
+Friendly, welcoming message when the brew list is empty, encouraging users to start their first brew.
+
+**Capabilities:**
+- Large jar emoji (🫙) for visual appeal
+- Clear "No active brews" heading
+- Helpful call-to-action: "Tap 'Add' to start your first kombucha!"
+- Centered layout with proper spacing
+- Multilingual support (English, Dutch, German)
+
+**Implementation:**
+- `ui/view/BrewsView.kt`: Empty state UI component
+- `composeResources/values/strings.xml`: Localized strings
+  - `empty_state_emoji`: 🫙
+  - `empty_state_title`: "No active brews"
+  - `empty_state_message`: "Tap 'Add' to start your first kombucha!"
+
+**Why it fits:**
+- Better onboarding for new users
+- Reduces confusion on first launch
+- Maintains minimalist aesthetic
+- Encourages engagement
+
+---
+
+### 8. Material Design 3
 **Description:**
 Modern, polished UI using Material Design 3 guidelines.
 
@@ -209,7 +269,7 @@ Modern, polished UI using Material Design 3 guidelines.
 
 ---
 
-### 6. Multiplatform Support
+### 9. Multiplatform Support
 **Description:**
 Shared codebase with platform-specific optimizations.
 
@@ -227,7 +287,7 @@ Shared codebase with platform-specific optimizations.
 
 ---
 
-### 7. Localization
+### 8. Localization
 **Description:**
 Multi-language support with complete translations.
 
@@ -292,7 +352,7 @@ Model (StateFlow) → ViewModel (Output) → View (Composable)
 
 ## Technical Features
 
-### 10. Dependency Injection
+### 11. Dependency Injection
 **Description:**
 Koin framework for clean dependency management.
 
@@ -309,7 +369,7 @@ Koin framework for clean dependency management.
 
 ---
 
-### 11. Type Safety
+### 12. Type Safety
 **Description:**
 Compile-time safety for resources and navigation.
 

@@ -58,6 +58,14 @@
     <string name="delete_tea_type">Löschen</string>
     <string name="tea_type_name">Teesorten Name</string>
 
+    <!-- Empty state -->
+    <string name="empty_state_emoji">🫙</string>
+    <string name="empty_state_title">Keine aktiven Ansätze</string>
+    <string name="empty_state_message">Tippen Sie auf "Hinzufügen", um Ihren ersten Kombucha zu starten!</string>
+
+    <!-- Visual state indicators -->
+    <string name="brew_ready">✓ Fertig!</string>
+
     <plurals name="remaining_days">
         <item quantity="one">1 Tag übrig</item>
         <item quantity="other">%1$d Tage übrig</item>

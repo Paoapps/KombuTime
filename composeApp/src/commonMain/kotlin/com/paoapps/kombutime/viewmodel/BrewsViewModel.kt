@@ -16,6 +16,7 @@ import com.paoapps.kombutime.utils.formatDate
 import com.paoapps.kombutime.utils.toUiText
 import kombutime.composeapp.generated.resources.Res
 import kombutime.composeapp.generated.resources.bottle
+import kombutime.composeapp.generated.resources.brew_ready
 import kombutime.composeapp.generated.resources.brews_batch
 import kombutime.composeapp.generated.resources.end_date
 import kombutime.composeapp.generated.resources.first_fermentation
@@ -109,13 +110,15 @@ class BrewsViewModel: ViewModel(), KoinComponent {
 
                 val body = if (remainingDays < 0) {
                     Res.plurals.overdue_days.toUiText(-remainingDays, -remainingDays)
+                } else if (remainingDays == 0) {
+                    Res.string.brew_ready.toUiText()
                 } else {
                     Res.plurals.remaining_days.toUiText(remainingDays, remainingDays)
                 }
-                val textColor = if (remainingDays < 0) {
-                    Color.Red
-                } else {
-                    Color.Black
+                val textColor = when {
+                    remainingDays < 0 -> Color.Red
+                    remainingDays == 0 -> Color(0xFF2E7D32) // Green
+                    else -> Color.Black
                 }
 
                 val color = when(brew.state) {

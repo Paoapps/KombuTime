@@ -77,25 +77,33 @@ See `docs/WIDGET_SETUP.md` for full documentation.
 ## 🎨 Polish & UX Improvements
 
 ### 4. Visual State Indicators
-**Status**: Not implemented
+**Status**: ✅ **IMPLEMENTED** (March 2026)
 **Effort**: Low
 **Impact**: Medium
 
 **Description:**
 - Show "✓ Ready!" when brew is complete (days remaining = 0)
-- Subtle pulsing animation for overdue brews
-- Success confetti animation when completing a brew (optional, toggleable)
-- Better empty state when no brews exist
+- Color-coded text for different states:
+  - Green for ready (0 days)
+  - Red for overdue (< 0 days)
+  - Black for in progress (> 0 days)
+
+**Implementation:**
+- Updated `BrewsViewModel.kt` to show "✓ Ready!" message when remainingDays == 0
+- Green text color for ready state
+- Consistent with widget implementation
 
 **Why it fits:**
 - Makes app more delightful to use
 - Clearer visual communication
 - Doesn't add complexity
 
+**Note:** Subtle pulsing animation and success confetti remain unimplemented (optional enhancements).
+
 ---
 
 ### 5. Empty State Design
-**Status**: Not implemented
+**Status**: ✅ **IMPLEMENTED** (March 2026)
 **Effort**: Low
 **Impact**: Low
 
@@ -115,22 +123,6 @@ Tap "Add" to start your first kombucha!
 **Why it fits:**
 - Better onboarding experience
 - Encourages first use
-
----
-
-### 6. Long Press for Settings
-**Status**: Not implemented
-**Effort**: Low
-**Impact**: Medium
-
-**Description:**
-- Long-press brew card → Opens settings directly
-- Faster than current tap-settings-icon flow
-- Discoverable via haptic feedback
-
-**Why it fits:**
-- Improves existing feature access
-- Common mobile pattern
 
 ---
 
@@ -391,27 +383,26 @@ These ideas violate the minimalist philosophy:
 
 ## 📋 Implementation Priority
 
-### Phase 1: Quick Wins (1-2 weeks)
-1. 🎨 Empty state design
-2. 🎨 Visual state indicators (Ready! checkmark)
-3. 📊 Simple completion counter
+### Phase 1: Quick Wins (1-2 weeks) ✅ COMPLETED
+1. ✅ Empty state design
+2. ✅ Visual state indicators (Ready! checkmark)
+3. 📊 Simple completion counter (not yet implemented)
 
 ### Phase 2: UX Improvements (2-4 weeks)
 4. ⭐ Swipe gestures
-5. 🎨 Long press for settings
-6. 🔔 Pre-notification reminders
-7. 🔧 Dark mode refinement
+5. 🔔 Pre-notification reminders
+6. 🔧 Dark mode refinement
 
-### Phase 3: Major Features (1-2 months)
-8. ⭐ Home screen widgets
-9. 🔔 Notification quick actions
-10. 🔧 Backup & restore
+### Phase 3: Major Features (1-2 months) ✅ COMPLETED
+7. ✅ Home screen widgets
+8. 🔔 Notification quick actions (not yet implemented)
+9. 🔧 Backup & restore (not yet implemented)
 
 ### Phase 4: Nice-to-Haves (Future)
-11. 💡 Brew templates
-12. 💡 Custom emoji per brew
-13. 💡 Quiet hours
-14. 📊 Last brew date indicator
+10. 💡 Brew templates
+11. 💡 Custom emoji per brew
+12. 💡 Quiet hours
+13. 📊 Last brew date indicator
 
 ---
 

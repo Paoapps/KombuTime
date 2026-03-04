@@ -58,6 +58,14 @@
     <string name="delete_tea_type">Verwijderen</string>
     <string name="tea_type_name">Theesoort Naam</string>
 
+    <!-- Empty state -->
+    <string name="empty_state_emoji">🫙</string>
+    <string name="empty_state_title">Geen actieve brouwsels</string>
+    <string name="empty_state_message">Tik op "Toevoegen" om je eerste kombucha te starten!</string>
+
+    <!-- Visual state indicators -->
+    <string name="brew_ready">✓ Klaar!</string>
+
     <plurals name="remaining_days">
         <item quantity="one">1 dag over</item>
         <item quantity="other">%1$d dagen over</item>
