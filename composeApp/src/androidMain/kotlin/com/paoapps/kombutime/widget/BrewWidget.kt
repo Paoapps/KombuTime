@@ -188,12 +188,18 @@ class BrewWidget : GlanceAppWidget() {
         val progress = max(0f, ((today - brew.startDate).days.toFloat() / fermentationDays).coerceIn(0f, 1f))
 
         val icon = when(brew.state) {
-            BrewState.FirstFermentation -> "🫙"
+            is BrewState.FirstFermentation -> "🫙"
             is BrewState.SecondFermentation -> "🍾"
         }
 
         val title = when(val state = brew.state) {
-            BrewState.FirstFermentation -> brew.settings.name
+            is BrewState.FirstFermentation -> {
+                if (state.teaType.isNotBlank()) {
+                    "${brew.settings.name} - ${state.teaType}"
+                } else {
+                    brew.settings.name
+                }
+            }
             is BrewState.SecondFermentation -> {
                 if (state.flavor.isNotBlank()) {
                     "${brew.settings.name} - ${state.flavor}"
@@ -204,7 +210,7 @@ class BrewWidget : GlanceAppWidget() {
         }
 
         val subtitle = when(brew.state) {
-            BrewState.FirstFermentation -> "First Fermentation"
+            is BrewState.FirstFermentation -> "First Fermentation"
             is BrewState.SecondFermentation -> "Second Fermentation"
         }
 
@@ -276,12 +282,12 @@ class BrewWidget : GlanceAppWidget() {
     @Composable
     private fun ProgressBar(progress: Float, state: BrewState) {
         val backgroundColor = when(state) {
-            BrewState.FirstFermentation -> androidx.glance.unit.ColorProvider(Color(0xFFFFE0B2))
+            is BrewState.FirstFermentation -> androidx.glance.unit.ColorProvider(Color(0xFFFFE0B2))
             is BrewState.SecondFermentation -> androidx.glance.unit.ColorProvider(Color(0xFFC5E1A5))
         }
 
         val progressColor = when(state) {
-            BrewState.FirstFermentation -> androidx.glance.unit.ColorProvider(Color(0xFFFF9800))
+            is BrewState.FirstFermentation -> androidx.glance.unit.ColorProvider(Color(0xFFFF9800))
             is BrewState.SecondFermentation -> androidx.glance.unit.ColorProvider(Color(0xFF8BC34A))
         }
 

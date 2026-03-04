@@ -51,13 +51,28 @@ class BrewsViewModel: ViewModel(), KoinComponent {
     private val _flavorDialogState = MutableStateFlow<FlavorDialogState?>(null)
     val flavorDialogState: StateFlow<FlavorDialogState?> = _flavorDialogState
 
+    private val _teaTypeDialogState = MutableStateFlow<TeaTypeDialogState?>(null)
+    val teaTypeDialogState: StateFlow<TeaTypeDialogState?> = _teaTypeDialogState
+
     val savedFlavors: StateFlow<List<String>> = model.savedFlavors.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
 
+    val savedTeaTypes: StateFlow<List<String>> = model.savedTeaTypes.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
+
     private val promptForFlavor: StateFlow<Boolean> = model.promptForFlavor.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        true
+    )
+
+    private val promptForTeaType: StateFlow<Boolean> = model.promptForTeaType.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
         true
@@ -82,7 +97,7 @@ class BrewsViewModel: ViewModel(), KoinComponent {
             brews = brews.map { brew ->
                 val startDate = brew.startDate
                 val fermentationDays = when(brew.state) {
-                    BrewState.FirstFermentation -> brew.settings.firstFermentationDays
+                    is BrewState.FirstFermentation -> brew.settings.firstFermentationDays
                     is BrewState.SecondFermentation -> brew.settings.secondFermentationDays
                 }
                 val progress = (today - startDate).days.toDouble() / fermentationDays
@@ -101,16 +116,22 @@ class BrewsViewModel: ViewModel(), KoinComponent {
                 }
 
                 val color = when(brew.state) {
-                    BrewState.FirstFermentation -> FIRST_FERMENTATION_COLOR
+                    is BrewState.FirstFermentation -> FIRST_FERMENTATION_COLOR
                     is BrewState.SecondFermentation -> SECOND_FERMENTATION_COLOR
                 }
                 Output.Brew(
                     icon = when(brew.state) {
-                        BrewState.FirstFermentation -> Res.drawable.jar
+                        is BrewState.FirstFermentation -> Res.drawable.jar
                         is BrewState.SecondFermentation -> Res.drawable.bottle
                     },
                     title = when(val state = brew.state) {
-                        BrewState.FirstFermentation -> brew.settings.name
+                        is BrewState.FirstFermentation -> {
+                            if (state.teaType.isNotBlank()) {
+                                "${brew.settings.name} - ${state.teaType}"
+                            } else {
+                                brew.settings.name
+                            }
+                        }
                         is BrewState.SecondFermentation -> {
                             if (state.flavor.isNotBlank()) {
                                 "${brew.settings.name} - ${state.flavor}"
@@ -122,7 +143,7 @@ class BrewsViewModel: ViewModel(), KoinComponent {
                     progressBar = Output.ProgressBar(
                         progress = progress.toFloat(),
                         header = when(brew.state) {
-                            BrewState.FirstFermentation -> Res.string.first_fermentation.toUiText()
+                            is BrewState.FirstFermentation -> Res.string.first_fermentation.toUiText()
                             is BrewState.SecondFermentation -> Res.string.second_fermentation.toUiText()
                         },
                         body = body,
@@ -142,7 +163,7 @@ class BrewsViewModel: ViewModel(), KoinComponent {
                     ),
                     completeAction = {
                         when(brew.state) {
-                            BrewState.FirstFermentation -> {
+                            is BrewState.FirstFermentation -> {
                                 val brewIndex = brews.indexOf(brew)
                                 // Check if we should show flavor dialog
                                 if (promptForFlavor.value) {
@@ -176,8 +197,37 @@ class BrewsViewModel: ViewModel(), KoinComponent {
         _flavorDialogState.value = null
     }
 
+    fun showTeaTypeDialog(namePrefix: String) {
+        _teaTypeDialogState.value = TeaTypeDialogState(namePrefix = namePrefix)
+    }
+
+    fun addBrewWithTeaType(namePrefix: String, teaType: String) {
+        model.addBrew(namePrefix, teaType)
+        // Add to saved tea types if not empty
+        if (teaType.isNotBlank()) {
+            model.addSavedTeaType(teaType)
+        }
+        _teaTypeDialogState.value = null
+    }
+
+    fun dismissTeaTypeDialog() {
+        _teaTypeDialogState.value = null
+    }
+
+    fun checkIfShouldPromptForTeaType(namePrefix: String) {
+        if (promptForTeaType.value) {
+            showTeaTypeDialog(namePrefix)
+        } else {
+            model.addBrew(namePrefix, "")
+        }
+    }
+
     data class FlavorDialogState(
         val brewIndex: Int
+    )
+
+    data class TeaTypeDialogState(
+        val namePrefix: String
     )
 
     data class Output(

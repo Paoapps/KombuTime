@@ -88,6 +88,7 @@ struct BrewData: Identifiable {
     let id = UUID()
     let name: String
     let flavor: String
+    let teaType: String
     let isFirstFermentation: Bool
     let startDate: Date
     let fermentationDays: Int
@@ -223,10 +224,18 @@ struct BrewRow: View {
     }
 
     private func brewTitle(for brew: BrewData) -> String {
-        if brew.flavor.isEmpty || brew.isFirstFermentation {
-            return brew.name
+        if brew.isFirstFermentation {
+            if brew.teaType.isEmpty {
+                return brew.name
+            } else {
+                return "\(brew.name) - \(brew.teaType)"
+            }
         } else {
-            return "\(brew.name) - \(brew.flavor)"
+            if brew.flavor.isEmpty {
+                return brew.name
+            } else {
+                return "\(brew.name) - \(brew.flavor)"
+            }
         }
     }
 }
@@ -289,8 +298,8 @@ struct BrewWidget: Widget {
 struct BrewWidget_Previews: PreviewProvider {
     static var previews: some View {
         let sampleBrews = [
-            BrewData(name: "Batch 1", flavor: "Ginger", isFirstFermentation: false, startDate: Date(), fermentationDays: 3, daysRemaining: 2, progress: 0.33),
-            BrewData(name: "Batch 2", flavor: "", isFirstFermentation: true, startDate: Date(), fermentationDays: 12, daysRemaining: 8, progress: 0.33)
+            BrewData(name: "Batch 1", flavor: "Ginger", teaType: "", isFirstFermentation: false, startDate: Date(), fermentationDays: 3, daysRemaining: 2, progress: 0.33),
+            BrewData(name: "Batch 2", flavor: "", teaType: "Green Tea", isFirstFermentation: true, startDate: Date(), fermentationDays: 12, daysRemaining: 8, progress: 0.33)
         ]
 
         BrewWidgetEntryView(entry: BrewEntry(date: Date(), brews: sampleBrews))

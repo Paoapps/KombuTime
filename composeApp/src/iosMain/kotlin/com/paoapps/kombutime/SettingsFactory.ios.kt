@@ -46,7 +46,7 @@ actual object SettingsFactory {
         if (alreadyMigrated && !hasBrewsInAppGroup) {
             println("Migration flag set but brews data missing - re-running migration")
         }
-        
+
         if (alreadyMigrated && needsFormatConversion) {
             println("Migration flag set but brews data needs format conversion - re-running migration")
         }

@@ -33,8 +33,11 @@ import com.paoapps.kombutime.model.Model
 import com.paoapps.kombutime.ui.theme.AppTheme
 import com.paoapps.kombutime.ui.view.AppSettingsView
 import com.paoapps.kombutime.ui.view.BrewsView
+import com.paoapps.kombutime.ui.view.FlavorManagementView
 import com.paoapps.kombutime.ui.view.SettingsView
+import com.paoapps.kombutime.ui.view.TeaTypeManagementView
 import com.paoapps.kombutime.viewmodel.AppViewModel
+import com.paoapps.kombutime.viewmodel.BrewsViewModel
 import androidx.savedstate.read
 import kombutime.composeapp.generated.resources.Res
 import kombutime.composeapp.generated.resources.app_settings
@@ -43,6 +46,8 @@ import kombutime.composeapp.generated.resources.back_button
 import kombutime.composeapp.generated.resources.brews_add
 import kombutime.composeapp.generated.resources.brews_batch
 import kombutime.composeapp.generated.resources.brews_title
+import kombutime.composeapp.generated.resources.manage_flavors
+import kombutime.composeapp.generated.resources.manage_tea_types
 import kombutime.composeapp.generated.resources.settings
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.StringResource
@@ -58,7 +63,9 @@ val module = module {
 enum class Screen(val titleRes: StringResource) {
     Brews(titleRes = Res.string.brews_title),
     Settings(titleRes = Res.string.settings),
-    AppSettings(titleRes = Res.string.app_settings_title)
+    AppSettings(titleRes = Res.string.app_settings_title),
+    FlavorManagement(titleRes = Res.string.manage_flavors),
+    TeaTypeManagement(titleRes = Res.string.manage_tea_types)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,24 +105,28 @@ data class Notification(
 @Preview
 fun App(
     scheduleNotifications: (List<Notification>) -> Unit = { _ -> },
-    viewModel: AppViewModel = viewModel { AppViewModel() },
-    navController: NavHostController = rememberNavController()
+    appViewModel: AppViewModel? = null,
+    navController: NavHostController = rememberNavController(),
+    brewsViewModel: BrewsViewModel? = null
 ) {
-    // Get current back stack entry
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    // Get the name of the current screen
-    val route = backStackEntry?.destination?.route ?: Screen.Brews.name
-    val currentScreen = Screen.entries.first { route.startsWith(it.name) }
-
-    val namePrefix = stringResource(Res.string.brews_batch)
-
-    LaunchedEffect(Unit) {
-        viewModel.setScheduleNotifications(scheduleNotifications)
-    }
-
     KoinApplication(application = {
         modules(module)
     }) {
+        // Create ViewModels inside KoinApplication context so Koin is initialized
+        val viewModel = appViewModel ?: viewModel { AppViewModel() }
+        val brewsVM = brewsViewModel ?: viewModel { BrewsViewModel() }
+        
+        // Get current back stack entry
+        val backStackEntry by navController.currentBackStackEntryAsState()
+        // Get the name of the current screen
+        val route = backStackEntry?.destination?.route ?: Screen.Brews.name
+        val currentScreen = Screen.entries.first { route.startsWith(it.name) }
+
+        val namePrefix = stringResource(Res.string.brews_batch)
+
+        LaunchedEffect(Unit) {
+            viewModel.setScheduleNotifications(scheduleNotifications)
+        }
         AppTheme {
             // Blue background for entire screen (including status bar area)
             Box(
@@ -145,12 +156,14 @@ fun App(
                                                     contentDescription = stringResource(Res.string.app_settings)
                                                 )
                                             }
-                                            Button(onClick = { viewModel.addBrew(namePrefix) }) {
+                                            Button(onClick = { brewsVM.checkIfShouldPromptForTeaType(namePrefix) }) {
                                                 Text(stringResource(Res.string.brews_add))
                                             }
                                         }
                                         Screen.Settings -> {}
                                         Screen.AppSettings -> {}
+                                        Screen.FlavorManagement -> {}
+                                        Screen.TeaTypeManagement -> {}
                                     }
                                 }
                             )
@@ -170,6 +183,7 @@ fun App(
                             ) {
                                 composable(route = Screen.Brews.name) {
                                     BrewsView(
+                                        viewModel = brewsVM,
                                         onOpenSettings = {
                                             navController.navigate("${Screen.Settings.name}/$it")
                                         }
@@ -186,6 +200,20 @@ fun App(
 
                                 composable(route = Screen.AppSettings.name) {
                                     AppSettingsView(
+                                        onNavigateToFlavors = { navController.navigate(Screen.FlavorManagement.name) },
+                                        onNavigateToTeaTypes = { navController.navigate(Screen.TeaTypeManagement.name) },
+                                        onNavigateUp = { navController.navigateUp() }
+                                    )
+                                }
+
+                                composable(route = Screen.FlavorManagement.name) {
+                                    FlavorManagementView(
+                                        onNavigateUp = { navController.navigateUp() }
+                                    )
+                                }
+
+                                composable(route = Screen.TeaTypeManagement.name) {
+                                    TeaTypeManagementView(
                                         onNavigateUp = { navController.navigateUp() }
                                     )
                                 }
@@ -195,6 +223,5 @@ fun App(
                 }
             }
         }
-
     }
 }

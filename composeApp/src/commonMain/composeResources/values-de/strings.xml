@@ -39,6 +39,24 @@
     <string name="flavor_name">Geschmacksname</string>
     <string name="cancel">Abbrechen</string>
     <string name="save">Speichern</string>
+    <string name="manage_flavors">Geschmäcker Verwalten</string>
+    <string name="manage_flavors_description">Geschmacksoptionen für die zweite Fermentation hinzufügen, bearbeiten oder entfernen</string>
+    <string name="manage_tea_types">Teesorten Verwalten</string>
+    <string name="manage_tea_types_description">Teesorten-Optionen für die erste Fermentation hinzufügen, bearbeiten oder entfernen</string>
+    <string name="tea_type_dialog_title">Teesorte Hinzufügen</string>
+    <string name="tea_type_dialog_message">Welche Teesorte verwenden Sie für diesen Ansatz?</string>
+    <string name="tea_type_dialog_placeholder">z.B. Schwarzer Tee, Grüner Tee</string>
+    <string name="tea_type_dialog_cancel">Abbrechen</string>
+    <string name="tea_type_dialog_confirm">Ansatz Starten</string>
+    <string name="tea_type_dialog_custom">Benutzerdefiniert</string>
+    <string name="tea_type_dialog_no_tea_type">Keine Teesorte</string>
+    <string name="tea_type_prompt_setting">Nach Teesorte Fragen</string>
+    <string name="tea_type_prompt_description">Teesorte-Dialog beim Hinzufügen eines Ansatzes anzeigen</string>
+    <string name="saved_tea_types">Gespeicherte Teesorten</string>
+    <string name="add_tea_type">Teesorte Hinzufügen</string>
+    <string name="edit_tea_type">Teesorte Bearbeiten</string>
+    <string name="delete_tea_type">Löschen</string>
+    <string name="tea_type_name">Teesorten Name</string>
 
     <plurals name="remaining_days">
         <item quantity="one">1 Tag übrig</item>

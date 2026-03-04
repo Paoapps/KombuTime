@@ -43,7 +43,7 @@ class SettingsViewModel(
         val brew = if (brews.size > brewIndex) brews[brewIndex] else return@combine Output()
         Output(
             title = brew.settings.name.toUiText() + " - ".toUiText() + when(brew.state) {
-                BrewState.FirstFermentation -> Res.string.first_fermentation.toUiText()
+                is BrewState.FirstFermentation -> Res.string.first_fermentation.toUiText()
                 is BrewState.SecondFermentation -> Res.string.second_fermentation.toUiText()
             },
             dateStepper = Output.Stepper(

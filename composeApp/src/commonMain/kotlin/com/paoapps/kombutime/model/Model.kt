@@ -48,6 +48,16 @@ val DEFAULT_FLAVORS = listOf(
     "Pineapple"
 )
 
+// Default tea types to pre-populate
+val DEFAULT_TEA_TYPES = listOf(
+    "Black Tea",
+    "Green Tea",
+    "Oolong Tea",
+    "White Tea",
+    "Pu-erh Tea",
+    "Herbal Tea"
+)
+
 class Model: KoinComponent {
 
     private val jsonParser = Json
@@ -82,9 +92,22 @@ class Model: KoinComponent {
     private val _promptForFlavor = MutableStateFlow(storage["promptForFlavor", true])
     val promptForFlavor: Flow<Boolean> = _promptForFlavor
 
+    private val _savedTeaTypes = MutableStateFlow(storage["savedTeaTypes", "[]"].let {
+        try {
+            val loaded = jsonParser.decodeFromString(ListSerializer(String.serializer()), it)
+            if (loaded.isEmpty()) DEFAULT_TEA_TYPES.sorted() else loaded
+        } catch (e: Exception) {
+            DEFAULT_TEA_TYPES.sorted()
+        }
+    })
+    val savedTeaTypes: Flow<List<String>> = _savedTeaTypes
+
+    private val _promptForTeaType = MutableStateFlow(storage["promptForTeaType", true])
+    val promptForTeaType: Flow<Boolean> = _promptForTeaType
+
     var scheduleNotifications: (List<Notification>) -> Unit = {}
 
-    fun addBrew(namePrefix: String) {
+    fun addBrew(namePrefix: String, teaType: String = "") {
         var index = 1
         while (true) {
             val suggestedName = "$namePrefix $index"
@@ -93,7 +116,8 @@ class Model: KoinComponent {
                     startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
                     settings = (_brews.value.lastOrNull()?.settings ?: BrewSettings(
                         name = suggestedName
-                    )).copy(name = suggestedName)
+                    )).copy(name = suggestedName),
+                    state = BrewState.FirstFermentation(teaType)
                 )
                 save()
                 return
@@ -113,7 +137,7 @@ class Model: KoinComponent {
                 Notification(
                     id = brew.settings.name.hashCode() + brew.state.hashCode(),
                     title = when (brew.state) {
-                        BrewState.FirstFermentation -> getString(Res.string.notification_first_fermentation_title)
+                        is BrewState.FirstFermentation -> getString(Res.string.notification_first_fermentation_title)
                         is BrewState.SecondFermentation -> getString(Res.string.notification_second_fermentation_title)
                     },
                     message = when (brew.state) {
@@ -138,9 +162,12 @@ class Model: KoinComponent {
                 startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
             ))
         }
+        // Get tea type from completed brew to use for new brew
+        val teaType = (brew.state as? BrewState.FirstFermentation)?.teaType ?: ""
         _brews.value += Brew(
-            name = brew.settings.name,
             startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+            settings = brew.settings,
+            state = BrewState.FirstFermentation(teaType)
         )
         save()
     }
@@ -287,6 +314,37 @@ class Model: KoinComponent {
 
     private fun saveFlavors() {
         storage["savedFlavors"] = jsonParser.encodeToString(ListSerializer(String.serializer()), _savedFlavors.value)
+    }
+
+    // Tea type management methods
+    fun addSavedTeaType(teaType: String) {
+        if (teaType.isNotBlank() && !_savedTeaTypes.value.contains(teaType)) {
+            _savedTeaTypes.value = (_savedTeaTypes.value + teaType).sorted()
+            saveTeaTypes()
+        }
+    }
+
+    fun updateSavedTeaType(oldTeaType: String, newTeaType: String) {
+        if (newTeaType.isNotBlank()) {
+            _savedTeaTypes.value = _savedTeaTypes.value.map {
+                if (it == oldTeaType) newTeaType else it
+            }.sorted()
+            saveTeaTypes()
+        }
+    }
+
+    fun deleteSavedTeaType(teaType: String) {
+        _savedTeaTypes.value = _savedTeaTypes.value.filter { it != teaType }
+        saveTeaTypes()
+    }
+
+    fun setPromptForTeaType(enabled: Boolean) {
+        _promptForTeaType.value = enabled
+        storage["promptForTeaType"] = enabled
+    }
+
+    private fun saveTeaTypes() {
+        storage["savedTeaTypes"] = jsonParser.encodeToString(ListSerializer(String.serializer()), _savedTeaTypes.value)
     }
 }
 

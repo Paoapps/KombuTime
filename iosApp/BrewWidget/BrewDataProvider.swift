@@ -89,6 +89,7 @@ class BrewDataProvider {
 
         let isFirstFermentation = stateType == "com.paoapps.kombutime.domain.BrewState.FirstFermentation"
         let flavor = (stateDict?["flavor"] as? String) ?? ""
+        let teaType = (stateDict?["teaType"] as? String) ?? ""
         let fermentationDays = isFirstFermentation ? firstFermentationDays : secondFermentationDays
 
         // Parse date string (format: "YYYY-MM-DD")
@@ -109,6 +110,7 @@ class BrewDataProvider {
         return BrewData(
             name: name,
             flavor: flavor,
+            teaType: teaType,
             isFirstFermentation: isFirstFermentation,
             startDate: startDate,
             fermentationDays: fermentationDays,

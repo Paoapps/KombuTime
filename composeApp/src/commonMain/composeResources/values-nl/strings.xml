@@ -39,6 +39,24 @@
     <string name="flavor_name">Smaaknaam</string>
     <string name="cancel">Annuleren</string>
     <string name="save">Opslaan</string>
+    <string name="manage_flavors">Smaken Beheren</string>
+    <string name="manage_flavors_description">Toevoegen, bewerken of verwijderen van smaakopties voor tweede fermentatie</string>
+    <string name="manage_tea_types">Theesoorten Beheren</string>
+    <string name="manage_tea_types_description">Toevoegen, bewerken of verwijderen van theesoortopties voor eerste fermentatie</string>
+    <string name="tea_type_dialog_title">Theesoort Toevoegen</string>
+    <string name="tea_type_dialog_message">Welk type thee gebruik je voor dit brouwsel?</string>
+    <string name="tea_type_dialog_placeholder">bijv. Zwarte Thee, Groene Thee</string>
+    <string name="tea_type_dialog_cancel">Annuleren</string>
+    <string name="tea_type_dialog_confirm">Start Brouwsel</string>
+    <string name="tea_type_dialog_custom">Aangepast</string>
+    <string name="tea_type_dialog_no_tea_type">Geen theesoort</string>
+    <string name="tea_type_prompt_setting">Vraag om Theesoort</string>
+    <string name="tea_type_prompt_description">Toon theesoort dialoog bij toevoegen van een brouwsel</string>
+    <string name="saved_tea_types">Opgeslagen Theesoorten</string>
+    <string name="add_tea_type">Theesoort Toevoegen</string>
+    <string name="edit_tea_type">Theesoort Bewerken</string>
+    <string name="delete_tea_type">Verwijderen</string>
+    <string name="tea_type_name">Theesoort Naam</string>
 
     <plurals name="remaining_days">
         <item quantity="one">1 dag over</item>

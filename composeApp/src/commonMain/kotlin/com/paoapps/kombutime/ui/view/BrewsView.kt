@@ -56,6 +56,13 @@ import kombutime.composeapp.generated.resources.flavor_dialog_no_flavor
 import kombutime.composeapp.generated.resources.flavor_dialog_placeholder
 import kombutime.composeapp.generated.resources.flavor_dialog_title
 import kombutime.composeapp.generated.resources.settings
+import kombutime.composeapp.generated.resources.tea_type_dialog_cancel
+import kombutime.composeapp.generated.resources.tea_type_dialog_confirm
+import kombutime.composeapp.generated.resources.tea_type_dialog_custom
+import kombutime.composeapp.generated.resources.tea_type_dialog_message
+import kombutime.composeapp.generated.resources.tea_type_dialog_no_tea_type
+import kombutime.composeapp.generated.resources.tea_type_dialog_placeholder
+import kombutime.composeapp.generated.resources.tea_type_dialog_title
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -66,11 +73,14 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun BrewsView(
     viewModel: BrewsViewModel = viewModel { BrewsViewModel() },
-    onOpenSettings: (Int) -> Unit = {}
+    onOpenSettings: (Int) -> Unit = {},
+    onAddBrew: () -> Unit = {}
 ) {
     val output by viewModel.output.collectAsState()
     val flavorDialogState by viewModel.flavorDialogState.collectAsState()
+    val teaTypeDialogState by viewModel.teaTypeDialogState.collectAsState()
     val savedFlavors by viewModel.savedFlavors.collectAsState()
+    val savedTeaTypes by viewModel.savedTeaTypes.collectAsState()
 
     Column(
         Modifier
@@ -239,6 +249,115 @@ fun BrewsView(
             dismissButton = {
                 TextButton(onClick = { viewModel.dismissFlavorDialog() }) {
                     Text(stringResource(Res.string.flavor_dialog_cancel))
+                }
+            }
+        )
+    }
+
+    // Tea type input dialog
+    teaTypeDialogState?.let { dialogState ->
+        val noTeaTypeOption = stringResource(Res.string.tea_type_dialog_no_tea_type)
+        val customOption = stringResource(Res.string.tea_type_dialog_custom)
+        val placeholder = stringResource(Res.string.tea_type_dialog_placeholder)
+
+        var selectedTeaType by remember { mutableStateOf<String?>(noTeaTypeOption) }
+        var customTeaType by remember { mutableStateOf("") }
+
+        val isCustom = selectedTeaType == customOption
+        val finalTeaType = when {
+            selectedTeaType == noTeaTypeOption -> ""
+            isCustom -> customTeaType
+            else -> selectedTeaType ?: ""
+        }
+
+        AlertDialog(
+            onDismissRequest = { viewModel.dismissTeaTypeDialog() },
+            title = { Text(stringResource(Res.string.tea_type_dialog_title)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(stringResource(Res.string.tea_type_dialog_message))
+
+                    var expanded by remember { mutableStateOf(false) }
+
+                    ExposedDropdownMenuBox(
+                        expanded = expanded,
+                        onExpandedChange = { expanded = !expanded }
+                    ) {
+                        TextField(
+                            value = selectedTeaType ?: noTeaTypeOption,
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                            modifier = Modifier
+                                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                                .fillMaxWidth()
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            // No tea type option
+                            DropdownMenuItem(
+                                text = { Text(noTeaTypeOption) },
+                                onClick = {
+                                    selectedTeaType = noTeaTypeOption
+                                    expanded = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                            )
+
+                            // Custom option
+                            DropdownMenuItem(
+                                text = { Text(customOption) },
+                                onClick = {
+                                    selectedTeaType = customOption
+                                    expanded = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                            )
+
+                            HorizontalDivider()
+
+                            // Saved tea types
+                            savedTeaTypes.forEach { teaType ->
+                                DropdownMenuItem(
+                                    text = { Text(teaType) },
+                                    onClick = {
+                                        selectedTeaType = teaType
+                                        expanded = false
+                                    },
+                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                )
+                            }
+                        }
+                    }
+
+                    // Custom tea type input (shown only when "Custom" is selected)
+                    if (isCustom) {
+                        TextField(
+                            value = customTeaType,
+                            onValueChange = { customTeaType = it },
+                            placeholder = { Text(placeholder) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.addBrewWithTeaType(dialogState.namePrefix, finalTeaType)
+                    },
+                    enabled = !isCustom || customTeaType.isNotBlank()
+                ) {
+                    Text(stringResource(Res.string.tea_type_dialog_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.dismissTeaTypeDialog() }) {
+                    Text(stringResource(Res.string.tea_type_dialog_cancel))
                 }
             }
         )

@@ -39,6 +39,24 @@
     <string name="flavor_name">Flavor Name</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+    <string name="manage_flavors">Manage Flavors</string>
+    <string name="manage_flavors_description">Add, edit, or remove flavor options for second fermentation</string>
+    <string name="manage_tea_types">Manage Tea Types</string>
+    <string name="manage_tea_types_description">Add, edit, or remove tea type options for first fermentation</string>
+    <string name="tea_type_dialog_title">Add Tea Type</string>
+    <string name="tea_type_dialog_message">What type of tea are you using for this brew?</string>
+    <string name="tea_type_dialog_placeholder">e.g., Black Tea, Green Tea</string>
+    <string name="tea_type_dialog_cancel">Cancel</string>
+    <string name="tea_type_dialog_confirm">Start Brew</string>
+    <string name="tea_type_dialog_custom">Custom</string>
+    <string name="tea_type_dialog_no_tea_type">No tea type</string>
+    <string name="tea_type_prompt_setting">Ask for Tea Type</string>
+    <string name="tea_type_prompt_description">Show tea type dialog when adding a brew</string>
+    <string name="saved_tea_types">Saved Tea Types</string>
+    <string name="add_tea_type">Add Tea Type</string>
+    <string name="edit_tea_type">Edit Tea Type</string>
+    <string name="delete_tea_type">Delete</string>
+    <string name="tea_type_name">Tea Type Name</string>
 
     <plurals name="remaining_days">
         <item quantity="one">1 day left</item>
