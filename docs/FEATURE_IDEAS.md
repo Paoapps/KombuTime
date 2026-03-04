@@ -2,6 +2,8 @@
 
 This document contains curated feature suggestions that align with KombuTime's minimalist philosophy. All ideas here maintain the "simple brewing tracker" core mission.
 
+**For implemented features, see `FEATURES.md`.**
+
 ## 🎯 Status Legend
 
 - ⭐ **High Priority** - High impact, low complexity, strongly aligned
@@ -15,32 +17,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ## ⭐ High Priority Features
 
-### 1. Flavor Input for Second Fermentation
-**Status**: Partially implemented (data model exists, UI missing)
-**Effort**: Low
-**Impact**: Medium
-
-**Description:**
-- Add simple text input when completing first fermentation
-- Allow user to specify flavor (e.g., "Blueberry", "Ginger Lemon")
-- Display flavor in brew title during second fermentation
-- Currently hardcoded as "Blue Berry" in Model.kt
-
-**Implementation Notes:**
-```kotlin
-// TODO in BrewsViewModel.kt line 98:
-is BrewState.SecondFermentation -> "${brew.settings.name} - ${state.flavor}"
-```
-
-**Why it fits:**
-- Simple, one-time input
-- Useful context without being complex
-- Already in domain model
-- No database needed
-
----
-
-### 2. Swipe Gestures
+### 1. Swipe Gestures
 **Status**: Not implemented
 **Effort**: Medium
 **Impact**: High (UX improvement)
@@ -64,7 +41,7 @@ is BrewState.SecondFermentation -> "${brew.settings.name} - ${state.flavor}"
 
 ---
 
-### 3. Home Screen Widget
+### 2. Home Screen Widget
 **Status**: Not implemented
 **Effort**: High
 **Impact**: High
@@ -405,27 +382,26 @@ These ideas violate the minimalist philosophy:
 ## 📋 Implementation Priority
 
 ### Phase 1: Quick Wins (1-2 weeks)
-1. ⭐ Flavor input for F2
-2. 🎨 Empty state design
-3. 🎨 Visual state indicators (Ready! checkmark)
-4. 📊 Simple completion counter
+1. 🎨 Empty state design
+2. 🎨 Visual state indicators (Ready! checkmark)
+3. 📊 Simple completion counter
 
 ### Phase 2: UX Improvements (2-4 weeks)
-5. ⭐ Swipe gestures
-6. 🎨 Long press for settings
-7. 🔔 Pre-notification reminders
-8. 🔧 Dark mode refinement
+4. ⭐ Swipe gestures
+5. 🎨 Long press for settings
+6. 🔔 Pre-notification reminders
+7. 🔧 Dark mode refinement
 
 ### Phase 3: Major Features (1-2 months)
-9. ⭐ Home screen widgets
-10. 🔔 Notification quick actions
-11. 🔧 Backup & restore
+8. ⭐ Home screen widgets
+9. 🔔 Notification quick actions
+10. 🔧 Backup & restore
 
 ### Phase 4: Nice-to-Haves (Future)
-12. 💡 Brew templates
-13. 💡 Custom emoji per brew
-14. 💡 Quiet hours
-15. 📊 Last brew date indicator
+11. 💡 Brew templates
+12. 💡 Custom emoji per brew
+13. 💡 Quiet hours
+14. 📊 Last brew date indicator
 
 ---
 
@@ -468,6 +444,7 @@ To suggest a feature:
 
 ## 📚 Reference
 
-- Project philosophy: `AGENT.md`
-- Development guide: `docs/DEVELOPMENT.md`
-- Main README: `README.md`
+- **Implemented features**: `docs/FEATURES.md`
+- **Project philosophy**: `AGENT.md`
+- **Development guide**: `docs/DEVELOPMENT.md`
+- **Main README**: `README.md`

@@ -46,12 +46,16 @@ KombuTime/
 │       │   │       ├── ui/                 # UI components
 │       │   │       │   ├── view/
 │       │   │       │   │   ├── BrewsView.kt
-│       │   │       │   │   └── SettingsView.kt
+│       │   │       │   │   ├── SettingsView.kt
+│       │   │       │   │   └── AppSettingsView.kt  # Flavor management UI
 │       │   │       │   └── theme/
 │       │   │       │       ├── Color.kt
 │       │   │       │       └── Theme.kt
 │       │   │       ├── utils/              # Helper functions
 │       │   │       └── viewmodel/          # UI logic
+│       │   │           ├── BrewsViewModel.kt
+│       │   │           ├── SettingsViewModel.kt
+│       │   │           └── AppSettingsViewModel.kt  # Flavor management logic
 │       │   └── composeResources/           # Resources
 │       │       ├── drawable/
 │       │       └── values/
@@ -77,6 +81,68 @@ KombuTime/
 ├── build.gradle.kts            # Root build configuration
 └── settings.gradle.kts
 ```
+
+## Key Features & Components
+
+### Flavor Management System
+
+The app includes a complete flavor tracking system for second fermentation:
+
+**Components:**
+- **BrewsView.kt**: Flavor input dialog with ExposedDropdownMenuBox
+  - "No flavor" option (default selection)
+  - Pre-populated flavor picker (Blueberry, Ginger, etc.)
+  - Custom flavor input field
+  - Auto-saves custom flavors to saved list
+
+- **AppSettingsView.kt**: Dedicated settings screen
+  - Toggle to enable/disable flavor prompt
+  - Add/edit/delete saved flavors
+  - Material 3 UI with FAB for adding flavors
+
+- **AppSettingsViewModel.kt**: Manages flavor CRUD operations
+  - `editingFlavor` state for add/edit dialog
+  - `saveFlavor()`, `deleteFlavor()` methods
+  - Integrates with Model's saved flavors
+
+- **Model.kt**: Flavor persistence
+  - `savedFlavors` StateFlow with 8 default flavors
+  - `promptForFlavor` StateFlow (toggle in settings)
+  - Uses `multiplatform-settings` for storage
+  - `addSavedFlavor()`, `updateSavedFlavor()`, `deleteSavedFlavor()`
+
+**User Flow:**
+1. User completes first fermentation
+2. If `promptForFlavor` is enabled, dialog appears
+3. User selects from saved flavors, enters custom, or keeps "No flavor"
+4. Custom flavors are automatically added to saved list
+5. Flavor appears in brew title during F2 (e.g., "My Brew - Strawberry")
+6. Empty flavor shows just brew name (no "Unflavored" suffix)
+
+**Localization:**
+All flavor strings are localized in EN, NL, and DE:
+- `flavor_dialog_title`, `flavor_dialog_message`
+- `flavor_dialog_no_flavor`, `flavor_dialog_custom`
+- `app_settings`, `saved_flavors`, `add_flavor`, etc.
+
+### Notification System
+
+**Android** (`NotificationReceiver.kt`):
+- Uses `AlarmManager` for precise timing
+- Creates notification channel on first run
+- Notification includes brew name and completion message
+
+**iOS** (`ContentView.swift`):
+- Uses `UNUserNotificationCenter`
+- Requests permission on app launch
+- Schedules local notifications with identifier
+
+### Settings Persistence
+
+Uses `multiplatform-settings` library:
+- **Android**: Wraps `SharedPreferences`
+- **iOS**: Wraps `UserDefaults`
+- Stores: Brews list (JSON), saved flavors, prompt toggle
 
 ## Running the App
 
