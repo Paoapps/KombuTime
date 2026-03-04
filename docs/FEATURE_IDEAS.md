@@ -18,21 +18,22 @@ This document contains curated feature suggestions that align with KombuTime's m
 ## ⭐ High Priority Features
 
 ### 1. Swipe Gestures
-**Status**: Not implemented
+**Status**: ✅ Implemented
 **Effort**: Medium
 **Impact**: High (UX improvement)
 
 **Description:**
-- **Swipe right** on brew card → Complete/advance to next stage
-- **Swipe left** on brew card → Delete brew
+- **Swipe right** on brew card → Delete brew
+- **Swipe left** on brew card → Complete/advance to next stage
 - More intuitive than current tap-to-settings flow
 - Common mobile UX pattern
 
-**Implementation Notes:**
-```kotlin
-// Use Modifier.swipeable or Accompanist Swipe library
-// Add to BrewsView.kt Row items
-```
+**Implementation:**
+- Added `SwipeableBrewCard` composable in `BrewsView.kt`
+- Uses Compose's `detectHorizontalDragGestures` with `Animatable` for smooth animations
+- Background icons (delete/complete) are revealed during swipe
+- Swipe threshold of 200px to trigger action
+- Smooth animation on release with spring effect
 
 **Why it fits:**
 - Improves existing functionality without adding features

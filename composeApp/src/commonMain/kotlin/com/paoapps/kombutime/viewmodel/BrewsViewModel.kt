@@ -176,6 +176,10 @@ class BrewsViewModel: ViewModel(), KoinComponent {
         _flavorDialogState.value = null
     }
 
+    fun deleteBrew(brewIndex: Int) {
+        model.deleteBrew(brewIndex)
+    }
+
     data class FlavorDialogState(
         val brewIndex: Int
     )

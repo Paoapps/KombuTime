@@ -60,7 +60,43 @@ Configure fermentation duration and notification preferences per brew.
 
 ---
 
-### 4. Flavor Management
+### 5. Swipe Gestures
+**Status**: ✅ Implemented (March 2026)
+
+**Description:**
+Intuitive swipe gestures for quick actions on brew cards.
+
+**Capabilities:**
+- **Swipe right** → Delete brew (with red delete icon feedback)
+- **Swipe left** → Complete/advance to next fermentation stage (with green checkmark feedback)
+- Smooth animations with spring effect
+- Background icons revealed during swipe
+- Returns to center position if swipe threshold not met
+- 200px swipe threshold for action trigger
+
+**User Experience:**
+- More intuitive than tap-to-settings flow
+- Faster workflow for common actions
+- Visual feedback during gesture
+- Common mobile UX pattern
+- Works alongside existing button controls
+
+**Implementation:**
+- `SwipeableBrewCard` composable in `BrewsView.kt`
+- Uses Compose's `detectHorizontalDragGestures` API
+- `Animatable` for smooth offset animations
+- Material icons for visual feedback (Delete, CheckCircle)
+- Proper gesture cancellation on insufficient swipe
+
+**Why it fits:**
+- Improves existing functionality without adding features
+- Makes common actions faster
+- No new concepts to learn
+- Maintains minimalist philosophy
+
+---
+
+### 6. Flavor Management
 **Status**: ✅ Implemented (March 2026)
 
 **Description:**
@@ -124,7 +160,7 @@ All flavor-related strings:
 
 ## UI/UX Features
 
-### 5. Material Design 3
+### 7. Material Design 3
 **Description:**
 Modern, polished UI using Material Design 3 guidelines.
 
@@ -142,7 +178,7 @@ Modern, polished UI using Material Design 3 guidelines.
 
 ---
 
-### 6. Multiplatform Support
+### 8. Multiplatform Support
 **Description:**
 Shared codebase with platform-specific optimizations.
 
@@ -160,7 +196,7 @@ Shared codebase with platform-specific optimizations.
 
 ---
 
-### 7. Localization
+### 9. Localization
 **Description:**
 Multi-language support with complete translations.
 
