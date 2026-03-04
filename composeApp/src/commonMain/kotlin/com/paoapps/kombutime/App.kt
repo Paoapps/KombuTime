@@ -115,7 +115,7 @@ fun App(
         // Create ViewModels inside KoinApplication context so Koin is initialized
         val viewModel = appViewModel ?: viewModel { AppViewModel() }
         val brewsVM = brewsViewModel ?: viewModel { BrewsViewModel() }
-        
+
         // Get current back stack entry
         val backStackEntry by navController.currentBackStackEntryAsState()
         // Get the name of the current screen

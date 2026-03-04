@@ -11,7 +11,7 @@ data class Brew(
     val settings: BrewSettings,
     val state: BrewState = BrewState.FirstFermentation(),
 ) {
-    constructor(startDate: LocalDate, name: String): this(startDate, BrewSettings(name = name))
+    constructor(startDate: LocalDate, nameNumber: Int): this(startDate, BrewSettings(nameNumber = nameNumber))
 
     val endDate: LocalDate
         get() = when (state) {
@@ -36,5 +36,5 @@ sealed class BrewState {
 data class BrewSettings(
     val firstFermentationDays: Int = 12,
     val secondFermentationDays: Int = 3,
-    val name: String
+    val nameNumber: Int
 )

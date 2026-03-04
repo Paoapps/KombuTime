@@ -16,6 +16,7 @@ import com.paoapps.kombutime.utils.formatDate
 import com.paoapps.kombutime.utils.toUiText
 import kombutime.composeapp.generated.resources.Res
 import kombutime.composeapp.generated.resources.bottle
+import kombutime.composeapp.generated.resources.brews_batch
 import kombutime.composeapp.generated.resources.end_date
 import kombutime.composeapp.generated.resources.first_fermentation
 import kombutime.composeapp.generated.resources.jar
@@ -38,6 +39,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.PluralStringResource
 import org.jetbrains.compose.resources.StringResource
 import org.koin.core.component.KoinComponent
@@ -93,6 +95,7 @@ class BrewsViewModel: ViewModel(), KoinComponent {
 
     private val _output = combine(nextDayTrigger, model.brews) { _, brews ->
         val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+        val namePrefix = getString(Res.string.brews_batch)
         Output(
             brews = brews.map { brew ->
                 val startDate = brew.startDate
@@ -126,17 +129,19 @@ class BrewsViewModel: ViewModel(), KoinComponent {
                     },
                     title = when(val state = brew.state) {
                         is BrewState.FirstFermentation -> {
+                            val brewName = "$namePrefix ${brew.settings.nameNumber}"
                             if (state.teaType.isNotBlank()) {
-                                "${brew.settings.name} - ${state.teaType}"
+                                "$brewName - ${state.teaType}"
                             } else {
-                                brew.settings.name
+                                brewName
                             }
                         }
                         is BrewState.SecondFermentation -> {
+                            val brewName = "$namePrefix ${brew.settings.nameNumber}"
                             if (state.flavor.isNotBlank()) {
-                                "${brew.settings.name} - ${state.flavor}"
+                                "$brewName - ${state.flavor}"
                             } else {
-                                brew.settings.name
+                                brewName
                             }
                         }
                     },

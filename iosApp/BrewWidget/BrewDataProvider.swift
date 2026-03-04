@@ -63,12 +63,15 @@ class BrewDataProvider {
             return nil
         }
 
-        print("  Checking for 'name' in settings...")
-        guard let name = settingsDict["name"] as? String else {
-            print("  ERROR: Missing or invalid 'name' in settings")
+        print("  Checking for 'nameNumber' in settings...")
+        guard let nameNumber = settingsDict["nameNumber"] as? Int else {
+            print("  ERROR: Missing or invalid 'nameNumber' in settings")
             return nil
         }
-        print("  Found name: \(name)")
+        print("  Found nameNumber: \(nameNumber)")
+
+        // Generate localized name (for iOS widgets, we use "Brew" in English)
+        let name = "Brew \(nameNumber)"
 
         print("  Checking for fermentation days (with defaults)...")
         let firstFermentationDays = settingsDict["firstFermentationDays"] as? Int ?? 12

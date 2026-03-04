@@ -192,19 +192,22 @@ class BrewWidget : GlanceAppWidget() {
             is BrewState.SecondFermentation -> "🍾"
         }
 
+        // For Android widgets, we use "Brew" (localization in widgets is complex with Glance)
+        val brewName = "Brew ${brew.settings.nameNumber}"
+
         val title = when(val state = brew.state) {
             is BrewState.FirstFermentation -> {
                 if (state.teaType.isNotBlank()) {
-                    "${brew.settings.name} - ${state.teaType}"
+                    "$brewName - ${state.teaType}"
                 } else {
-                    brew.settings.name
+                    brewName
                 }
             }
             is BrewState.SecondFermentation -> {
                 if (state.flavor.isNotBlank()) {
-                    "${brew.settings.name} - ${state.flavor}"
+                    "$brewName - ${state.flavor}"
                 } else {
-                    brew.settings.name
+                    brewName
                 }
             }
         }

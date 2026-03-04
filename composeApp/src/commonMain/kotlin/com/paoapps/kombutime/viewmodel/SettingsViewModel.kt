@@ -12,6 +12,7 @@ import com.paoapps.kombutime.utils.formatDate
 import com.paoapps.kombutime.utils.formatTime
 import com.paoapps.kombutime.utils.toUiText
 import kombutime.composeapp.generated.resources.Res
+import kombutime.composeapp.generated.resources.brews_batch
 import kombutime.composeapp.generated.resources.first_fermentation
 import kombutime.composeapp.generated.resources.first_fermentation_days
 import kombutime.composeapp.generated.resources.notification_time
@@ -41,8 +42,10 @@ class SettingsViewModel(
 
     private val _output = combine(model.brews, model.notificationTime) { brews, notificationTime ->
         val brew = if (brews.size > brewIndex) brews[brewIndex] else return@combine Output()
+        val namePrefix = org.jetbrains.compose.resources.getString(Res.string.brews_batch)
+        val brewName = "$namePrefix ${brew.settings.nameNumber}"
         Output(
-            title = brew.settings.name.toUiText() + " - ".toUiText() + when(brew.state) {
+            title = brewName.toUiText() + " - ".toUiText() + when(brew.state) {
                 is BrewState.FirstFermentation -> Res.string.first_fermentation.toUiText()
                 is BrewState.SecondFermentation -> Res.string.second_fermentation.toUiText()
             },

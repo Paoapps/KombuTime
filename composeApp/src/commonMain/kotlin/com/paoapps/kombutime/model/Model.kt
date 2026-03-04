@@ -12,6 +12,7 @@ import com.russhwolf.settings.Settings
 import com.russhwolf.settings.get
 import com.russhwolf.settings.set
 import kombutime.composeapp.generated.resources.Res
+import kombutime.composeapp.generated.resources.brews_batch
 import kombutime.composeapp.generated.resources.notification_first_fermentation_message
 import kombutime.composeapp.generated.resources.notification_first_fermentation_title
 import kombutime.composeapp.generated.resources.notification_second_fermentation_message
@@ -65,13 +66,7 @@ class Model: KoinComponent {
 
     private val storage: Settings = SettingsFactory.createSettings()
 
-    private val _brews = MutableStateFlow(storage["brews", "[]"].let {
-        try {
-            jsonParser.decodeFromString(ListSerializer(Brew.serializer()), it)
-        } catch (e: Exception) {
-            emptyList()
-        }
-    })
+    private val _brews = MutableStateFlow(loadAndMigrateBrews())
     val brews: Flow<List<Brew>> = _brews
 
     private val _notificationTime = MutableStateFlow(storage["notificationTime", (9 * 60 * 60)].let {
@@ -107,23 +102,62 @@ class Model: KoinComponent {
 
     var scheduleNotifications: (List<Notification>) -> Unit = {}
 
-    fun addBrew(namePrefix: String, teaType: String = "") {
-        var index = 1
-        while (true) {
-            val suggestedName = "$namePrefix $index"
-            if (_brews.value.none { it.settings.name == suggestedName }) {
-                _brews.value += Brew(
-                    startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
-                    settings = (_brews.value.lastOrNull()?.settings ?: BrewSettings(
-                        name = suggestedName
-                    )).copy(name = suggestedName),
-                    state = BrewState.FirstFermentation(teaType)
-                )
-                save()
-                return
-            }
-            index++
+    /**
+     * Load brews from storage and migrate old name-based format to number-based if needed
+     */
+    private fun loadAndMigrateBrews(): List<Brew> {
+        val brewsJson = storage["brews", "[]"]
+        if (brewsJson == "[]") {
+            return emptyList()
         }
+
+        return try {
+            // Try to load with new format first
+            jsonParser.decodeFromString(ListSerializer(Brew.serializer()), brewsJson)
+        } catch (e: Exception) {
+            println("Failed to load brews with new format, attempting migration: ${e.message}")
+            // If that fails, the JSON might have old "name" field, migrate it
+            try {
+                val migratedJson = convertNamesToNumbers(brewsJson)
+                println("Migrated JSON: $migratedJson")
+                val brews = jsonParser.decodeFromString(ListSerializer(Brew.serializer()), migratedJson)
+                // Save the migrated data
+                storage["brews"] = migratedJson
+                brews
+            } catch (e2: Exception) {
+                println("Migration also failed: ${e2.message}")
+                emptyList()
+            }
+        }
+    }
+
+    /**
+     * Converts old name-based brew JSON to number-based format
+     * Extracts numbers from names like "Batch 1", "Brew 2", "Brouwsel 3", "Ansatz 4"
+     */
+    private fun convertNamesToNumbers(json: String): String {
+        // Pattern to match "name":"Something X" where X is a number
+        val namePattern = """"name"\s*:\s*"([^"]*\s+)?(\d+)"""".toRegex()
+
+        return namePattern.replace(json) { matchResult ->
+            val number = matchResult.groupValues[2]
+            """"nameNumber":$number"""
+        }
+    }
+
+    fun addBrew(namePrefix: String, teaType: String = "") {
+        // Find the highest existing number
+        val maxNumber = _brews.value.maxOfOrNull { it.settings.nameNumber } ?: 0
+        val newNumber = maxNumber + 1
+
+        _brews.value += Brew(
+            startDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+            settings = (_brews.value.lastOrNull()?.settings ?: BrewSettings(
+                nameNumber = newNumber
+            )).copy(nameNumber = newNumber),
+            state = BrewState.FirstFermentation(teaType)
+        )
+        save()
     }
 
     private fun save() {
@@ -133,16 +167,18 @@ class Model: KoinComponent {
         storage["notificationTime"] = _notificationTime.value.toSecondOfDay()
 
         scope.launch {
+            val namePrefix = getString(Res.string.brews_batch)
             val notifications = brews.map { brew ->
+                val brewName = "$namePrefix ${brew.settings.nameNumber}"
                 Notification(
-                    id = brew.settings.name.hashCode() + brew.state.hashCode(),
+                    id = brew.settings.nameNumber + brew.state.hashCode(),
                     title = when (brew.state) {
                         is BrewState.FirstFermentation -> getString(Res.string.notification_first_fermentation_title)
                         is BrewState.SecondFermentation -> getString(Res.string.notification_second_fermentation_title)
                     },
                     message = when (brew.state) {
-                        is BrewState.FirstFermentation -> getString(Res.string.notification_first_fermentation_message, brew.settings.name)
-                        is BrewState.SecondFermentation -> getString(Res.string.notification_second_fermentation_message, brew.settings.name)
+                        is BrewState.FirstFermentation -> getString(Res.string.notification_first_fermentation_message, brewName)
+                        is BrewState.SecondFermentation -> getString(Res.string.notification_second_fermentation_message, brewName)
                     },
                     time = brew.endDate.atTime(_notificationTime.value).toInstant(TimeZone.currentSystemDefault()).toLocalDateTime(TimeZone.currentSystemDefault())
                 )
@@ -201,12 +237,12 @@ class Model: KoinComponent {
 
     fun incrementFirstFermentationDays(brewIndex: Int) {
         val brew = _brews.value[brewIndex]
-        val brewName = brew.settings.name
+        val brewNumber = brew.settings.nameNumber
         val settings = brew.settings.copy(
             firstFermentationDays = brew.settings.firstFermentationDays + 1
         )
         _brews.value = _brews.value.map {
-            if (it.settings.name == brewName) {
+            if (it.settings.nameNumber == brewNumber) {
                 it.copy(
                     settings = settings
                 )
@@ -220,12 +256,12 @@ class Model: KoinComponent {
 
     fun decrementFirstFermentationDays(brewIndex: Int) {
         val brew = _brews.value[brewIndex]
-        val brewName = brew.settings.name
+        val brewNumber = brew.settings.nameNumber
         val settings = brew.settings.copy(
             firstFermentationDays = brew.settings.firstFermentationDays - 1
         )
         _brews.value = _brews.value.map {
-            if (it.settings.name == brewName) {
+            if (it.settings.nameNumber == brewNumber) {
                 it.copy(
                     settings = settings
                 )
@@ -238,12 +274,12 @@ class Model: KoinComponent {
 
     fun incrementSecondFermentationDays(brewIndex: Int) {
         val brew = _brews.value[brewIndex]
-        val brewName = brew.settings.name
+        val brewNumber = brew.settings.nameNumber
         val settings = brew.settings.copy(
             secondFermentationDays = brew.settings.secondFermentationDays + 1
         )
         _brews.value = _brews.value.map {
-            if (it.settings.name == brewName) {
+            if (it.settings.nameNumber == brewNumber) {
                 it.copy(
                     settings = settings
                 )
@@ -256,12 +292,12 @@ class Model: KoinComponent {
 
     fun decrementSecondFermentationDays(brewIndex: Int) {
         val brew = _brews.value[brewIndex]
-        val brewName = brew.settings.name
+        val brewNumber = brew.settings.nameNumber
         val settings = brew.settings.copy(
             secondFermentationDays = brew.settings.secondFermentationDays - 1
         )
         _brews.value = _brews.value.map {
-            if (it.settings.name == brewName) {
+            if (it.settings.nameNumber == brewNumber) {
                 it.copy(
                     settings = settings
                 )
