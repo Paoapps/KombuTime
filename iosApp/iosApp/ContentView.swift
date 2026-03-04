@@ -3,7 +3,7 @@ import SwiftUI
 import ComposeApp
 
 struct ComposeView: UIViewControllerRepresentable {
-    
+
     func makeCoordinator() -> Coordinator {
         Coordinator()
     }
@@ -43,13 +43,13 @@ struct ComposeView: UIViewControllerRepresentable {
                 }
             }
         })
-        
+
         context.coordinator.viewController = viewController
         return viewController
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
-    
+
     class Coordinator {
         var viewController: UIViewController?
     }

@@ -1,14 +1,19 @@
 package com.paoapps.kombutime
 
+import platform.Foundation.NSUserDefaults
+import platform.Foundation.NSDate
+
 /**
  * iOS implementation of widget updater
- * Note: Widget updates are handled automatically by the widget's timeline provider
- * which polls the shared UserDefaults data
+ * Writes a timestamp to UserDefaults that the widget can monitor
  */
 actual object WidgetUpdater {
     actual fun updateWidgets() {
-        // On iOS, widgets automatically update based on their timeline
-        // The timeline provider reads from App Groups UserDefaults
-        // No manual refresh needed as the widget will poll the data
+        // Write a timestamp to signal the widget should update
+        // The widget will check this on its next refresh
+        val defaults = NSUserDefaults(suiteName = "group.com.paoapps.kombutime")
+        defaults?.setObject(NSDate(), forKey = "lastUpdate")
+        defaults?.synchronize()
+        println("Updated widget refresh timestamp")
     }
 }

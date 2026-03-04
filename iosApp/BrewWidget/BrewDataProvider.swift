@@ -17,14 +17,14 @@ class BrewDataProvider {
                 print("  - \(key): \(String(describing: defaults.object(forKey: key)))")
             }
         }
-        
+
         guard let brewsJson = defaults.string(forKey: "brews") else {
             print("ERROR: No 'brews' key found in UserDefaults")
             return []
         }
-        
+
         print("Found brews JSON: \(brewsJson)")
-        
+
         guard let data = brewsJson.data(using: .utf8) else {
             print("ERROR: Could not convert brews string to data")
             return []
@@ -62,31 +62,31 @@ class BrewDataProvider {
             print("  ERROR: Missing or invalid 'settings' key")
             return nil
         }
-        
+
         print("  Checking for 'name' in settings...")
         guard let name = settingsDict["name"] as? String else {
             print("  ERROR: Missing or invalid 'name' in settings")
             return nil
         }
         print("  Found name: \(name)")
-        
+
         print("  Checking for fermentation days (with defaults)...")
         let firstFermentationDays = settingsDict["firstFermentationDays"] as? Int ?? 12
         let secondFermentationDays = settingsDict["secondFermentationDays"] as? Int ?? 3
         print("  First fermentation days: \(firstFermentationDays), Second: \(secondFermentationDays)")
-        
+
         print("  Checking for 'startDate'...")
         guard let startDateStr = dict["startDate"] as? String else {
             print("  ERROR: Missing or invalid 'startDate'")
             return nil
         }
         print("  Found startDate: \(startDateStr)")
-        
+
         print("  Checking for 'state' (with default)...")
         let stateDict = dict["state"] as? [String: Any]
         let stateType = stateDict?["type"] as? String ?? "com.paoapps.kombutime.domain.BrewState.FirstFermentation"
         print("  State type: \(stateType)")
-        
+
         let isFirstFermentation = stateType == "com.paoapps.kombutime.domain.BrewState.FirstFermentation"
         let flavor = (stateDict?["flavor"] as? String) ?? ""
         let fermentationDays = isFirstFermentation ? firstFermentationDays : secondFermentationDays

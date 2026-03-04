@@ -59,13 +59,13 @@ struct BrewWidgetEntryView: View {
         } else {
             switch family {
             case .systemSmall:
-                SmallWidgetView(brew: entry.brews.first!)
+                SmallWidgetView(brews: Array(entry.brews.prefix(2)))
             case .systemMedium:
                 MediumWidgetView(brews: Array(entry.brews.prefix(2)))
             case .systemLarge:
                 LargeWidgetView(brews: Array(entry.brews.prefix(4)))
             @unknown default:
-                SmallWidgetView(brew: entry.brews.first!)
+                SmallWidgetView(brews: Array(entry.brews.prefix(2)))
             }
         }
     }
@@ -88,28 +88,18 @@ struct EmptyStateView: View {
 }
 
 struct SmallWidgetView: View {
-    let brew: BrewData
+    let brews: [BrewData]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(brew.isFirstFermentation ? "🫙" : "🍾")
-                    .font(.system(size: 20))
-                Text(brew.name)
-                    .font(.system(size: 12, weight: .medium))
-                    .lineLimit(1)
-                Spacer()
+        VStack(alignment: .leading, spacing: 8) {
+            WidgetHeader()
+
+            ForEach(brews) { brew in
+                BrewRow(brew: brew, isCompact: true)
             }
 
             Spacer()
-
-            Text(daysText(for: brew))
-                .font(.system(size: 11, weight: .bold))
-                .foregroundColor(brew.daysRemaining < 0 ? .red : (brew.daysRemaining == 0 ? .green : .primary))
-
-            ProgressBar(progress: brew.progress, isFirstFermentation: brew.isFirstFermentation)
         }
-        .padding(16)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
@@ -127,7 +117,6 @@ struct MediumWidgetView: View {
 
             Spacer()
         }
-        .padding(16)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
@@ -145,19 +134,14 @@ struct LargeWidgetView: View {
 
             Spacer()
         }
-        .padding(16)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 
 struct WidgetHeader: View {
     var body: some View {
-        HStack {
-            Text("🫙")
-                .font(.system(size: 20))
-            Text("KombuTime")
-                .font(.system(size: 16, weight: .bold))
-        }
+        Text("KombuTime")
+            .font(.system(size: 16, weight: .bold))
     }
 }
 

@@ -66,11 +66,17 @@ fun AppSettingsView(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
+                .padding(top = padding.calculateTopPadding())
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
             // Prompt for flavor setting
             Card(
                 modifier = Modifier.fillMaxWidth()
@@ -140,6 +146,7 @@ fun AppSettingsView(
                         }
                     }
                 }
+            }
             }
         }
 
