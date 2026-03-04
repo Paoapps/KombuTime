@@ -9,6 +9,52 @@
 import WidgetKit
 import SwiftUI
 
+// MARK: - Widget Container
+private struct WidgetContainer<Content: View>: View {
+    let alignment: Alignment
+    let spacing: CGFloat
+    let content: Content
+
+    init(alignment: Alignment = .center, spacing: CGFloat = 8, @ViewBuilder content: () -> Content) {
+        self.alignment = alignment
+        self.spacing = spacing
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(alignment: alignment.horizontal, spacing: spacing) {
+            content
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)
+        .widgetBackground()
+    }
+}
+
+extension Alignment {
+    var horizontal: HorizontalAlignment {
+        switch self {
+        case .leading, .topLeading, .bottomLeading:
+            return .leading
+        case .trailing, .topTrailing, .bottomTrailing:
+            return .trailing
+        default:
+            return .center
+        }
+    }
+}
+
+// MARK: - View Extension for Widget Background
+extension View {
+    @ViewBuilder
+    func widgetBackground() -> some View {
+        if #available(iOS 17.0, *) {
+            self.containerBackground(.background, for: .widget)
+        } else {
+            self.padding()
+        }
+    }
+}
+
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> BrewEntry {
         BrewEntry(date: Date(), brews: [])
@@ -73,7 +119,7 @@ struct BrewWidgetEntryView: View {
 
 struct EmptyStateView: View {
     var body: some View {
-        VStack(spacing: 8) {
+        WidgetContainer {
             Text("🫙")
                 .font(.system(size: 32))
             Text("No active brews")
@@ -83,7 +129,6 @@ struct EmptyStateView: View {
                 .font(.system(size: 12))
                 .foregroundColor(.secondary)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
@@ -91,7 +136,7 @@ struct SmallWidgetView: View {
     let brews: [BrewData]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        WidgetContainer(alignment: .topLeading) {
             WidgetHeader()
 
             ForEach(brews) { brew in
@@ -100,7 +145,6 @@ struct SmallWidgetView: View {
 
             Spacer()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 
@@ -108,7 +152,7 @@ struct MediumWidgetView: View {
     let brews: [BrewData]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        WidgetContainer(alignment: .topLeading) {
             WidgetHeader()
 
             ForEach(brews) { brew in
@@ -117,7 +161,6 @@ struct MediumWidgetView: View {
 
             Spacer()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 
@@ -125,7 +168,7 @@ struct LargeWidgetView: View {
     let brews: [BrewData]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        WidgetContainer(alignment: .topLeading, spacing: 12) {
             WidgetHeader()
 
             ForEach(brews) { brew in
@@ -134,7 +177,6 @@ struct LargeWidgetView: View {
 
             Spacer()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 
