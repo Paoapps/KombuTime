@@ -119,6 +119,13 @@ KombuTime is a minimalist Kotlin Multiplatform kombucha brewing tracker for iOS 
 - Pass ViewModels only to top-level screens
 - Use `Output` data classes for ViewModel → View communication
 
+### Build Verification
+**CRITICAL**: When making code changes that affect iOS, always verify the build passes using Xcode:
+1. Use `mcp_xcode_BuildProject` tool to verify compilation
+2. Check for errors before committing
+3. Never assume changes work without testing both platforms
+4. iOS Kotlin/Native has different APIs than JVM - verify platform-specific code compiles
+
 ## Feature Development Guidelines
 
 ### Before Adding a Feature

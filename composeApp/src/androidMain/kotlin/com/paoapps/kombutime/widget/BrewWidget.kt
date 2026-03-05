@@ -1,6 +1,7 @@
 package com.paoapps.kombutime.widget
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -34,7 +35,7 @@ import androidx.glance.text.TextStyle
 import com.paoapps.kombutime.MainActivity
 import com.paoapps.kombutime.domain.Brew
 import com.paoapps.kombutime.domain.BrewState
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
@@ -45,6 +46,7 @@ import kotlin.math.max
 /**
  * Home screen widget showing active kombucha brews
  */
+@OptIn(kotlin.time.ExperimentalTime::class)
 class BrewWidget : GlanceAppWidget() {
 
     override val sizeMode = SizeMode.Responsive(
@@ -72,7 +74,7 @@ class BrewWidget : GlanceAppWidget() {
             modifier = GlanceModifier
                 .fillMaxSize()
                 .background(GlanceTheme.colors.background)
-                .clickable(actionStartActivity<MainActivity>())
+                .clickable(actionStartActivity(Intent(androidx.glance.LocalContext.current, MainActivity::class.java)))
                 .padding(16.dp)
         ) {
             if (brews.isEmpty()) {
@@ -181,7 +183,7 @@ class BrewWidget : GlanceAppWidget() {
     private fun BrewItem(brew: Brew, isCompact: Boolean) {
         val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
         val fermentationDays = when(brew.state) {
-            BrewState.FirstFermentation -> brew.settings.firstFermentationDays
+            is BrewState.FirstFermentation -> brew.settings.firstFermentationDays
             is BrewState.SecondFermentation -> brew.settings.secondFermentationDays
         }
         val remainingDays = fermentationDays - (today - brew.startDate).days
@@ -298,17 +300,19 @@ class BrewWidget : GlanceAppWidget() {
             modifier = GlanceModifier
                 .fillMaxWidth()
                 .height(8.dp)
-                .background(backgroundColor)
-        ) {
-            if (progress > 0) {
-                Box(
-                    modifier = GlanceModifier
-                        .fillMaxWidth(progress)
-                        .height(8.dp)
-                        .background(progressColor)
-                )
+                .background(backgroundColor),
+            content = {
+                if (progress > 0) {
+                    Box(
+                        modifier = GlanceModifier
+                            .width((progress * 100).dp)
+                            .height(8.dp)
+                            .background(progressColor),
+                        content = {}
+                    )
+                }
             }
-        }
+        )
     }
 }
 
