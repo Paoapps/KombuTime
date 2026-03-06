@@ -143,13 +143,30 @@ KombuTime is a minimalist Kotlin Multiplatform kombucha brewing tracker for iOS 
 ✅ Notification improvements (quick actions, reminders)
 ✅ Accessibility improvements
 
-### Unacceptable Feature Types
-❌ Anything requiring a database
-❌ Cloud sync or accounts
-❌ Social features
-❌ Complex data entry
-❌ Historical analysis
-❌ Recipe management
+### Feature Considerations
+When evaluating new features, consider:
+- **Does it maintain core simplicity?** The main flow (add brew → track → complete) must remain dead simple
+- **Is it optional?** Advanced features should be opt-in, not forced on all users
+- **Does it add cognitive load?** Avoid cluttering the main interface
+- **Can it be implemented without compromising performance or reliability?**
+
+Features that were previously considered unacceptable may be acceptable if:
+✅ They're optional/hidden from the default experience
+✅ They don't slow down or complicate the core workflow
+✅ They're clearly separated from essential functionality
+✅ They add value without requiring ongoing maintenance complexity
+
+Examples of potentially acceptable advanced features:
+- Historical analysis (if opt-in, doesn't require complex UI in main flow)
+- Social features (if completely optional, doesn't require account creation for core app)
+- Recipe management (if it's a separate optional section)
+- Cloud sync (if it's transparent and works without user configuration)
+
+Still generally avoid:
+❌ Features that make the core app harder to use
+❌ Mandatory account creation or login
+❌ Complex multi-step workflows for basic tasks
+❌ Features that significantly increase maintenance burden
 
 ## Testing Strategy
 
