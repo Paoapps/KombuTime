@@ -41,89 +41,6 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ---
 
-### 2. Home Screen Widget
-**Status**: ✅ **IMPLEMENTED** (March 2026)
-**Effort**: High
-**Impact**: High
-
-**Description:**
-- iOS/Android widgets showing active brews
-- Display progress bars and days remaining
-- "At-a-glance" view without opening app
-- Tap widget to open app
-
-**Variants:**
-- Small: Shows most urgent brew
-- Medium: Shows 2-3 brews
-- Large: Shows all brews (up to 4)
-
-**Implementation:**
-See `docs/WIDGET_SETUP.md` for full documentation.
-
-**Platform Details:**
-- **Android**: Jetpack Glance widgets with responsive sizing
-- **iOS**: WidgetKit with App Groups for data sharing
-- Updates automatically when brews change
-- Daily refresh at midnight
-- Empty state when no brews active
-
-**Why it fits:**
-- Perfect for "quick check" use case mentioned in README
-- No new features, just better access to existing data
-- Aligns with "at-a-glance overview" feature
-
----
-
-## 🎨 Polish & UX Improvements
-
-### 4. Visual State Indicators
-**Status**: ✅ **IMPLEMENTED** (March 2026)
-**Effort**: Low
-**Impact**: Medium
-
-**Description:**
-- Show "✓ Ready!" when brew is complete (days remaining = 0)
-- Color-coded text for different states:
-  - Green for ready (0 days)
-  - Red for overdue (< 0 days)
-  - Black for in progress (> 0 days)
-
-**Implementation:**
-- Updated `BrewsViewModel.kt` to show "✓ Ready!" message when remainingDays == 0
-- Green text color for ready state
-- Consistent with widget implementation
-
-**Why it fits:**
-- Makes app more delightful to use
-- Clearer visual communication
-- Doesn't add complexity
-
-**Note:** Subtle pulsing animation and success confetti remain unimplemented (optional enhancements).
-
----
-
-### 5. Empty State Design
-**Status**: ✅ **IMPLEMENTED** (March 2026)
-**Effort**: Low
-**Impact**: Low
-
-**Description:**
-- Friendly message when brew list is empty
-- "Start your first brew!" with illustration
-- Simple call-to-action
-
-**Example:**
-```
-🫙
-No active brews
-
-Tap "Add" to start your first kombucha!
-```
-
-**Why it fits:**
-- Better onboarding experience
-- Encourages first use
-
 ---
 
 ## 🔔 Notification Enhancements
@@ -383,26 +300,23 @@ These ideas violate the minimalist philosophy:
 
 ## 📋 Implementation Priority
 
-### Phase 1: Quick Wins (1-2 weeks) ✅ COMPLETED
-1. ✅ Empty state design
-2. ✅ Visual state indicators (Ready! checkmark)
-3. 📊 Simple completion counter (not yet implemented)
+### Phase 1: Quick Wins (1-2 weeks)
+1. 📊 Simple completion counter
 
 ### Phase 2: UX Improvements (2-4 weeks)
-4. ⭐ Swipe gestures
-5. 🔔 Pre-notification reminders
-6. 🔧 Dark mode refinement
+2. ⭐ Swipe gestures
+3. 🔔 Pre-notification reminders
+4. 🔧 Dark mode refinement
 
-### Phase 3: Major Features (1-2 months) ✅ COMPLETED
-7. ✅ Home screen widgets
-8. 🔔 Notification quick actions (not yet implemented)
-9. 🔧 Backup & restore (not yet implemented)
+### Phase 3: Major Features (1-2 months)
+5. 🔔 Notification quick actions
+6. 🔧 Backup & restore
 
 ### Phase 4: Nice-to-Haves (Future)
-10. 💡 Brew templates
-11. 💡 Custom emoji per brew
-12. 💡 Quiet hours
-13. 📊 Last brew date indicator
+7. 💡 Brew templates
+8. 💡 Custom emoji per brew
+9. 💡 Quiet hours
+10. 📊 Last brew date indicator
 
 ---
 
