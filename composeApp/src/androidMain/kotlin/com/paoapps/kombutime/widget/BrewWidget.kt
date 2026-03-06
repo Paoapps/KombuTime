@@ -164,11 +164,6 @@ class BrewWidget : GlanceAppWidget() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "🫙",
-                style = TextStyle(fontSize = 20.sp)
-            )
-            Spacer(modifier = GlanceModifier.width(8.dp))
-            Text(
                 text = "KombuTime",
                 style = TextStyle(
                     fontSize = 16.sp,
