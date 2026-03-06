@@ -53,6 +53,8 @@ class MainActivity : ComponentActivity() {
             val intent = Intent(context, NotificationReceiver::class.java).apply {
                 putExtra("notificationTitle", notification.title)
                 putExtra("notificationMessage", notification.message)
+                putExtra("brewNameNumber", notification.brewNameNumber)
+                putExtra("notificationId", notification.id)
             }
 
             val pendingIntent = PendingIntent.getBroadcast(

@@ -28,6 +28,12 @@
             </intent-filter>
         </receiver>
 
+        <!-- Receiver for notification actions -->
+        <receiver
+            android:name=".NotificationActionReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
         <!-- Widget receiver -->
         <receiver
             android:name="com.paoapps.kombutime.widget.BrewWidgetReceiver"

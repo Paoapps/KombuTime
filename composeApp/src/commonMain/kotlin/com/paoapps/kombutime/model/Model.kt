@@ -180,7 +180,9 @@ class Model: KoinComponent {
                         is BrewState.FirstFermentation -> getString(Res.string.notification_first_fermentation_message, brewName)
                         is BrewState.SecondFermentation -> getString(Res.string.notification_second_fermentation_message, brewName)
                     },
-                    time = brew.endDate.atTime(_notificationTime.value).toInstant(TimeZone.currentSystemDefault()).toLocalDateTime(TimeZone.currentSystemDefault())
+                    time = brew.endDate.atTime(_notificationTime.value).toInstant(TimeZone.currentSystemDefault()).toLocalDateTime(TimeZone.currentSystemDefault()),
+                    brewNameNumber = brew.settings.nameNumber,
+                    isSecondFermentation = brew.state is BrewState.SecondFermentation
                 )
             }
             scheduleNotifications(notifications)
@@ -213,6 +215,44 @@ class Model: KoinComponent {
         brews.removeAt(index)
         _brews.value = brews
         save()
+    }
+
+    /**
+     * Complete a brew by its nameNumber (used by notification actions)
+     */
+    fun completeByNameNumber(brewNameNumber: Int) {
+        val index = _brews.value.indexOfFirst { it.settings.nameNumber == brewNameNumber }
+        if (index != -1) {
+            complete(index)
+        }
+    }
+
+    /**
+     * Extend fermentation by 1 day for a brew by its nameNumber (used by notification actions)
+     */
+    fun extendFermentationByNameNumber(brewNameNumber: Int) {
+        val brew = _brews.value.firstOrNull { it.settings.nameNumber == brewNameNumber }
+        if (brew != null) {
+            _brews.value = _brews.value.map {
+                if (it.settings.nameNumber == brewNameNumber) {
+                    when (brew.state) {
+                        is BrewState.FirstFermentation -> {
+                            it.copy(settings = it.settings.copy(
+                                firstFermentationDays = it.settings.firstFermentationDays + 1
+                            ))
+                        }
+                        is BrewState.SecondFermentation -> {
+                            it.copy(settings = it.settings.copy(
+                                secondFermentationDays = it.settings.secondFermentationDays + 1
+                            ))
+                        }
+                    }
+                } else {
+                    it
+                }
+            }
+            save()
+        }
     }
 
     fun incrementStartDate(brewIndex: Int) {

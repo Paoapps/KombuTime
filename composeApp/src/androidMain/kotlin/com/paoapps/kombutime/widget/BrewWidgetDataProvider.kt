@@ -30,7 +30,7 @@ object BrewWidgetDataProvider {
 
             val brews = jsonParser.decodeFromString(ListSerializer(Brew.serializer()), brewsJson)
             Log.d("BrewWidget", "Successfully parsed ${brews.size} brews")
-            
+
             // Sort by days remaining (ascending) - most urgent brews first
             val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
             brews.sortedBy { brew ->

@@ -45,7 +45,7 @@ class BrewDataProvider {
                     return result
                 }
                 print("Total brews parsed: \(brews.count)")
-                
+
                 // Sort by days remaining (ascending) - most urgent brews first
                 return brews.sorted { $0.daysRemaining < $1.daysRemaining }
             } else {

@@ -127,15 +127,27 @@ All flavor strings are localized in EN, NL, and DE:
 
 ### Notification System
 
-**Android** (`NotificationReceiver.kt`):
+**Android** (`NotificationReceiver.kt`, `NotificationActionReceiver.kt`):
 - Uses `AlarmManager` for precise timing
 - Creates notification channel on first run
 - Notification includes brew name and completion message
+- Quick actions: "Complete" and "Extend 1 Day" buttons
+- Actions handled by `NotificationActionReceiver` broadcast receiver
+- Actions use Koin to access Model instance for state updates
 
 **iOS** (`ContentView.swift`):
 - Uses `UNUserNotificationCenter`
 - Requests permission on app launch
 - Schedules local notifications with identifier
+- Quick actions via `UNNotificationAction` with category "BREW_ACTIONS"
+- Actions handled by `UNUserNotificationCenterDelegate` in Coordinator
+- Delegate accesses Model through Koin for state updates
+
+**Quick Actions Implementation:**
+- Both platforms provide "Complete" and "Extend 1 Day" actions
+- Notifications include `brewNameNumber` for brew identification
+- Model methods: `completeByNameNumber()`, `extendFermentationByNameNumber()`
+- Actions trigger notification rescheduling automatically via `save()`
 
 ### Settings Persistence
 
@@ -436,6 +448,12 @@ rm -rf ~/.gradle/caches/
 - [ ] Adjust start date
 - [ ] Change notification time
 - [ ] Verify notifications appear
+- [ ] Test notification "Complete" action
+- [ ] Test notification "Extend 1 Day" action
+- [ ] Verify brew updates after notification actions
+- [ ] Test on different screen sizes
+- [ ] Test in light/dark mode
+- [ ] Test with multiple brews (5+)
 - [ ] Test on different screen sizes
 - [ ] Test in light/dark mode
 - [ ] Test with multiple brews (5+)

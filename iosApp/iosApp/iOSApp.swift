@@ -13,7 +13,7 @@ struct iOSApp: App {
             WidgetCenter.shared.reloadAllTimelines()
         }
     }
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView()

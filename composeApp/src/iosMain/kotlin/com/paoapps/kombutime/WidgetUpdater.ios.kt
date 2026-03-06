@@ -13,7 +13,7 @@ actual object WidgetUpdater {
         val defaults = NSUserDefaults(suiteName = "group.com.paoapps.kombutime")
         defaults?.setObject(NSDate(), forKey = "lastUpdate")
         defaults?.synchronize()
-        
+
         // Post notification that Swift code can observe to trigger widget reload
         platform.Foundation.NSNotificationCenter.defaultCenter.postNotificationName(
             "BrewDataChanged",

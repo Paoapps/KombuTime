@@ -46,7 +46,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 ## 🔔 Notification Enhancements
 
 ### 7. Notification Quick Actions
-**Status**: Not implemented
+**Status**: ✅ **IMPLEMENTED** (March 2026)
 **Effort**: Medium
 **Impact**: High
 
@@ -58,9 +58,16 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 **Implementation Notes:**
 ```kotlin
-// Android: PendingIntent for actions
-// iOS: UNNotificationAction in ContentView.swift
+// Android: PendingIntent for actions in NotificationActionReceiver.kt
+// iOS: UNNotificationAction in ContentView.swift with delegate
 ```
+
+**Implementation Details:**
+- Android: `NotificationActionReceiver.kt` handles actions via broadcast receiver
+- iOS: `UNUserNotificationCenterDelegate` handles action responses
+- Actions: Complete brew or extend fermentation by 1 day
+- Notification data includes `brewNameNumber` for identification
+- Model methods: `completeByNameNumber()` and `extendFermentationByNameNumber()`
 
 **Why it fits:**
 - Reduces friction for common actions
@@ -309,7 +316,7 @@ These ideas violate the minimalist philosophy:
 4. 🔧 Dark mode refinement
 
 ### Phase 3: Major Features (1-2 months)
-5. 🔔 Notification quick actions
+5. ~~🔔 Notification quick actions~~ ✅ **COMPLETED**
 6. 🔧 Backup & restore
 
 ### Phase 4: Nice-to-Haves (Future)

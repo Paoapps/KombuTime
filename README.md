@@ -5,7 +5,7 @@ Brew your kombucha with confidence and ease using Kombu Time, the app designed t
 Features:
 
 - **Straightforward Brew Management**: Easily manage your kombucha brews with clear tracking of both first and second fermentations. Add optional flavor notes for second fermentation to keep track of different flavor experiments.
-- **Timely Notifications**: Receive notifications exactly when you need them—when it's time to bottle after the first fermentation, and when your kombucha is ready to enjoy after the second. No more guessing or missed brewing opportunities.
+- **Timely Notifications**: Receive notifications exactly when you need them—when it's time to bottle after the first fermentation, and when your kombucha is ready to enjoy after the second. Quick actions let you complete a brew or extend fermentation by 1 day right from the notification—no need to open the app. No more guessing or missed brewing opportunities.
 - **At-a-Glance Brew Overview**: See the status of all your brews in one clean, uncluttered view. Know exactly when to start a new brew or when to bottle, without any distractions.
 - **Flavor Management**: Track flavors you've used with a built-in picker, pre-populated with popular options. Add, edit, or delete your own flavors, or skip flavor input entirely—it's completely optional.
 

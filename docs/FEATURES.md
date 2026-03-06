@@ -33,12 +33,14 @@ Receive timely notifications when fermentation stages complete.
 - Notification when second fermentation completes (ready to drink)
 - Custom notification time (default: 9:00 AM)
 - Platform-native notification support
+- **Quick Actions**: Complete brew or extend fermentation by 1 day directly from notification
 
 **Platform Implementation:**
-- **Android**: `NotificationReceiver.kt` using AlarmManager
-- **iOS**: `ContentView.swift` using UNUserNotificationCenter
+- **Android**: `NotificationReceiver.kt` using AlarmManager, `NotificationActionReceiver.kt` for quick actions
+- **iOS**: `ContentView.swift` using UNUserNotificationCenter with UNNotificationAction
 - Notification permissions requested on first launch
 - Notifications reschedule on brew state changes
+- Quick action buttons: "Complete" and "Extend 1 Day"
 
 ---
 

@@ -98,7 +98,9 @@ data class Notification(
     val id: Int,
     val time: LocalDateTime,
     val title: String,
-    val message: String
+    val message: String,
+    val brewNameNumber: Int,
+    val isSecondFermentation: Boolean
 )
 
 @Composable

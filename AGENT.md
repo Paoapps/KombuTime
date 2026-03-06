@@ -92,10 +92,12 @@ KombuTime is a minimalist Kotlin Multiplatform kombucha brewing tracker for iOS 
 
 - Notifications scheduled for end of each fermentation stage
 - Platform-specific implementation:
-  - **Android**: AlarmManager with PendingIntent
-  - **iOS**: UNUserNotificationCenter
+  - **Android**: AlarmManager with PendingIntent, NotificationActionReceiver for quick actions
+  - **iOS**: UNUserNotificationCenter with UNNotificationAction
 - Configurable notification time (default: 9:00 AM)
 - All notifications rescheduled on app state changes
+- Quick actions: "Complete" and "Extend 1 Day" buttons on notifications
+- Actions handled outside app lifecycle using Koin for Model access
 
 ## Coding Conventions
 
