@@ -562,7 +562,7 @@ private fun ModernBrewCard(
                         fontWeight = FontWeight.SemiBold
                     )
                 }
-                
+
                 // Settings button - square
                 Button(
                     onClick = onOpenSettings,
