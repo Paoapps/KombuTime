@@ -25,16 +25,16 @@ import kotlin.time.Clock
  * Stores completed brews using JSON in platform Settings.
  */
 class HistoryRepository {
-    
+
     private val jsonParser = Json { prettyPrint = true }
     private val storage: Settings = SettingsFactory.createSettings()
-    
+
     private val _historicalBrews = MutableStateFlow(loadHistory())
     val historicalBrews: Flow<List<HistoricalBrew>> = _historicalBrews
-    
+
     private val _saveToHistory = MutableStateFlow(storage["saveToHistory", true])
     val saveToHistory: Flow<Boolean> = _saveToHistory
-    
+
     /**
      * Load history from storage
      */
@@ -47,15 +47,15 @@ class HistoryRepository {
             emptyList()
         }
     }
-    
+
     /**
      * Save a completed brew to history
      */
     fun saveCompletedBrew(brew: Brew) {
         if (!_saveToHistory.value) return
-        
+
         val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-        
+
         // Calculate the bottled date (when F1 ended)
         // If currently in F2, the bottled date was when F2 started
         val bottledDate = if (brew.state is BrewState.SecondFermentation) {
@@ -64,7 +64,7 @@ class HistoryRepository {
             // If in F1, it's being completed now
             now
         }
-        
+
         // Calculate original F1 start date
         val originalStartDate = if (brew.state is BrewState.SecondFermentation) {
             // F2 started at brew.startDate, so F1 started firstFermentationDays before that
@@ -72,17 +72,17 @@ class HistoryRepository {
         } else {
             brew.startDate
         }
-        
+
         val teaType = when (brew.state) {
             is BrewState.FirstFermentation -> brew.state.teaType
             is BrewState.SecondFermentation -> ""  // Tea type is only tracked in F1
         }
-        
+
         val flavor = when (brew.state) {
             is BrewState.FirstFermentation -> ""
             is BrewState.SecondFermentation -> brew.state.flavor
         }
-        
+
         val historicalBrew = HistoricalBrew(
             id = Random.nextLong().toString(),
             nameNumber = brew.settings.nameNumber,
@@ -94,13 +94,13 @@ class HistoryRepository {
             firstFermentationDays = brew.settings.firstFermentationDays,
             secondFermentationDays = brew.settings.secondFermentationDays
         )
-        
+
         _historicalBrews.value = (_historicalBrews.value + historicalBrew)
             .sortedByDescending { it.completedDate }  // Most recent first
-        
+
         saveHistory()
     }
-    
+
     /**
      * Clear all history
      */
@@ -108,7 +108,7 @@ class HistoryRepository {
         _historicalBrews.value = emptyList()
         saveHistory()
     }
-    
+
     /**
      * Delete a specific historical brew
      */
@@ -116,7 +116,7 @@ class HistoryRepository {
         _historicalBrews.value = _historicalBrews.value.filter { it.id != id }
         saveHistory()
     }
-    
+
     /**
      * Toggle saving to history
      */
@@ -124,7 +124,7 @@ class HistoryRepository {
         _saveToHistory.value = enabled
         storage["saveToHistory"] = enabled
     }
-    
+
     /**
      * Export history as CSV
      */
@@ -138,23 +138,23 @@ class HistoryRepository {
         }
         return header + rows
     }
-    
+
     /**
      * Export history as JSON
      */
     fun exportAsJSON(): String {
         return jsonParser.encodeToString(
-            ListSerializer(HistoricalBrew.serializer()), 
+            ListSerializer(HistoricalBrew.serializer()),
             _historicalBrews.value
         )
     }
-    
+
     /**
      * Get statistics from history
      */
     fun getStatistics(): HistoryStatistics {
         val brews = _historicalBrews.value
-        
+
         if (brews.isEmpty()) {
             return HistoryStatistics(
                 totalBrews = 0,
@@ -164,14 +164,14 @@ class HistoryRepository {
                 averageF2Days = 0.0
             )
         }
-        
+
         val firstBrew = brews.minByOrNull { it.startDate }
         val flavorsWithCount = brews
             .filter { it.flavor.isNotEmpty() }
             .groupingBy { it.flavor }
             .eachCount()
         val mostUsedFlavor = flavorsWithCount.maxByOrNull { it.value }
-        
+
         return HistoryStatistics(
             totalBrews = brews.size,
             firstBrewDate = firstBrew?.startDate,
@@ -180,13 +180,13 @@ class HistoryRepository {
             averageF2Days = brews.map { it.secondFermentationDays }.average()
         )
     }
-    
+
     /**
      * Save history to storage
      */
     private fun saveHistory() {
         storage["history"] = jsonParser.encodeToString(
-            ListSerializer(HistoricalBrew.serializer()), 
+            ListSerializer(HistoricalBrew.serializer()),
             _historicalBrews.value
         )
     }

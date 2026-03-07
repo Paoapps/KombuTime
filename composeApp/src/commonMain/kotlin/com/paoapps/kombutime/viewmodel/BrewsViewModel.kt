@@ -116,9 +116,9 @@ class BrewsViewModel: ViewModel(), KoinComponent {
                     Res.plurals.remaining_days.toUiText(remainingDays, remainingDays)
                 }
                 val textColor = when {
-                    remainingDays < 0 -> Color.Red
-                    remainingDays == 0 -> Color(0xFF2E7D32) // Green
-                    else -> Color.Black
+                    remainingDays < 0 -> Color(0xFFFF3B30) // Red
+                    remainingDays == 0 -> Color(0xFF34C759) // Green
+                    else -> Color.Unspecified // Use default text color from theme
                 }
 
                 val color = when(brew.state) {

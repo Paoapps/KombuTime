@@ -1,14 +1,16 @@
 package com.paoapps.kombutime.ui.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -16,11 +18,12 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -31,12 +34,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.paoapps.kombutime.model.HistoryRepository
+import com.paoapps.kombutime.ui.theme.DesignSystem
 import com.paoapps.kombutime.viewmodel.HistoryViewModel
 import kombutime.composeapp.generated.resources.Res
-import kombutime.composeapp.generated.resources.cancel
 import kombutime.composeapp.generated.resources.history_clear
 import kombutime.composeapp.generated.resources.history_clear_count
 import kombutime.composeapp.generated.resources.history_clear_dialog_cancel
@@ -51,7 +56,6 @@ import kombutime.composeapp.generated.resources.manage_flavors
 import kombutime.composeapp.generated.resources.manage_flavors_description
 import kombutime.composeapp.generated.resources.manage_tea_types
 import kombutime.composeapp.generated.resources.manage_tea_types_description
-import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
@@ -66,190 +70,158 @@ fun AppSettingsView(
     val historyViewModel: HistoryViewModel = viewModel { HistoryViewModel() }
     val historyOutput by historyViewModel.output.collectAsState()
     val saveToHistory by historyRepository.saveToHistory.collectAsState(initial = true)
-    
+
     var showClearDialog by remember { mutableStateOf(false) }
-    
-    Column(
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .background(DesignSystem.Colors.backgroundPrimary)
     ) {
-        // Flavor management card
-        Card(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onNavigateToFlavors() }
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(DesignSystem.Spacing.screenPadding),
+            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.medium)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(Res.string.manage_flavors),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = stringResource(Res.string.manage_flavors_description),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = null
-                )
-            }
-        }
+            ModernSettingCard(
+                title = stringResource(Res.string.manage_flavors),
+                description = stringResource(Res.string.manage_flavors_description),
+                onClick = onNavigateToFlavors
+            )
 
-        // Tea type management card
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onNavigateToTeaTypes() }
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(Res.string.manage_tea_types),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = stringResource(Res.string.manage_tea_types_description),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = null
-                )
-            }
-        }
-        
-        // History Settings Section
-        Spacer(modifier = Modifier.height(8.dp))
-        
-        Text(
-            text = stringResource(Res.string.history_settings_title),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-        
-        // Save to history toggle
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(Res.string.history_save_setting),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = stringResource(Res.string.history_save_description),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-                Switch(
-                    checked = saveToHistory,
-                    onCheckedChange = { historyRepository.setSaveToHistory(it) }
-                )
-            }
-        }
-        
-        // Export history button
-        if (historyOutput.historicalBrews.isNotEmpty()) {
+            ModernSettingCard(
+                title = stringResource(Res.string.manage_tea_types),
+                description = stringResource(Res.string.manage_tea_types_description),
+                onClick = onNavigateToTeaTypes
+            )
+
             Card(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = DesignSystem.Elevation.small,
+                        shape = DesignSystem.CornerRadius.large
+                    ),
+                shape = DesignSystem.CornerRadius.large,
+                colors = CardDefaults.cardColors(
+                    containerColor = DesignSystem.Colors.cardBackground
+                )
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.padding(DesignSystem.Spacing.cardPadding),
+                    verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.medium)
                 ) {
                     Text(
-                        text = stringResource(Res.string.history_export),
-                        style = MaterialTheme.typography.titleMedium
+                        text = stringResource(Res.string.history_settings_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = DesignSystem.Colors.textPrimary
                     )
-                    
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Button(
-                            onClick = {
-                                val csv = historyViewModel.exportCSV()
-                                onExportHistory(csv)
-                            },
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text("Export CSV")
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = stringResource(Res.string.history_save_setting),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium,
+                                color = DesignSystem.Colors.textPrimary
+                            )
+                            Text(
+                                text = stringResource(Res.string.history_save_description),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = DesignSystem.Colors.textSecondary
+                            )
                         }
-                        
-                        Button(
-                            onClick = {
-                                val json = historyViewModel.exportJSON()
-                                onExportHistory(json)
-                            },
-                            modifier = Modifier.weight(1f)
+                        Switch(
+                            checked = saveToHistory,
+                            onCheckedChange = { historyRepository.setSaveToHistory(it) },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = DesignSystem.Colors.accentGreen,
+                                checkedTrackColor = DesignSystem.Colors.accentGreen.copy(alpha = 0.5f)
+                            )
+                        )
+                    }
+
+                    if (historyOutput.historicalBrews.isNotEmpty()) {
+                        HorizontalDivider()
+
+                        Text(
+                            text = stringResource(Res.string.history_export),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Medium,
+                            color = DesignSystem.Colors.textPrimary
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.small)
                         ) {
-                            Text("Export JSON")
+                            Button(
+                                onClick = {
+                                    val csv = historyViewModel.exportCSV()
+                                    onExportHistory(csv)
+                                },
+                                modifier = Modifier.weight(1f),
+                                shape = DesignSystem.CornerRadius.medium
+                            ) {
+                                Text("Export CSV")
+                            }
+
+                            Button(
+                                onClick = {
+                                    val json = historyViewModel.exportJSON()
+                                    onExportHistory(json)
+                                },
+                                modifier = Modifier.weight(1f),
+                                shape = DesignSystem.CornerRadius.medium
+                            ) {
+                                Text("Export JSON")
+                            }
+                        }
+
+                        HorizontalDivider()
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { showClearDialog = true }
+                                .padding(vertical = DesignSystem.Spacing.small),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = stringResource(Res.string.history_clear),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Medium,
+                                    color = DesignSystem.Colors.accentRed
+                                )
+                                Text(
+                                    text = stringResource(Res.string.history_clear_count, historyOutput.historicalBrews.size),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = DesignSystem.Colors.textSecondary
+                                )
+                            }
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = null,
+                                tint = DesignSystem.Colors.accentRed
+                            )
                         }
                     }
                 }
             }
-            
-            // Clear history button
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showClearDialog = true }
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(Res.string.history_clear),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                        Text(
-                            text = stringResource(Res.string.history_clear_count, historyOutput.historicalBrews.size),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
+
+            Spacer(modifier = Modifier.height(DesignSystem.Spacing.large))
         }
     }
-    
-    // Clear history confirmation dialog
+
     if (showClearDialog) {
         AlertDialog(
             onDismissRequest = { showClearDialog = false },
@@ -273,7 +245,7 @@ fun AppSettingsView(
                 ) {
                     Text(
                         text = stringResource(Res.string.history_clear_dialog_confirm),
-                        color = MaterialTheme.colorScheme.error
+                        color = DesignSystem.Colors.accentRed
                     )
                 }
             },
@@ -283,5 +255,55 @@ fun AppSettingsView(
                 }
             }
         )
+    }
+}
+
+@Composable
+private fun ModernSettingCard(
+    title: String,
+    description: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = DesignSystem.Elevation.small,
+                shape = DesignSystem.CornerRadius.large
+            )
+            .clickable(onClick = onClick),
+        shape = DesignSystem.CornerRadius.large,
+        colors = CardDefaults.cardColors(
+            containerColor = DesignSystem.Colors.cardBackground
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(DesignSystem.Spacing.cardPadding),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = DesignSystem.Colors.textPrimary
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = DesignSystem.Colors.textSecondary
+                )
+            }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = DesignSystem.Colors.textTertiary
+            )
+        }
     }
 }

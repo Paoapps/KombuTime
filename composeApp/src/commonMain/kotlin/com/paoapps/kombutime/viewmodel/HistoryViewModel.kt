@@ -15,12 +15,12 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class HistoryViewModel : ViewModel(), KoinComponent {
-    
+
     private val historyRepository: HistoryRepository by inject()
-    
+
     val output: StateFlow<Output> = historyRepository.historicalBrews.map { brews ->
         val statistics = historyRepository.getStatistics()
-        
+
         Output(
             historicalBrews = brews.map { brew ->
                 HistoricalBrewItem(
@@ -48,25 +48,25 @@ class HistoryViewModel : ViewModel(), KoinComponent {
             isEmpty = true
         )
     )
-    
+
     fun exportCSV(): String {
         return historyRepository.exportAsCSV()
     }
-    
+
     fun exportJSON(): String {
         return historyRepository.exportAsJSON()
     }
-    
+
     fun clearHistory() {
         historyRepository.clearHistory()
     }
-    
+
     data class Output(
         val historicalBrews: List<HistoricalBrewItem>,
         val statistics: HistoryStatistics,
         val isEmpty: Boolean
     )
-    
+
     data class HistoricalBrewItem(
         val id: String,
         val name: String,

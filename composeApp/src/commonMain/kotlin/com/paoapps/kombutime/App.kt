@@ -1,28 +1,51 @@
 package com.paoapps.kombutime
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.LocalDrink
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.History
+import androidx.compose.material.icons.outlined.LocalDrink
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,6 +63,7 @@ import androidx.navigation.compose.rememberNavController
 import com.paoapps.kombutime.model.Model
 import com.paoapps.kombutime.model.HistoryRepository
 import com.paoapps.kombutime.ui.theme.AppTheme
+import com.paoapps.kombutime.ui.theme.DesignSystem
 import com.paoapps.kombutime.ui.view.AppSettingsView
 import com.paoapps.kombutime.ui.view.BrewsView
 import com.paoapps.kombutime.ui.view.FlavorManagementView
@@ -90,21 +114,40 @@ fun AppBar(
     actions: @Composable RowScope.() -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    TopAppBar(
-        title = { Text(stringResource(currentScreen.titleRes)) },
-        actions = actions,
+    Surface(
         modifier = modifier,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(Res.string.back_button)
-                    )
+        color = DesignSystem.Colors.backgroundSecondary,
+        shadowElevation = DesignSystem.Elevation.small
+    ) {
+        TopAppBar(
+            title = {
+                Text(
+                    text = stringResource(currentScreen.titleRes),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = DesignSystem.Colors.textPrimary
+                )
+            },
+            actions = actions,
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = DesignSystem.Colors.backgroundSecondary,
+                titleContentColor = DesignSystem.Colors.textPrimary,
+                actionIconContentColor = DesignSystem.Colors.accentBlue
+            ),
+            navigationIcon = {
+                if (canNavigateBack) {
+                    IconButton(onClick = navigateUp) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(Res.string.back_button),
+                            tint = DesignSystem.Colors.accentBlue
+                        )
+                    }
                 }
             }
-        }
-    )
+        )
+    }
 }
 
 data class Notification(
@@ -121,33 +164,79 @@ private fun BottomNavigationBar(
     selectedTab: Int = 0,
     onTabSelected: (Int) -> Unit = {}
 ) {
-    NavigationBar {
-        NavigationBarItem(
-            selected = selectedTab == 0,
-            onClick = { onTabSelected(0) },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.LocalDrink,
-                    contentDescription = null
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = DesignSystem.Elevation.medium,
+                shape = RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp)
+            ),
+        color = DesignSystem.Colors.tabBarBackground
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = DesignSystem.Spacing.extraLarge,
+                    vertical = DesignSystem.Spacing.small
                 )
-            },
-            label = {
-                Text(stringResource(Res.string.tab_active))
-            }
-        )
-        NavigationBarItem(
-            selected = selectedTab == 1,
-            onClick = { onTabSelected(1) },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.History,
-                    contentDescription = null
-                )
-            },
-            label = {
-                Text(stringResource(Res.string.tab_history))
-            }
-        )
+                .height(56.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+        ) {
+            TabBarItem(
+                selected = selectedTab == 0,
+                onClick = { onTabSelected(0) },
+                icon = if (selectedTab == 0) Icons.Filled.LocalDrink else Icons.Outlined.LocalDrink,
+                label = stringResource(Res.string.tab_active),
+                modifier = Modifier.weight(1f)
+            )
+
+            TabBarItem(
+                selected = selectedTab == 1,
+                onClick = { onTabSelected(1) },
+                icon = if (selectedTab == 1) Icons.Filled.History else Icons.Outlined.History,
+                label = stringResource(Res.string.tab_history),
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun TabBarItem(
+    selected: Boolean,
+    onClick: () -> Unit,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        color = Color.Transparent
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = DesignSystem.Spacing.extraSmall),
+            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                tint = if (selected) DesignSystem.Colors.tabBarSelected else DesignSystem.Colors.tabBarUnselected,
+                modifier = Modifier.size(26.dp)
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = if (selected) DesignSystem.Colors.tabBarSelected else DesignSystem.Colors.tabBarUnselected,
+                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+                maxLines = 1
+            )
+        }
     }
 }
 
@@ -165,7 +254,7 @@ fun App(
         // Create ViewModels inside KoinApplication context so Koin is initialized
         val viewModel = appViewModel ?: viewModel { AppViewModel() }
         val brewsVM = brewsViewModel ?: viewModel { BrewsViewModel() }
-        
+
         // Tab selection state
         var selectedTab by remember { mutableStateOf(0) }
 
@@ -181,17 +270,15 @@ fun App(
             viewModel.setScheduleNotifications(scheduleNotifications)
         }
         AppTheme {
-            // Blue background for entire screen (including status bar area)
+            // Modern background for entire screen
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color(0xFF1B264F))
+                    .background(DesignSystem.Colors.backgroundPrimary)
             ) {
-                // Main content with status bar padding
+                // Main content
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .windowInsetsPadding(WindowInsets.statusBars)
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     Scaffold(
                         containerColor = Color.Transparent,
@@ -206,11 +293,9 @@ fun App(
                                             IconButton(onClick = { navController.navigate(Screen.AppSettings.name) }) {
                                                 Icon(
                                                     imageVector = Icons.Default.Settings,
-                                                    contentDescription = stringResource(Res.string.app_settings)
+                                                    contentDescription = stringResource(Res.string.app_settings),
+                                                    tint = DesignSystem.Colors.accentBlue
                                                 )
-                                            }
-                                            Button(onClick = { brewsVM.checkIfShouldPromptForTeaType(namePrefix) }) {
-                                                Text(stringResource(Res.string.brews_add))
                                             }
                                         }
                                         Screen.Settings -> {}
@@ -229,14 +314,30 @@ fun App(
                                     onTabSelected = { newTab -> selectedTab = newTab }
                                 )
                             }
+                        },
+                        floatingActionButton = {
+                            // Show FAB only on Active tab
+                            if (currentScreen == Screen.Brews && selectedTab == 0) {
+                                FloatingActionButton(
+                                    onClick = { brewsVM.checkIfShouldPromptForTeaType(namePrefix) },
+                                    containerColor = DesignSystem.Colors.accentBlue,
+                                    contentColor = Color.White,
+                                    shape = DesignSystem.CornerRadius.large
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = stringResource(Res.string.brews_add)
+                                    )
+                                }
+                            }
                         }
                     ) { innerPadding ->
-                        // White background for content area
+                        // Content area with modern background
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(innerPadding)
-                                .background(Color.White)
+                                .background(DesignSystem.Colors.backgroundPrimary)
                         ) {
                             NavHost(
                                 navController = navController,

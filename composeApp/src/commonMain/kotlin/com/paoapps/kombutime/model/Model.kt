@@ -215,12 +215,12 @@ class Model: KoinComponent {
 
     fun complete(index: Int) {
         val brew = _brews.value[index]
-        
+
         // Save to history if it's second fermentation
         if (brew.state is BrewState.SecondFermentation) {
             historyRepository.saveCompletedBrew(brew)
         }
-        
+
         val brews = _brews.value.toMutableList()
         brews.removeAt(index)
         _brews.value = brews

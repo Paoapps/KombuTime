@@ -1,5 +1,6 @@
 package com.paoapps.kombutime.ui.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,12 +16,14 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -29,8 +32,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.paoapps.kombutime.ui.theme.DesignSystem
 import com.paoapps.kombutime.viewmodel.FlavorManagementViewModel
 import kombutime.composeapp.generated.resources.Res
 import kombutime.composeapp.generated.resources.add_flavor
@@ -54,53 +60,75 @@ fun FlavorManagementView(
     val editingFlavor by viewModel.editingFlavor.collectAsState()
 
     Scaffold(
+        containerColor = DesignSystem.Colors.backgroundPrimary,
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { viewModel.showAddFlavorDialog() }
+                onClick = { viewModel.showAddFlavorDialog() },
+                containerColor = DesignSystem.Colors.accentBlue
             ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(Res.string.add_flavor))
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = stringResource(Res.string.add_flavor),
+                    tint = DesignSystem.Colors.Light.backgroundPrimary
+                )
             }
         }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(DesignSystem.Colors.backgroundPrimary)
                 .padding(top = padding.calculateTopPadding())
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.medium)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .padding(horizontal = DesignSystem.Spacing.screenPadding)
+                    .padding(top = DesignSystem.Spacing.screenPadding),
+                verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.medium)
             ) {
                 // Prompt for flavor setting
                 Card(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(
+                            elevation = DesignSystem.Elevation.small,
+                            shape = DesignSystem.CornerRadius.large
+                        ),
+                    shape = DesignSystem.CornerRadius.large,
+                    colors = CardDefaults.cardColors(
+                        containerColor = DesignSystem.Colors.cardBackground
+                    )
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(DesignSystem.Spacing.cardPadding),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = stringResource(Res.string.flavor_prompt_setting),
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = DesignSystem.Colors.textPrimary
                             )
                             Text(
                                 text = stringResource(Res.string.flavor_prompt_description),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = DesignSystem.Colors.textSecondary
                             )
                         }
                         Switch(
                             checked = promptForFlavor,
-                            onCheckedChange = { viewModel.setPromptForFlavor(it) }
+                            onCheckedChange = { viewModel.setPromptForFlavor(it) },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = DesignSystem.Colors.accentGreen,
+                                checkedTrackColor = DesignSystem.Colors.accentGreen.copy(alpha = 0.5f)
+                            )
                         )
                     }
                 }
@@ -108,38 +136,53 @@ fun FlavorManagementView(
                 // Saved flavors section
                 Text(
                     text = stringResource(Res.string.saved_flavors),
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = DesignSystem.Colors.textPrimary
                 )
 
                 savedFlavors.forEach { flavor ->
                     Card(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .shadow(
+                                elevation = DesignSystem.Elevation.small,
+                                shape = DesignSystem.CornerRadius.large
+                            ),
+                        shape = DesignSystem.CornerRadius.large,
+                        colors = CardDefaults.cardColors(
+                            containerColor = DesignSystem.Colors.cardBackground
+                        )
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
+                                .padding(DesignSystem.Spacing.cardPadding),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
                                 text = flavor,
                                 style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.Medium,
+                                color = DesignSystem.Colors.textPrimary,
                                 modifier = Modifier.weight(1f)
                             )
                             Row(
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.extraSmall)
                             ) {
                                 IconButton(onClick = { viewModel.showEditFlavorDialog(flavor) }) {
                                     Icon(
                                         Icons.Default.Edit,
-                                        contentDescription = stringResource(Res.string.edit_flavor)
+                                        contentDescription = stringResource(Res.string.edit_flavor),
+                                        tint = DesignSystem.Colors.accentBlue
                                     )
                                 }
                                 IconButton(onClick = { viewModel.deleteFlavor(flavor) }) {
                                     Icon(
                                         Icons.Default.Delete,
-                                        contentDescription = stringResource(Res.string.delete_flavor)
+                                        contentDescription = stringResource(Res.string.delete_flavor),
+                                        tint = DesignSystem.Colors.accentRed
                                     )
                                 }
                             }

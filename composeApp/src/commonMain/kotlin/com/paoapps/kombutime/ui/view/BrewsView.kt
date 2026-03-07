@@ -3,31 +3,50 @@ package com.paoapps.kombutime.ui.view
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -40,10 +59,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.paoapps.kombutime.ui.theme.DesignSystem
 import com.paoapps.kombutime.utils.resolve
 import com.paoapps.kombutime.viewmodel.BrewsViewModel
 import kombutime.composeapp.generated.resources.Res
@@ -85,88 +110,30 @@ fun BrewsView(
     val savedFlavors by viewModel.savedFlavors.collectAsState()
     val savedTeaTypes by viewModel.savedTeaTypes.collectAsState()
 
-    Column(
-        Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(12.dp)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        if (output.brews.isEmpty()) {
-            // Empty state
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 48.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Text(
-                    text = stringResource(Res.string.empty_state_emoji),
-                    style = MaterialTheme.typography.displayLarge
-                )
-                Text(
-                    text = stringResource(Res.string.empty_state_title),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = stringResource(Res.string.empty_state_message),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+    if (output.brews.isEmpty()) {
+        // Modern empty state
+        EmptyBrewsState()
+    } else {
+        // Modern brew list with cards
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(DesignSystem.Spacing.screenPadding),
+            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.medium)
+        ) {
+            itemsIndexed(
+                items = output.brews,
+                key = { index, _ -> index }
+            ) { index, brew ->
+                ModernBrewCard(
+                    brew = brew,
+                    onComplete = { brew.completeAction() },
+                    onOpenSettings = { onOpenSettings(index) }
                 )
             }
-        }
 
-        output.brews.forEachIndexed { index, brew ->
-            if (index > 0) {
-                HorizontalDivider()
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Image(painterResource(brew.icon), null)
-                Text(brew.title)
-            }
-
-            ProgressBar(
-                properties = brew.progressBar,
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            brew.valueRows.forEach { row ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = row.label.resolve(),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Text(
-                        text = row.value.resolve(),
-                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
-            }
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Button(
-                    modifier = Modifier.fillMaxWidth().weight(1f),
-                    onClick = { brew.completeAction() }
-                ) {
-                    Text(stringResource(Res.string.complete))
-                }
-                OutlinedButton(onClick = {
-                    onOpenSettings(index)
-                }) {
-                    Text(stringResource(Res.string.settings))
-                }
+            // Add bottom spacing for FAB
+            item {
+                Spacer(modifier = Modifier.height(80.dp))
             }
         }
     }
@@ -440,6 +407,234 @@ fun ProgressBar(
                 text = properties.body.resolve(),
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                 color = properties.textColor
+            )
+        }
+    }
+}
+
+@Composable
+private fun EmptyBrewsState() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(DesignSystem.Spacing.huge),
+        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.large)
+    ) {
+        Spacer(modifier = Modifier.height(60.dp))
+
+        // Modern empty state icon
+        Box(
+            modifier = Modifier
+                .size(120.dp)
+                .clip(CircleShape)
+                .background(DesignSystem.Colors.backgroundTertiary),
+            contentAlignment = androidx.compose.ui.Alignment.Center
+        ) {
+            Text(
+                text = stringResource(Res.string.empty_state_emoji),
+                style = MaterialTheme.typography.displayLarge.copy(fontSize = 64.sp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(DesignSystem.Spacing.medium))
+
+        Text(
+            text = stringResource(Res.string.empty_state_title),
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = DesignSystem.Colors.textPrimary
+        )
+
+        Text(
+            text = stringResource(Res.string.empty_state_message),
+            style = MaterialTheme.typography.bodyLarge,
+            color = DesignSystem.Colors.textSecondary,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            modifier = Modifier.padding(horizontal = DesignSystem.Spacing.extraLarge)
+        )
+    }
+}
+
+@Composable
+private fun ModernBrewCard(
+    brew: BrewsViewModel.Output.Brew,
+    onComplete: () -> Unit,
+    onOpenSettings: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = DesignSystem.Elevation.small,
+                shape = DesignSystem.CornerRadius.large
+            ),
+        shape = DesignSystem.CornerRadius.large,
+        colors = CardDefaults.cardColors(
+            containerColor = DesignSystem.Colors.cardBackground
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(DesignSystem.Spacing.cardPadding),
+            verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.medium)
+        ) {
+            // Header with brew name and icon
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.medium)
+            ) {
+                // Icon container
+                Image(
+                    painter = painterResource(brew.icon),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(DesignSystem.Colors.textPrimary),
+                    modifier = Modifier.size(28.dp)
+                )
+
+                Text(
+                    text = brew.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = DesignSystem.Colors.textPrimary
+                )
+            }
+
+            // Modern progress bar
+            ModernProgressBar(
+                properties = brew.progressBar,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // Info rows
+            Column(
+                verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.small)
+            ) {
+                brew.valueRows.forEach { row ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = row.label.resolve(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = DesignSystem.Colors.textSecondary
+                        )
+                        Text(
+                            text = row.value.resolve(),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.SemiBold,
+                            color = DesignSystem.Colors.textPrimary
+                        )
+                    }
+                }
+            }
+
+            // Complete button with settings button
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.small)
+            ) {
+                // Complete button
+                Button(
+                    onClick = onComplete,
+                    modifier = Modifier.weight(1f),
+                    shape = DesignSystem.CornerRadius.medium,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = DesignSystem.Colors.accentGreen,
+                        contentColor = Color.White
+                    ),
+                    contentPadding = PaddingValues(vertical = 14.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.CheckCircle,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(DesignSystem.Spacing.small))
+                    Text(
+                        text = stringResource(Res.string.complete),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                
+                // Settings button - square
+                Button(
+                    onClick = onOpenSettings,
+                    modifier = Modifier,
+                    shape = DesignSystem.CornerRadius.medium,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = DesignSystem.Colors.backgroundTertiary,
+                        contentColor = DesignSystem.Colors.textSecondary
+                    ),
+                    contentPadding = PaddingValues(14.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = stringResource(Res.string.settings),
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ModernProgressBar(
+    properties: BrewsViewModel.Output.ProgressBar,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(DesignSystem.Spacing.small)
+    ) {
+        // Progress info header
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+        ) {
+            Text(
+                text = properties.header.resolve(),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                color = DesignSystem.Colors.textSecondary
+            )
+            Text(
+                text = properties.body.resolve(),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = properties.textColor
+            )
+        }
+
+        // Modern progress indicator
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp)
+                .clip(DesignSystem.CornerRadius.pill)
+                .background(DesignSystem.Colors.progressBackground)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(properties.progress)
+                    .clip(DesignSystem.CornerRadius.pill)
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                properties.progressColor,
+                                properties.progressColor.copy(alpha = 0.8f)
+                            )
+                        )
+                    )
             )
         }
     }

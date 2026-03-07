@@ -37,7 +37,7 @@ fun AppNavigationWithTabs(
     content: @Composable (selectedTab: Int, onTabSelected: (Int) -> Unit) -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(0) }
-    
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         bottomBar = {

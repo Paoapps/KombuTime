@@ -126,7 +126,7 @@ struct EmptyStateView: View {
             Text("No active brews")
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(.primary)
-            Text("Tap to start brewing!")
+            Text("Tap to start brewe ing!")
                 .font(.system(size: 12))
                 .foregroundColor(.secondary)
         }
