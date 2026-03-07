@@ -60,6 +60,12 @@
     <string name="delete_tea_type">Delete</string>
     <string name="tea_type_name">Tea Type Name</string>
 
+    <!-- Delete brew confirmation -->
+    <string name="delete_brew_dialog_title">Delete Brew?</string>
+    <string name="delete_brew_dialog_message">Are you sure you want to delete this brew? This action cannot be undone.</string>
+    <string name="delete_brew_dialog_confirm">Delete</string>
+    <string name="delete_brew_dialog_cancel">Cancel</string>
+
     <!-- Empty state -->
     <string name="empty_state_emoji">🫙</string>
     <string name="empty_state_title">No active brews</string>

@@ -60,6 +60,12 @@
     <string name="delete_tea_type">Verwijderen</string>
     <string name="tea_type_name">Theesoort Naam</string>
 
+    <!-- Delete brew confirmation -->
+    <string name="delete_brew_dialog_title">Brouwsel Verwijderen?</string>
+    <string name="delete_brew_dialog_message">Weet je zeker dat je dit brouwsel wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.</string>
+    <string name="delete_brew_dialog_confirm">Verwijderen</string>
+    <string name="delete_brew_dialog_cancel">Annuleren</string>
+
     <!-- Empty state -->
     <string name="empty_state_emoji">🫙</string>
     <string name="empty_state_title">Geen actieve brouwsels</string>

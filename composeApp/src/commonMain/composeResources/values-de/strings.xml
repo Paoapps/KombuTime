@@ -60,6 +60,12 @@
     <string name="delete_tea_type">Löschen</string>
     <string name="tea_type_name">Teesorten Name</string>
 
+    <!-- Delete brew confirmation -->
+    <string name="delete_brew_dialog_title">Ansatz Löschen?</string>
+    <string name="delete_brew_dialog_message">Möchten Sie diesen Ansatz wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="delete_brew_dialog_confirm">Löschen</string>
+    <string name="delete_brew_dialog_cancel">Abbrechen</string>
+
     <!-- Empty state -->
     <string name="empty_state_emoji">🫙</string>
     <string name="empty_state_title">Keine aktiven Ansätze</string>

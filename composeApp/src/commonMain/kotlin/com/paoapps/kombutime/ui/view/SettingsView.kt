@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -19,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,6 +40,10 @@ import com.paoapps.kombutime.viewmodel.SettingsViewModel
 import kombutime.composeapp.generated.resources.Res
 import kombutime.composeapp.generated.resources.batch_settings
 import kombutime.composeapp.generated.resources.delete_batch
+import kombutime.composeapp.generated.resources.delete_brew_dialog_cancel
+import kombutime.composeapp.generated.resources.delete_brew_dialog_confirm
+import kombutime.composeapp.generated.resources.delete_brew_dialog_message
+import kombutime.composeapp.generated.resources.delete_brew_dialog_title
 import kombutime.composeapp.generated.resources.flavor
 import kombutime.composeapp.generated.resources.flavor_dialog_custom
 import kombutime.composeapp.generated.resources.flavor_dialog_no_flavor
@@ -57,6 +63,7 @@ fun SettingsView(
     val output by viewModel.output.collectAsState()
     val savedFlavors by viewModel.savedFlavors.collectAsState()
     val savedTeaTypes by viewModel.savedTeaTypes.collectAsState()
+    val showDeleteConfirmation by viewModel.showDeleteConfirmation.collectAsState()
 
     Column(
         Modifier
@@ -123,8 +130,7 @@ fun SettingsView(
 
         Button(
             onClick = {
-                viewModel.deleteBrew()
-                onNavigateUp()
+                viewModel.showDeleteConfirmation()
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = DANGER_COLOR,
@@ -134,6 +140,34 @@ fun SettingsView(
         ) {
             Text(text = stringResource(Res.string.delete_batch))
         }
+    }
+
+    // Delete confirmation dialog
+    if (showDeleteConfirmation) {
+        AlertDialog(
+            onDismissRequest = { viewModel.dismissDeleteConfirmation() },
+            title = { Text(stringResource(Res.string.delete_brew_dialog_title)) },
+            text = { Text(stringResource(Res.string.delete_brew_dialog_message)) },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.confirmDeleteBrew()
+                        onNavigateUp()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = DANGER_COLOR,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(stringResource(Res.string.delete_brew_dialog_confirm))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.dismissDeleteConfirmation() }) {
+                    Text(stringResource(Res.string.delete_brew_dialog_cancel))
+                }
+            }
+        )
     }
 }
 

@@ -22,6 +22,7 @@ import kombutime.composeapp.generated.resources.start_date
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -39,6 +40,9 @@ class SettingsViewModel(
 ): ViewModel(), KoinComponent {
 
     private val model: Model by inject()
+
+    private val _showDeleteConfirmation = MutableStateFlow(false)
+    val showDeleteConfirmation: StateFlow<Boolean> = _showDeleteConfirmation
 
     val savedFlavors: StateFlow<List<String>> = model.savedFlavors.stateIn(
         viewModelScope,
@@ -167,6 +171,19 @@ class SettingsViewModel(
                 return result
             }
         }
+    }
+
+    fun showDeleteConfirmation() {
+        _showDeleteConfirmation.value = true
+    }
+
+    fun dismissDeleteConfirmation() {
+        _showDeleteConfirmation.value = false
+    }
+
+    fun confirmDeleteBrew() {
+        model.deleteBrew(brewIndex)
+        _showDeleteConfirmation.value = false
     }
 
     fun deleteBrew() {
