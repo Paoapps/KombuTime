@@ -219,11 +219,23 @@ class Model: KoinComponent {
 
     /**
      * Complete a brew by its nameNumber (used by notification actions)
+     * If it's first fermentation: transitions to second fermentation and starts new first fermentation
+     * If it's second fermentation: removes the brew
      */
     fun completeByNameNumber(brewNameNumber: Int) {
         val index = _brews.value.indexOfFirst { it.settings.nameNumber == brewNameNumber }
         if (index != -1) {
-            complete(index)
+            val brew = _brews.value[index]
+            when (brew.state) {
+                is BrewState.FirstFermentation -> {
+                    // Complete first fermentation (no flavor, no prompt)
+                    completeFirstFermentation(index, flavor = "")
+                }
+                is BrewState.SecondFermentation -> {
+                    // Complete second fermentation (just delete)
+                    complete(index)
+                }
+            }
         }
     }
 
@@ -346,6 +358,30 @@ class Model: KoinComponent {
             }
         }
         save()
+    }
+
+    fun updateBrewTeaType(brewIndex: Int, teaType: String) {
+        val brew = _brews.value[brewIndex]
+        if (brew.state is BrewState.FirstFermentation) {
+            _brews.value = _brews.value.toMutableList().apply {
+                set(brewIndex, brew.copy(
+                    state = BrewState.FirstFermentation(teaType)
+                ))
+            }
+            save()
+        }
+    }
+
+    fun updateBrewFlavor(brewIndex: Int, flavor: String) {
+        val brew = _brews.value[brewIndex]
+        if (brew.state is BrewState.SecondFermentation) {
+            _brews.value = _brews.value.toMutableList().apply {
+                set(brewIndex, brew.copy(
+                    state = BrewState.SecondFermentation(flavor)
+                ))
+            }
+            save()
+        }
     }
 
     fun deleteBrew(brewIndex: Int) {

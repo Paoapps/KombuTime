@@ -12,6 +12,8 @@
     <string name="back_button">Back</string>
     <string name="complete">Complete</string>
     <string name="batch_settings">Batch Settings</string>
+    <string name="tea_type">Tea Type</string>
+    <string name="flavor">Flavor</string>
     <string name="first_fermentation_days">1st Fermentation Days</string>
     <string name="second_fermentation_days">2nd Fermentation Days</string>
     <string name="delete_batch">Delete Batch</string>

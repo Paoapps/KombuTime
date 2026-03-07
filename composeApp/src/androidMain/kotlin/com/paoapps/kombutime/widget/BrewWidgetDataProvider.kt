@@ -6,15 +6,18 @@ import com.paoapps.kombutime.SettingsFactory
 import com.paoapps.kombutime.domain.Brew
 import com.paoapps.kombutime.domain.BrewState
 import com.russhwolf.settings.Settings
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.minus
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 /**
  * Provides brew data to the widget
  */
+@OptIn(kotlin.time.ExperimentalTime::class)
 object BrewWidgetDataProvider {
 
     private val jsonParser = Json
@@ -38,7 +41,8 @@ object BrewWidgetDataProvider {
                     is BrewState.FirstFermentation -> brew.settings.firstFermentationDays
                     is BrewState.SecondFermentation -> brew.settings.secondFermentationDays
                 }
-                fermentationDays - (today - brew.startDate).days
+                val daysPassed = (today.toEpochDays() - brew.startDate.toEpochDays())
+                fermentationDays - daysPassed
             }
         } catch (e: Exception) {
             Log.e("BrewWidget", "Error loading brews", e)

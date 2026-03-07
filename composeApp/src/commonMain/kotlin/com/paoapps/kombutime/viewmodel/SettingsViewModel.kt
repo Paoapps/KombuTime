@@ -40,6 +40,18 @@ class SettingsViewModel(
 
     private val model: Model by inject()
 
+    val savedFlavors: StateFlow<List<String>> = model.savedFlavors.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
+
+    val savedTeaTypes: StateFlow<List<String>> = model.savedTeaTypes.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
+
     private val _output = combine(model.brews, model.notificationTime) { brews, notificationTime ->
         val brew = if (brews.size > brewIndex) brews[brewIndex] else return@combine Output()
         val namePrefix = org.jetbrains.compose.resources.getString(Res.string.brews_batch)
@@ -98,17 +110,39 @@ class SettingsViewModel(
                     val updateLocalDateTime = updatedTime.toLocalDateTime(TimeZone.currentSystemDefault())
                     model.setNotificationTime(updateLocalDateTime.time)
                 }
-            )
+            ),
+            teaType = if (brew.state is BrewState.FirstFermentation) {
+                (brew.state as BrewState.FirstFermentation).teaType
+            } else null,
+            flavor = if (brew.state is BrewState.SecondFermentation) {
+                (brew.state as BrewState.SecondFermentation).flavor
+            } else null
         )
     }
 
     val output: StateFlow<Output> = _output.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Output())
+
+    fun updateTeaType(teaType: String) {
+        model.updateBrewTeaType(brewIndex, teaType)
+        if (teaType.isNotBlank()) {
+            model.addSavedTeaType(teaType)
+        }
+    }
+
+    fun updateFlavor(flavor: String) {
+        model.updateBrewFlavor(brewIndex, flavor)
+        if (flavor.isNotBlank()) {
+            model.addSavedFlavor(flavor)
+        }
+    }
 
     data class Output(
         val title: UiText = "".toUiText(),
         val dateStepper: Stepper? = null,
         val brewSettingsSteppers: List<Stepper> = emptyList(),
         val notificationTimeStepper: Stepper? = null,
+        val teaType: String? = null,
+        val flavor: String? = null,
     ) {
         data class Stepper(
             val label: UiText,

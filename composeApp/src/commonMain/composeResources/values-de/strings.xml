@@ -12,6 +12,8 @@
     <string name="back_button">Zurück</string>
     <string name="complete">Fertig</string>
     <string name="batch_settings">Chargeneinstellungen</string>
+    <string name="tea_type">Teesorte</string>
+    <string name="flavor">Geschmack</string>
     <string name="first_fermentation_days">Tage der 1. Fermentation</string>
     <string name="second_fermentation_days">Tage der 2. Fermentation</string>
     <string name="delete_batch">Charge löschen</string>

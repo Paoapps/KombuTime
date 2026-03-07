@@ -12,6 +12,8 @@
     <string name="back_button">Terug</string>
     <string name="complete">Voltooid</string>
     <string name="batch_settings">Batch Instellingen</string>
+    <string name="tea_type">Theesoort</string>
+    <string name="flavor">Smaak</string>
     <string name="first_fermentation_days">Dagen 1e Fermentatie</string>
     <string name="second_fermentation_days">Dagen 2e Fermentatie</string>
     <string name="delete_batch">Batch Verwijderen</string>
