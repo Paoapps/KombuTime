@@ -10,17 +10,25 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.LocalDrink
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -30,10 +38,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.paoapps.kombutime.model.Model
+import com.paoapps.kombutime.model.HistoryRepository
 import com.paoapps.kombutime.ui.theme.AppTheme
 import com.paoapps.kombutime.ui.view.AppSettingsView
 import com.paoapps.kombutime.ui.view.BrewsView
 import com.paoapps.kombutime.ui.view.FlavorManagementView
+import com.paoapps.kombutime.ui.view.HistoryView
 import com.paoapps.kombutime.ui.view.SettingsView
 import com.paoapps.kombutime.ui.view.TeaTypeManagementView
 import com.paoapps.kombutime.viewmodel.AppViewModel
@@ -49,6 +59,8 @@ import kombutime.composeapp.generated.resources.brews_title
 import kombutime.composeapp.generated.resources.manage_flavors
 import kombutime.composeapp.generated.resources.manage_tea_types
 import kombutime.composeapp.generated.resources.settings
+import kombutime.composeapp.generated.resources.tab_active
+import kombutime.composeapp.generated.resources.tab_history
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -57,6 +69,7 @@ import org.koin.compose.KoinApplication
 import org.koin.dsl.module
 
 val module = module {
+    single { HistoryRepository() }
     single { Model() }
 }
 
@@ -104,6 +117,41 @@ data class Notification(
 )
 
 @Composable
+private fun BottomNavigationBar(
+    selectedTab: Int = 0,
+    onTabSelected: (Int) -> Unit = {}
+) {
+    NavigationBar {
+        NavigationBarItem(
+            selected = selectedTab == 0,
+            onClick = { onTabSelected(0) },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.LocalDrink,
+                    contentDescription = null
+                )
+            },
+            label = {
+                Text(stringResource(Res.string.tab_active))
+            }
+        )
+        NavigationBarItem(
+            selected = selectedTab == 1,
+            onClick = { onTabSelected(1) },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.History,
+                    contentDescription = null
+                )
+            },
+            label = {
+                Text(stringResource(Res.string.tab_history))
+            }
+        )
+    }
+}
+
+@Composable
 @Preview
 fun App(
     scheduleNotifications: (List<Notification>) -> Unit = { _ -> },
@@ -117,6 +165,9 @@ fun App(
         // Create ViewModels inside KoinApplication context so Koin is initialized
         val viewModel = appViewModel ?: viewModel { AppViewModel() }
         val brewsVM = brewsViewModel ?: viewModel { BrewsViewModel() }
+        
+        // Tab selection state
+        var selectedTab by remember { mutableStateOf(0) }
 
         // Get current back stack entry
         val backStackEntry by navController.currentBackStackEntryAsState()
@@ -169,6 +220,15 @@ fun App(
                                     }
                                 }
                             )
+                        },
+                        bottomBar = {
+                            // Only show bottom nav on Brews screen
+                            if (currentScreen == Screen.Brews) {
+                                BottomNavigationBar(
+                                    selectedTab = selectedTab,
+                                    onTabSelected = { newTab -> selectedTab = newTab }
+                                )
+                            }
                         }
                     ) { innerPadding ->
                         // White background for content area
@@ -184,12 +244,15 @@ fun App(
                                 modifier = Modifier.fillMaxSize()
                             ) {
                                 composable(route = Screen.Brews.name) {
-                                    BrewsView(
-                                        viewModel = brewsVM,
-                                        onOpenSettings = {
-                                            navController.navigate("${Screen.Settings.name}/$it")
-                                        }
-                                    )
+                                    when (selectedTab) {
+                                        0 -> BrewsView(
+                                            viewModel = brewsVM,
+                                            onOpenSettings = {
+                                                navController.navigate("${Screen.Settings.name}/$it")
+                                            }
+                                        )
+                                        1 -> HistoryView()
+                                    }
                                 }
 
                                 composable(route = "${Screen.Settings.name}/{index}") {

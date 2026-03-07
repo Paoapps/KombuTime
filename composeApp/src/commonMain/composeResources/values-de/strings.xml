@@ -82,4 +82,45 @@
         <item quantity="one">1 Tag überfällig</item>
         <item quantity="other">%1$d Tage überfällig</item>
     </plurals>
+
+    <!-- History Tab -->
+    <string name="tab_active">Aktiv</string>
+    <string name="tab_history">Verlauf</string>
+    
+    <!-- History Screen -->
+    <string name="history_title">Braugeschichte</string>
+    <string name="history_empty_emoji">🫙</string>
+    <string name="history_empty_title">Noch keine abgeschlossenen Ansätze</string>
+    <string name="history_empty_message">Ihre Braugeschichte erscheint hier, sobald Sie Ihren ersten Ansatz abgeschlossen haben!</string>
+    
+    <!-- History Stats -->
+    <string name="history_stats_title">📊 Ihre Braureise</string>
+    <string name="history_stats_total">🫙 %1$d Ansätze abgeschlossen</string>
+    <string name="history_stats_since">📅 Seit %1$s</string>
+    <string name="history_stats_favorite">🍓 %1$s am häufigsten verwendet</string>
+    <string name="history_stats_avg_f1">⏱️ Durchschn. F1: %1$s Tage</string>
+    <string name="history_stats_avg_f2">⏱️ Durchschn. F2: %1$s Tage</string>
+    
+    <!-- History Item -->
+    <string name="history_completed">Abgeschlossen %1$s</string>
+    <string name="history_started">Gestartet %1$s</string>
+    <string name="history_fermentation_timeline">F1: %1$d Tage → F2: %2$d Tage</string>
+    <string name="history_total_days">%1$d Tage gesamt</string>
+    
+    <!-- History Settings -->
+    <string name="history_settings_title">Verlaufseinstellungen</string>
+    <string name="history_save_setting">Abgeschlossene Ansätze Speichern</string>
+    <string name="history_save_description">Ansätze nach Abschluss im Verlauf speichern</string>
+    <string name="history_export">Verlauf Exportieren</string>
+    <string name="history_export_csv">Exportiere CSV</string>
+    <string name="history_export_json">Exportiere JSON</string>
+    <string name="history_clear">Gesamten Verlauf Löschen</string>
+    <string name="history_clear_count">(%1$d Ansätze)</string>
+    <string name="history_storage">Speicher: %1$s</string>
+    
+    <!-- Clear History Dialog -->
+    <string name="history_clear_dialog_title">Verlauf Löschen?</string>
+    <string name="history_clear_dialog_message">Möchten Sie wirklich alle %1$d Ansätze aus dem Verlauf löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="history_clear_dialog_confirm">Alles Löschen</string>
+    <string name="history_clear_dialog_cancel">Abbrechen</string>
 </resources>

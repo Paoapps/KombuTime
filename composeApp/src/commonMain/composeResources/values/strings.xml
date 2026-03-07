@@ -82,4 +82,45 @@
         <item quantity="one">1 day overdue</item>
         <item quantity="other">%1$d days overdue</item>
     </plurals>
+
+    <!-- History Tab -->
+    <string name="tab_active">Active</string>
+    <string name="tab_history">History</string>
+    
+    <!-- History Screen -->
+    <string name="history_title">Brew History</string>
+    <string name="history_empty_emoji">🫙</string>
+    <string name="history_empty_title">No completed brews yet</string>
+    <string name="history_empty_message">Your brewing history will appear here once you complete your first batch!</string>
+    
+    <!-- History Stats -->
+    <string name="history_stats_title">📊 Your Brewing Journey</string>
+    <string name="history_stats_total">🫙 %1$d brews completed</string>
+    <string name="history_stats_since">📅 Since %1$s</string>
+    <string name="history_stats_favorite">🍓 %1$s most used</string>
+    <string name="history_stats_avg_f1">⏱️ Avg F1: %1$s days</string>
+    <string name="history_stats_avg_f2">⏱️ Avg F2: %1$s days</string>
+    
+    <!-- History Item -->
+    <string name="history_completed">Completed %1$s</string>
+    <string name="history_started">Started %1$s</string>
+    <string name="history_fermentation_timeline">F1: %1$d days → F2: %2$d days</string>
+    <string name="history_total_days">%1$d days total</string>
+    
+    <!-- History Settings -->
+    <string name="history_settings_title">History Settings</string>
+    <string name="history_save_setting">Save Completed Brews</string>
+    <string name="history_save_description">Save brews to history when completed</string>
+    <string name="history_export">Export History</string>
+    <string name="history_export_csv">Export CSV</string>
+    <string name="history_export_json">Export JSON</string>
+    <string name="history_clear">Clear All History</string>
+    <string name="history_clear_count">(%1$d brews)</string>
+    <string name="history_storage">Storage: %1$s</string>
+    
+    <!-- Clear History Dialog -->
+    <string name="history_clear_dialog_title">Clear History?</string>
+    <string name="history_clear_dialog_message">Are you sure you want to delete all %1$d brews from history? This action cannot be undone.</string>
+    <string name="history_clear_dialog_confirm">Clear All</string>
+    <string name="history_clear_dialog_cancel">Cancel</string>
 </resources>

@@ -134,7 +134,88 @@ All flavor-related strings:
 
 ---
 
-### 5. Home Screen Widgets
+### 6. Brew History
+**Status**: ✅ Implemented (March 2026)
+
+**Description:**
+Track completed brews with automatic history logging, statistics, and export capabilities. View your brewing journey without cluttering the main active brews interface.
+
+**Capabilities:**
+
+**Bottom Tab Navigation:**
+- **Active Tab**: Shows current brewing fermentations (existing BrewsView)
+- **History Tab**: Shows completed brews in reverse chronological order
+- Material 3 NavigationBar with icons (🫙 Active, 📜 History)
+- Maintains clean separation between active work and historical data
+
+**History Display:**
+- List of completed brews sorted by completion date (most recent first)
+- Each entry shows:
+  - Brew name with flavor (if specified)
+  - Tea type (if specified)
+  - Completion date (prominent)
+  - Fermentation timeline: "F1: X days → F2: Y days"
+  - Start date (secondary info)
+- Empty state with friendly message for new users
+
+**Statistics Header:**
+- Total brews completed count
+- Date of first brew ("Since...")
+- Most used flavor with frequency
+- Average F1 fermentation days
+- Average F2 fermentation days
+- Optional: Visual stats badge/emoji
+
+**Data Storage:**
+- JSON-based storage using multiplatform-settings
+- Lightweight - approximately 10-15 KB per 100 brews
+- Automatic save when completing second fermentation
+- Persists across app restarts
+
+**Settings:**
+- Toggle to enable/disable history saving (default: ON)
+- Export history as CSV or JSON
+- Clear all history with confirmation dialog
+- Storage information display
+
+**Export Formats:**
+- **CSV**: Spreadsheet-compatible, includes all brew data
+- **JSON**: Structured format for backup/migration
+- Platform-native share sheet integration
+
+**Implementation:**
+- `domain/HistoricalBrew.kt`: Data model for completed brews
+- `model/HistoryRepository.kt`: CRUD operations and JSON storage
+- `viewmodel/HistoryViewModel.kt`: Statistics calculation and UI state
+- `ui/view/HistoryView.kt`: History list and empty state UI
+- `ui/navigation/AppNavigation.kt`: Bottom tab navigation (removed, integrated into App.kt)
+- `AppSettingsView.kt`: History settings management
+- `Model.kt`: Automatic history save on brew completion
+
+**Design Philosophy:**
+- Completely optional - can be disabled without affecting core app
+- Zero-friction data capture - saves automatically on completion
+- Non-intrusive - hidden behind separate tab
+- Export-friendly for users who want external analysis
+- Minimal storage footprint
+
+**Localization:**
+Fully localized in:
+- 🇬🇧 English
+- 🇳🇱 Dutch (Nederlands)
+- 🇩🇪 German (Deutsch)
+
+All history-related strings:
+- Tab labels: `tab_active`, `tab_history`
+- History screen: `history_title`, `history_empty_*`
+- Statistics: `history_stats_*`
+- History items: `history_completed`, `history_started`, `history_fermentation_timeline`
+- Settings: `history_save_setting`, `history_export`, `history_clear`
+- Dialogs: `history_clear_dialog_*`
+
+---
+
+### 7. Home Screen Widgets
 **Status**: ✅ Implemented (March 2026)
 
 **Description:**

@@ -82,4 +82,45 @@
         <item quantity="one">1 dag te laat</item>
         <item quantity="other">%1$d dagen te laat</item>
     </plurals>
+
+    <!-- History Tab -->
+    <string name="tab_active">Actief</string>
+    <string name="tab_history">Geschiedenis</string>
+    
+    <!-- History Screen -->
+    <string name="history_title">Brouwgeschiedenis</string>
+    <string name="history_empty_emoji">🫙</string>
+    <string name="history_empty_title">Nog geen voltooide brouwsels</string>
+    <string name="history_empty_message">Je brouwgeschiedenis verschijnt hier zodra je je eerste batch voltooit!</string>
+    
+    <!-- History Stats -->
+    <string name="history_stats_title">📊 Jouw Brouwreis</string>
+    <string name="history_stats_total">🫙 %1$d brouwsels voltooid</string>
+    <string name="history_stats_since">📅 Sinds %1$s</string>
+    <string name="history_stats_favorite">🍓 %1$s meest gebruikt</string>
+    <string name="history_stats_avg_f1">⏱️ Gem. F1: %1$s dagen</string>
+    <string name="history_stats_avg_f2">⏱️ Gem. F2: %1$s dagen</string>
+    
+    <!-- History Item -->
+    <string name="history_completed">Voltooid %1$s</string>
+    <string name="history_started">Gestart %1$s</string>
+    <string name="history_fermentation_timeline">F1: %1$d dagen → F2: %2$d dagen</string>
+    <string name="history_total_days">%1$d dagen totaal</string>
+    
+    <!-- History Settings -->
+    <string name="history_settings_title">Geschiedenis Instellingen</string>
+    <string name="history_save_setting">Voltooide Brouwsels Opslaan</string>
+    <string name="history_save_description">Sla brouwsels op in geschiedenis bij voltooiing</string>
+    <string name="history_export">Geschiedenis Exporteren</string>
+    <string name="history_export_csv">Exporteer CSV</string>
+    <string name="history_export_json">Exporteer JSON</string>
+    <string name="history_clear">Hele Geschiedenis Wissen</string>
+    <string name="history_clear_count">(%1$d brouwsels)</string>
+    <string name="history_storage">Opslag: %1$s</string>
+    
+    <!-- Clear History Dialog -->
+    <string name="history_clear_dialog_title">Geschiedenis Wissen?</string>
+    <string name="history_clear_dialog_message">Weet je zeker dat je alle %1$d brouwsels uit de geschiedenis wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.</string>
+    <string name="history_clear_dialog_confirm">Alles Wissen</string>
+    <string name="history_clear_dialog_cancel">Annuleren</string>
 </resources>

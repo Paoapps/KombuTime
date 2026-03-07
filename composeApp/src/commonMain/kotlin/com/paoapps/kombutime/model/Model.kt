@@ -35,6 +35,7 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.getString
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.time.ExperimentalTime
 
 // Default flavors to pre-populate
@@ -60,6 +61,8 @@ val DEFAULT_TEA_TYPES = listOf(
 )
 
 class Model: KoinComponent {
+
+    private val historyRepository: HistoryRepository by inject()
 
     private val jsonParser = Json
     private val scope = CoroutineScope(Dispatchers.Main)
@@ -211,6 +214,13 @@ class Model: KoinComponent {
     }
 
     fun complete(index: Int) {
+        val brew = _brews.value[index]
+        
+        // Save to history if it's second fermentation
+        if (brew.state is BrewState.SecondFermentation) {
+            historyRepository.saveCompletedBrew(brew)
+        }
+        
         val brews = _brews.value.toMutableList()
         brews.removeAt(index)
         _brews.value = brews
@@ -220,7 +230,7 @@ class Model: KoinComponent {
     /**
      * Complete a brew by its nameNumber (used by notification actions)
      * If it's first fermentation: transitions to second fermentation and starts new first fermentation
-     * If it's second fermentation: removes the brew
+     * If it's second fermentation: removes the brew and saves to history
      */
     fun completeByNameNumber(brewNameNumber: Int) {
         val index = _brews.value.indexOfFirst { it.settings.nameNumber == brewNameNumber }
@@ -232,6 +242,8 @@ class Model: KoinComponent {
                     completeFirstFermentation(index, flavor = "")
                 }
                 is BrewState.SecondFermentation -> {
+                    // Save to history before completing
+                    historyRepository.saveCompletedBrew(brew)
                     // Complete second fermentation (just delete)
                     complete(index)
                 }

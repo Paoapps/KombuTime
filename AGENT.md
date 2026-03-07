@@ -14,9 +14,12 @@ KombuTime is a minimalist Kotlin Multiplatform kombucha brewing tracker for iOS 
 - Send notifications when fermentation stages complete
 - Allow customization of fermentation duration
 - Provide at-a-glance status of all active brews
+- Track completed brews in history with statistics
 
 ### What KombuTime Explicitly Does NOT Do:
-- Detailed history/logs of past brews
+- Complex analytics or detailed charts (minimal stats only)
+- Ingredient tracking or recipe management
+- Taste notes, ratings, or reviews (beyond history saves basic data)
 - Ingredient tracking or recipe management
 - Taste notes, ratings, or reviews
 - Social features or sharing
@@ -42,11 +45,11 @@ KombuTime is a minimalist Kotlin Multiplatform kombucha brewing tracker for iOS 
   /src
     /commonMain       # Shared KMP code
       /kotlin
-        /domain       # Data models (Brew, BrewState, BrewSettings)
-        /model        # Business logic (Model.kt)
-        /viewmodel    # UI logic (BrewsViewModel, SettingsViewModel, AppViewModel)
+        /domain       # Data models (Brew, BrewState, BrewSettings, HistoricalBrew)
+        /model        # Business logic (Model.kt, HistoryRepository.kt)
+        /viewmodel    # UI logic (BrewsViewModel, SettingsViewModel, AppViewModel, HistoryViewModel)
         /ui           # Compose UI
-          /view       # Screens (BrewsView, SettingsView)
+          /view       # Screens (BrewsView, SettingsView, HistoryView, AppSettingsView)
           /theme      # Colors, Theme
         /utils        # Utilities (DateFormatting, UiText)
     /androidMain      # Android-specific code
@@ -58,35 +61,89 @@ KombuTime is a minimalist Kotlin Multiplatform kombucha brewing tracker for iOS 
 
 ### Key Components
 
-#### Domain Models (`domain/Brew.kt`)
+#### Domain Models (`domain/Brew.kt`, `domain/HistoricalBrew.kt`)
 - `Brew`: Represents a brewing batch with start date, settings, and state
 - `BrewState`: Sealed class - FirstFermentation or SecondFermentation(flavor)
 - `BrewSettings`: Configuration (firstFermentationDays, secondFermentationDays, name)
+- `HistoricalBrew`: Completed brew data (dates, fermentation days, tea type, flavor)
 
-#### Model (`model/Model.kt`)
-- Central data repository
+#### Model (`model/Model.kt`, `model/HistoryRepository.kt`)
+- `Model`: Central data repository for active brews
 - Manages brew list state
 - Handles persistence via Settings
 - Schedules notifications
 - Business logic for brew lifecycle
+- Automatically saves to history on F2 completion
+- `HistoryRepository`: Manages historical brew data
+- JSON storage for completed brews
+- Statistics calculation
+- Export functionality (CSV/JSON)
+- Clear history operation
 
 #### ViewModels
 - `BrewsViewModel`: Main screen logic, calculates progress/remaining days
 - `SettingsViewModel`: Per-brew settings management
 - `AppViewModel`: App-level coordination
+- `HistoryViewModel`: History screen state, statistics formatting
 
 #### UI Views
 - `BrewsView`: Main screen showing all active brews
 - `SettingsView`: Edit individual brew settings (days, start date, notification time)
+- `HistoryView`: Completed brews list with statistics header
+- `AppSettingsView`: App-wide settings including history management
+
+#### Navigation
+- Bottom tab navigation (Active/History tabs) integrated in `App.kt`
+- Material 3 NavigationBar for tab switching
+- Maintains backward compatibility with existing settings navigation
 
 ## Data Flow
 
-1. **User Action** (e.g., "Add Brew") → ViewModel
-2. **ViewModel** → Model (business logic)
-3. **Model** updates StateFlow → saves to Settings
-4. **StateFlow** change → ViewModel recomputes UI state
-5. **UI State** → Compose recomposes view
-6. **Model** schedules platform notifications via callback
+2. **User Action** (e.g., "Add Brew") → ViewModel
+3. **ViewModel** → Model (business logic)
+4. **Model** updates StateFlow → saves to Settings
+5. On F2 completion → Model saves to HistoryRepository
+6. **StateFlow** change → ViewModel recomputes UI state
+7. **UI State** → Compose recomposes view
+8. **Model** schedules platform notifications via callback
+
+## History System
+
+### Data Storage
+- Uses JSON serialization via `kotlinx.serialization`
+- Stored in platform Settings (SharedPreferences/UserDefaults)
+- Key: `"history"` contains array of `HistoricalBrew` objects
+- Lightweight: ~10-15 KB per 100 brews
+- Automatic save on F2 completion (if enabled)
+
+### History Capture
+When user completes a brew in second fermentation:
+1. `Model.complete(index)` detects F2 brew
+2. Calls `HistoryRepository.saveCompletedBrew(brew)`
+3. Repository creates `HistoricalBrew` with:
+   - Original F1 start date (calculated backwards)
+   - Bottled date (when F1 completed = F2 start date)
+   - Completed date (current date)
+   - Actual fermentation days used
+   - Tea type and flavor (if specified)
+4. Saves to storage and updates StateFlow
+
+### Statistics Calculation
+- Total brews: Simple count
+- First brew date: Minimum startDate in history
+- Most used flavor: Group by flavor, find max count
+- Average F1/F2 days: Simple average of all brews
+
+### Export
+- **CSV**: Headers + comma-separated values, platform share sheet
+- **JSON**: Pretty-printed array of HistoricalBrew objects
+- Export buttons only visible when history exists
+
+### UI Navigation
+- Bottom tabs show Active (brewing) vs History (completed)
+- Tab state managed in `App.kt` composable
+- Settings/AppSettings accessible from top bar on both tabs
+- History settings in AppSettingsView
 
 ## Notification System
 
@@ -122,11 +179,14 @@ KombuTime is a minimalist Kotlin Multiplatform kombucha brewing tracker for iOS 
 - Use `Output` data classes for ViewModel → View communication
 
 ### Build Verification
-**CRITICAL**: When making code changes that affect iOS, always verify the build passes using Xcode:
-1. Use `mcp_xcode_BuildProject` tool to verify compilation
+**CRITICAL**: When making ANY code changes, ALWAYS verify the build passes:
+1. **MANDATORY**: Use `mcp_xcode_BuildProject` tool after every code change
 2. Check for errors before committing
 3. Never assume changes work without testing both platforms
 4. iOS Kotlin/Native has different APIs than JVM - verify platform-specific code compiles
+5. Build verification is NOT optional - it must be done for every modification
+
+**AI Agent Rule**: After making code changes, you MUST call `mcp_xcode_BuildProject` before considering the task complete.
 
 ## Feature Development Guidelines
 
@@ -149,6 +209,15 @@ When evaluating new features, consider:
 - **Is it optional?** Advanced features should be opt-in, not forced on all users
 - **Does it add cognitive load?** Avoid cluttering the main interface
 - **Can it be implemented without compromising performance or reliability?**
+
+**History Feature Rationale:**
+The history feature was implemented because:
+✅ Completely optional (can be disabled via toggle)
+✅ Zero cognitive load for basic users (hidden behind separate tab)
+✅ High user value for engaged brewers (understand patterns, export data)
+✅ Minimal storage footprint (JSON, ~10-15 KB per 100 brews)
+✅ No impact on core workflow (automatic, non-intrusive capture)
+✅ Maintains philosophy: track fermentation simply, now with context over time
 
 Features that were previously considered unacceptable may be acceptable if:
 ✅ They're optional/hidden from the default experience
