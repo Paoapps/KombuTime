@@ -86,7 +86,7 @@ fun SettingsView(
                 Stepper(stepper)
             }
 
-            HorizontalDivider()
+            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
             Text(
                 text = stringResource(Res.string.batch_settings),
@@ -115,7 +115,7 @@ fun SettingsView(
                 Stepper(stepper)
             }
 
-            HorizontalDivider()
+            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
             Text(
                 text = stringResource(Res.string.notification_settings),
@@ -125,6 +125,8 @@ fun SettingsView(
             output.notificationTimeStepper?.let { stepper ->
                 Stepper(stepper)
             }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
         }
 
