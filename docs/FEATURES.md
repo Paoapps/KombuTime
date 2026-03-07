@@ -2,6 +2,9 @@
 
 This document describes all implemented features in KombuTime.
 
+> **📌 For planned features:** See `FEATURE_IDEAS.md`
+> **📌 When adding features here:** Follow the process in `FEATURE_MIGRATION_PROCESS.md`
+
 ## Core Features
 
 ### 1. Brew Tracking
@@ -41,6 +44,13 @@ Receive timely notifications when fermentation stages complete.
 - Notification permissions requested on first launch
 - Notifications reschedule on brew state changes
 - Quick action buttons: "Complete" and "Extend 1 Day"
+
+**Quick Actions Details:**
+- **Complete**: Advances brew to next stage (F1→F2 or F2→completed)
+- **Extend 1 Day**: Adds one day to current fermentation stage
+- Actions work without opening the app
+- Notifications include `brewNameNumber` for identification
+- Model methods: `completeByNameNumber()` and `extendFermentationByNameNumber()`
 
 ---
 

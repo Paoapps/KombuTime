@@ -4,6 +4,8 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 **For implemented features, see `FEATURES.md`.**
 
+> **📌 When implementing a feature:** Follow the process in `FEATURE_MIGRATION_PROCESS.md` to properly move features from this document to `FEATURES.md`. Don't just mark them as implemented here!
+
 ## 🎯 Status Legend
 
 - ⭐ **High Priority** - High impact, low complexity, strongly aligned
@@ -45,37 +47,6 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ## 🔔 Notification Enhancements
 
-### 7. Notification Quick Actions
-**Status**: ✅ **IMPLEMENTED** (March 2026)
-**Effort**: Medium
-**Impact**: High
-
-**Description:**
-- Add action buttons to notifications
-- iOS: "Complete" | "Extend 1 Day"
-- Android: Same via notification actions
-- Complete brew without opening app
-
-**Implementation Notes:**
-```kotlin
-// Android: PendingIntent for actions in NotificationActionReceiver.kt
-// iOS: UNNotificationAction in ContentView.swift with delegate
-```
-
-**Implementation Details:**
-- Android: `NotificationActionReceiver.kt` handles actions via broadcast receiver
-- iOS: `UNUserNotificationCenterDelegate` handles action responses
-- Actions: Complete brew or extend fermentation by 1 day
-- Notification data includes `brewNameNumber` for identification
-- Model methods: `completeByNameNumber()` and `extendFermentationByNameNumber()`
-
-**Why it fits:**
-- Reduces friction for common actions
-- Leverages existing notification system
-- No new screens or complexity
-
----
-
 ### 8. Pre-Notification Reminders
 **Status**: Not implemented
 **Effort**: Low
@@ -94,7 +65,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ---
 
-### 9. Smart Notification Time
+### 8. Smart Notification Time
 **Status**: Not implemented
 **Effort**: Low
 **Impact**: Low
@@ -113,7 +84,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ## 📊 Minimal Data Features
 
-### 10. Simple Completion Counter
+### 9. Simple Completion Counter
 **Status**: Not implemented
 **Effort**: Low
 **Impact**: Low
@@ -132,7 +103,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ---
 
-### 11. Last Brew Date
+### 10. Last Brew Date
 **Status**: Not implemented
 **Effort**: Low
 **Impact**: Low
@@ -150,7 +121,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ---
 
-### 12. Active Brew Summary
+### 11. Active Brew Summary
 **Status**: Not implemented
 **Effort**: Low
 **Impact**: Low
@@ -168,7 +139,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ## 🔧 Technical Improvements
 
-### 13. Backup & Restore
+### 12. Backup & Restore
 **Status**: Not implemented
 **Effort**: Medium
 **Impact**: Medium
@@ -191,7 +162,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ---
 
-### 14. iCloud/Google Drive Backup
+### 13. iCloud/Google Drive Backup
 **Status**: Not implemented
 **Effort**: High
 **Impact**: Low
@@ -213,7 +184,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ---
 
-### 15. Dark Mode Refinement
+### 14. Dark Mode Refinement
 **Status**: Partial (colors defined, needs testing)
 **Effort**: Low
 **Impact**: Medium
@@ -232,7 +203,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ## 💡 Optional Enhancements (Toggleable)
 
-### 16. Brew Templates
+### 15. Brew Templates
 **Status**: Not implemented
 **Effort**: Medium
 **Impact**: Low-Medium
@@ -250,7 +221,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ---
 
-### 17. Custom Emoji/Icons per Brew
+### 16. Custom Emoji/Icons per Brew
 **Status**: Not implemented
 **Effort**: Low
 **Impact**: Low
@@ -268,7 +239,7 @@ This document contains curated feature suggestions that align with KombuTime's m
 
 ---
 
-### 18. Quiet Hours
+### 17. Quiet Hours
 **Status**: Not implemented
 **Effort**: Low
 **Impact**: Low
@@ -316,14 +287,13 @@ These ideas violate the minimalist philosophy:
 4. 🔧 Dark mode refinement
 
 ### Phase 3: Major Features (1-2 months)
-5. ~~🔔 Notification quick actions~~ ✅ **COMPLETED**
-6. 🔧 Backup & restore
+5. 🔧 Backup & restore
 
 ### Phase 4: Nice-to-Haves (Future)
-7. 💡 Brew templates
-8. 💡 Custom emoji per brew
-9. 💡 Quiet hours
-10. 📊 Last brew date indicator
+6. 💡 Brew templates
+7. 💡 Custom emoji per brew
+8. 💡 Quiet hours
+9. 📊 Last brew date indicator
 
 ---
 
