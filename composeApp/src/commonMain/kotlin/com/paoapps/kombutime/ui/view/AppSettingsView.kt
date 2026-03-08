@@ -168,7 +168,11 @@ fun AppSettingsView(
                                     onExportHistory(csv)
                                 },
                                 modifier = Modifier.weight(1f),
-                                shape = DesignSystem.CornerRadius.medium
+                                shape = DesignSystem.CornerRadius.medium,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = DesignSystem.Colors.accentBlue,
+                                    contentColor = Color.White
+                                )
                             ) {
                                 Text("Export CSV")
                             }
@@ -179,7 +183,11 @@ fun AppSettingsView(
                                     onExportHistory(json)
                                 },
                                 modifier = Modifier.weight(1f),
-                                shape = DesignSystem.CornerRadius.medium
+                                shape = DesignSystem.CornerRadius.medium,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = DesignSystem.Colors.accentBlue,
+                                    contentColor = Color.White
+                                )
                             ) {
                                 Text("Export JSON")
                             }

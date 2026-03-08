@@ -216,7 +216,11 @@ fun FlavorManagementView(
                 confirmButton = {
                     Button(
                         onClick = { viewModel.saveFlavor() },
-                        enabled = editing.currentName.isNotBlank()
+                        enabled = editing.currentName.isNotBlank(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = DesignSystem.Colors.accentBlue,
+                            contentColor = Color.White
+                        )
                     ) {
                         Text(stringResource(Res.string.save))
                     }
