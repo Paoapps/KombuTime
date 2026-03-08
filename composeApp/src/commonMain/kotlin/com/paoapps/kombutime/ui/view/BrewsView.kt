@@ -236,7 +236,11 @@ fun BrewsView(
                     onClick = {
                         viewModel.completeFirstFermentation(dialogState.brewIndex, finalFlavor)
                     },
-                    enabled = !isCustom || customFlavor.isNotBlank()
+                    enabled = !isCustom || customFlavor.isNotBlank(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = DesignSystem.Colors.accentBlue,
+                        contentColor = Color.White
+                    )
                 ) {
                     Text(stringResource(Res.string.flavor_dialog_confirm))
                 }
@@ -345,7 +349,11 @@ fun BrewsView(
                     onClick = {
                         viewModel.addBrewWithTeaType(dialogState.namePrefix, finalTeaType)
                     },
-                    enabled = !isCustom || customTeaType.isNotBlank()
+                    enabled = !isCustom || customTeaType.isNotBlank(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = DesignSystem.Colors.accentBlue,
+                        contentColor = Color.White
+                    )
                 ) {
                     Text(stringResource(Res.string.tea_type_dialog_confirm))
                 }
