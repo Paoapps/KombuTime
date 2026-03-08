@@ -13,19 +13,19 @@ fun initFileSharing(context: Context) {
 
 actual fun shareFile(content: String, filename: String, mimeType: String) {
     val context = appContext ?: return
-    
+
     try {
         // Create a temporary file in cache directory
         val file = File(context.cacheDir, filename)
         file.writeText(content)
-        
+
         // Get URI using FileProvider
         val uri = FileProvider.getUriForFile(
             context,
             "${context.packageName}.fileprovider",
             file
         )
-        
+
         // Create share intent
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
@@ -34,7 +34,7 @@ actual fun shareFile(content: String, filename: String, mimeType: String) {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        
+
         val chooserIntent = Intent.createChooser(shareIntent, "Export $filename")
         chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(chooserIntent)

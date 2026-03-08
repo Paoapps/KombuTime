@@ -85,6 +85,7 @@ import kombutime.composeapp.generated.resources.manage_tea_types
 import kombutime.composeapp.generated.resources.settings
 import kombutime.composeapp.generated.resources.tab_active
 import kombutime.composeapp.generated.resources.tab_history
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -372,9 +373,9 @@ fun App(
                                         onExportHistory = { content ->
                                             // Determine file type from content
                                             val (filename, mimeType) = if (content.trim().startsWith("[")) {
-                                                "kombutime_history_${kotlinx.datetime.Clock.System.now().toEpochMilliseconds()}.json" to "application/json"
+                                                "kombutime_history_${Clock.System.now().toEpochMilliseconds()}.json" to "application/json"
                                             } else {
-                                                "kombutime_history_${kotlinx.datetime.Clock.System.now().toEpochMilliseconds()}.csv" to "text/csv"
+                                                "kombutime_history_${Clock.System.now().toEpochMilliseconds()}.csv" to "text/csv"
                                             }
                                             com.paoapps.kombutime.utils.shareFile(content, filename, mimeType)
                                         }

@@ -1,38 +1,28 @@
 package com.paoapps.kombutime.utils
 
+import kotlinx.cinterop.ExperimentalForeignApi
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
-import platform.Foundation.NSURL
-import platform.Foundation.NSTemporaryDirectory
-import platform.Foundation.writeToFile
 
+@OptIn(ExperimentalForeignApi::class)
 actual fun shareFile(content: String, filename: String, mimeType: String) {
     try {
-        // Create temporary file
-        val tempDir = NSTemporaryDirectory()
-        val filePath = "$tempDir$filename"
-        
-        // Write content to file
-        (content as NSString).writeToFile(
-            path = filePath,
-            atomically = true,
-            encoding = NSUTF8StringEncoding,
-            error = null
-        )
-        
-        val fileURL = NSURL.fileURLWithPath(filePath)
-        
         // Get the root view controller
         val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
         
-        // Create activity view controller
+        if (rootViewController == null) {
+            println("No root view controller available")
+            return
+        }
+        
+        // Create activity view controller with text content directly
         val activityViewController = UIActivityViewController(
-            activityItems = listOf(fileURL),
+            activityItems = listOf(content),
             applicationActivities = null
         )
         
         // Present the share sheet
-        rootViewController?.presentViewController(
+        rootViewController.presentViewController(
             activityViewController,
             animated = true,
             completion = null
