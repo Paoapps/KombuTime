@@ -4,37 +4,37 @@
 
 ### What's New in This Release
 
-**🏠 Home Screen Widgets**
+HOME SCREEN WIDGETS
 View your active brews at a glance without opening the app! Add widgets to your home screen to see fermentation progress, days remaining, and which brews need attention. Available in small, medium, and large sizes.
 
-**📜 Brew History**
+BREW HISTORY
 Track your kombucha journey! All completed brews are automatically saved to your history. View statistics including total brews, average fermentation times, and most-used flavors. Export your data as CSV or JSON for your own analysis.
 
-**🍋 Flavor Tracking**
+FLAVOR TRACKING
 Add optional flavor notes when bottling for second fermentation. Choose from pre-populated favorites (Blueberry, Ginger, Lemon, Mango, and more) or add your own custom flavors. Manage your flavor list in the new App Settings.
 
-**🍵 Tea Type Tracking**
+TEA TYPE TRACKING
 Track which tea you use for first fermentation! Similar to flavor tracking, you can optionally specify your tea type (Black, Green, Oolong, etc.) when starting a new brew. Fully customizable with your own tea varieties.
 
-**⚡️ Quick Actions from Notifications**
+QUICK ACTIONS FROM NOTIFICATIONS
 Handle your brews without opening the app! When you receive a notification that a fermentation stage is complete, you can now tap "Complete" to advance to the next stage or "Extend 1 Day" to give it more time—all from the notification itself.
 
-**🎨 Visual Improvements**
+VISUAL IMPROVEMENTS
 - Enhanced dark mode support with better contrast and readability
-- Clear visual indicators showing when brews are ready (✓ Ready!), in progress, or overdue
+- Clear visual indicators showing when brews are ready, in progress, or overdue
 - Friendly empty state messages when you're just getting started
 - Improved Material Design 3 styling throughout
 
-**🌍 Full Localization**
+FULL LOCALIZATION
 Complete translations in English, Dutch (Nederlands), and German (Deutsch) for all new features.
 
-**⚙️ Better Settings Organization**
+BETTER SETTINGS ORGANIZATION
 Settings have been reorganized with dedicated screens for:
 - App Settings (Flavors & Tea Types management)
 - Brew Settings (Per-brew fermentation times and notification preferences)
 - History Settings (Export, clear history, toggle saving)
 
-**🔧 Technical Improvements**
+TECHNICAL IMPROVEMENTS
 - Modernized to latest Kotlin Multiplatform and Compose Multiplatform
 - Migrated to Material Design 3
 - Better performance and stability
@@ -61,7 +61,7 @@ Transform your home screen into a brewing dashboard with native widgets for both
 **Features:**
 - **Multiple Sizes:** Small (1 brew), Medium (2-3 brews), Large (4+ brews)
 - **Smart Display:** Shows most urgent brews first (sorted by days remaining)
-- **Rich Information:** 
+- **Rich Information:**
   - Brew name with flavor/tea type
   - Fermentation stage (F1/F2) with icons
   - Visual progress bars (orange for F1, green for F2)
@@ -89,7 +89,7 @@ Automatically track and analyze all your completed brews with comprehensive stat
 
 **Features:**
 - **Automatic Saving:** Completed brews automatically saved to history
-- **Bottom Tab Navigation:** 
+- **Bottom Tab Navigation:**
   - Active tab (🫙): Current brews in progress
   - History tab (📜): All completed brews
 - **Detailed History Records:**
@@ -263,7 +263,7 @@ Better organization with dedicated sections:
 Migrated from string-based names to number-based system:
 - **Old:** Custom string names stored as keys
 - **New:** Sequential numbers (Brew #1, Brew #2, etc.)
-- **Benefits:** 
+- **Benefits:**
   - Consistent notification targeting
   - Simpler data model
   - Better widget integration

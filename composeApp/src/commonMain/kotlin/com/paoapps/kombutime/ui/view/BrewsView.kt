@@ -620,7 +620,7 @@ private fun ModernProgressBar(
                 .fillMaxWidth()
                 .height(8.dp)
                 .clip(DesignSystem.CornerRadius.pill)
-                .background(DesignSystem.Colors.progressBackground)
+                .background(properties.backgroundColor)
         ) {
             Box(
                 modifier = Modifier
