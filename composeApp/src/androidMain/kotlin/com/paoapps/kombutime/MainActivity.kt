@@ -22,6 +22,9 @@ class MainActivity : ComponentActivity() {
 
         // Initialize widget updater with app context
         WidgetUpdater.init(applicationContext)
+        
+        // Initialize file sharing
+        com.paoapps.kombutime.utils.initFileSharing(this)
 
         // Configure window for edge-to-edge display
         WindowCompat.setDecorFitsSystemWindows(window, false)

@@ -368,7 +368,16 @@ fun App(
                                     AppSettingsView(
                                         onNavigateToFlavors = { navController.navigate(Screen.FlavorManagement.name) },
                                         onNavigateToTeaTypes = { navController.navigate(Screen.TeaTypeManagement.name) },
-                                        onNavigateUp = { navController.navigateUp() }
+                                        onNavigateUp = { navController.navigateUp() },
+                                        onExportHistory = { content ->
+                                            // Determine file type from content
+                                            val (filename, mimeType) = if (content.trim().startsWith("[")) {
+                                                "kombutime_history_${kotlinx.datetime.Clock.System.now().toEpochMilliseconds()}.json" to "application/json"
+                                            } else {
+                                                "kombutime_history_${kotlinx.datetime.Clock.System.now().toEpochMilliseconds()}.csv" to "text/csv"
+                                            }
+                                            com.paoapps.kombutime.utils.shareFile(content, filename, mimeType)
+                                        }
                                     )
                                 }
 

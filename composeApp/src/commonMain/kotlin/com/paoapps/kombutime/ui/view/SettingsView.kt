@@ -317,7 +317,13 @@ fun Stepper(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Button(onClick = { properties.onDecrement() }) {
+            Button(
+                onClick = { properties.onDecrement() },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = DesignSystem.Colors.accentBlue,
+                    contentColor = Color.White
+                )
+            ) {
                 Text("-")
             }
 
@@ -326,7 +332,13 @@ fun Stepper(
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             )
 
-            Button(onClick = { properties.onIncrement() }) {
+            Button(
+                onClick = { properties.onIncrement() },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = DesignSystem.Colors.accentBlue,
+                    contentColor = Color.White
+                )
+            ) {
                 Text("+")
             }
         }
